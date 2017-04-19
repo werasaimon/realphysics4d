@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Files/box.bmp</file>
+        <file>Files/cub.3ds</file>
+        <file>Files/cube.bmp</file>
+        <file>Files/cube.jpg</file>
+        <file>Files/cube.png</file>
+        <file>Files/floor.bmp</file>
+        <file>Files/floor.jpg</file>
+        <file>Files/plane.3DS</file>
+        <file>Files/propeller.3DS</file>
+    </qresource>
+</RCC>
