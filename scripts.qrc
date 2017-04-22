@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>scripts/file.lua</file>
+        <file>scripts/primitives.lua</file>
     </qresource>
 </RCC>
