@@ -4,9 +4,9 @@ local p = {};
 local m = {};
 local n = 40;
 
-local eye           =  vector3(0,0,100)
+local eye        =  vector3(0,0,100)
 local center     =  vector3(0,0,-60)
-local up             =  vector3(0,1,0)
+local up         =  vector3(0,1,0)
 
 local cam    = camera();
 local shader = shaderProgram()
@@ -57,7 +57,7 @@ function setup( scene )
 end;
 
 
---******* update *********--
+--******* render *********--
 function render( scene )
 
 
@@ -90,17 +90,21 @@ function render( scene )
 
 end;
 
+
+--******* update *********--
 function update( scene )
  
-if pause then
-      physWorld:update( 1.0/60.0 )
-      for i=0,n do
-      p[i]:update()
-      end;
-end;
+    if pause then
+          physWorld:update( 1.0/60.0 )
+          for i=0,n do
+          p[i]:update()
+          end;
+    end;
  
 end
 
+
+--******* resize *********--
 function resize( scene )
 
     aspect = scene.width / scene.height
