@@ -53,9 +53,12 @@ class UnitScene : public UnitKey
     virtual void render(float FrameTime) = 0;
     virtual void update() = 0;
     virtual void resize( float width , float height ) = 0;
-    virtual void mouseMove( float x , float y) = 0;
-    virtual void mousePress( float x , float y) = 0;
+
+    virtual void mouseMove( float x , float y  , int button) = 0;
+    virtual void mousePress( float x , float y , int button ) = 0;
+    virtual void mouseReleasePress( float x , float y , int button ) = 0;
     virtual void mouseWheel( float delta ) = 0;
+
     virtual void keyboard(int key ) = 0;
     virtual void destroy() = 0;
 

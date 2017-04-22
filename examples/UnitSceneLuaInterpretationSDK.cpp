@@ -15,14 +15,41 @@ bool UnitSceneLuaInterpretationSDK::initLua()
 {
 
     mLuaMashine.initialization();
-    mLuaMashine.parserClassesLibrary();
 
-    mLuaMashine.importToMethodScope( luabind::class_<UnitSceneLuaInterpretationSDK>("scene")
+
+    ///------------------- Loader Libary SDK-lua --------------------------------///
+
+    LoadLibaryLuaValue                 libaryValue( mLuaMashine.getVirtualMashinLua() );
+    LoadLibaryLuaPhysicsEngine libaryPhysicsEngine( mLuaMashine.getVirtualMashinLua() );
+    LoadLibaryLuaUIEngine           libaryUIEngine( mLuaMashine.getVirtualMashinLua() );
+    LoadLibaryLuaShader               libaryShader( mLuaMashine.getVirtualMashinLua() );
+    LoadLibaryLuaOpenGL               liberyOpenGL( mLuaMashine.getVirtualMashinLua() );
+
+    libaryValue.LoadLibary();
+    libaryPhysicsEngine.LoadLibary();
+    libaryUIEngine.LoadLibary();
+    libaryShader.LoadLibary();
+    liberyOpenGL.LoadLibary();
+
+
+    ///--------------------------------------------------------------------------///
+
+
+    mLuaMashine.importToScope( luabind::class_<mouse>("mouse")
+                                     // value
+                                     .def_readwrite("x"       , &mouse::m_x)
+                                     .def_readwrite("y"       , &mouse::m_y)
+                                     .def_readwrite("button"  , &mouse::m_button));
+
+
+    mLuaMashine.importToScope( luabind::class_<UnitSceneLuaInterpretationSDK>("scene")
                                      .def(luabind::constructor<>())
                                      .def("keyDown", &UnitSceneLuaInterpretationSDK::keyDown)
                                      // value
                                      .def_readwrite("width"  , &UnitSceneLuaInterpretationSDK::width)
-                                     .def_readwrite("height" , &UnitSceneLuaInterpretationSDK::height));
+                                     .def_readwrite("height" , &UnitSceneLuaInterpretationSDK::height)
+                                     .def_readwrite("mouse"  , &UnitSceneLuaInterpretationSDK::mMouse)
+                                     .def_readwrite("hitKey" , &UnitSceneLuaInterpretationSDK::mHitKey));
 
 
 
@@ -56,6 +83,10 @@ bool UnitSceneLuaInterpretationSDK::initLua()
     luabind::globals(mLuaMashine.getVirtualMashinLua())["Key_M"]  = int(Qt::Key_M);
 
 
+    luabind::globals(mLuaMashine.getVirtualMashinLua())["MOUSE_RIGHT"] = (int)(Qt::MouseButton::RightButton);
+    luabind::globals(mLuaMashine.getVirtualMashinLua())["MOUSE_LEFT"]  = (int)(Qt::MouseButton::LeftButton);
+
+
 
 }
 
@@ -65,15 +96,7 @@ bool UnitSceneLuaInterpretationSDK::initLua()
 bool UnitSceneLuaInterpretationSDK::initGL()
 {
 
-    mLuaMashine.importToMethodScope( luabind::namespace_("GL")[luabind::def( "glProjection" , &UtilOpenGL::glProject_)]);
-    mLuaMashine.importToMethodScope( luabind::namespace_("GL")[luabind::def( "glModelView"  , &UtilOpenGL::glModelView_)]);
-    mLuaMashine.importToMethodScope( luabind::namespace_("GL")[luabind::def( "glIdentity"   , &UtilOpenGL::glLoadIdentity_)]);
-    mLuaMashine.importToMethodScope( luabind::namespace_("GL")[luabind::def( "glClear"      , &UtilOpenGL::glClear_)]);
-    mLuaMashine.importToMethodScope( luabind::namespace_("GL")[luabind::def( "glViewport"   , &UtilOpenGL::glViewport_) ]);
-
-
-
-    mLuaMashine.importToMethodScope( luabind::namespace_("GL")[ luabind::def( "loadTexture" , &loadTexture)]);
+    mLuaMashine.importToScope( luabind::namespace_("GL")[ luabind::def( "loadTexture" , &loadTexture)]);
 
 }
 
@@ -82,31 +105,9 @@ bool UnitSceneLuaInterpretationSDK::initGL()
 ///---------------- initilization -------------------------///
 /// \brief UnitSceneLuaInterpretationSDK::initialization
 /// \return
+///
 bool UnitSceneLuaInterpretationSDK::initialization()
 {
-
-    ///-------------------------------------------///
-
-        //        const char fileName0[] = "plane.3DS";
-        //        QFile mFile0(fileName0);
-        //        if(!CopyFileResources( mFile0 , ":/Files/plane.3DS" )) return false;
-
-
-        //        const char fileName1[] = "box.bmp";
-        //        QFile mFile1(fileName1);
-        //        if(!CopyFileResources( mFile1 , ":/Files/box.bmp" )) return false;
-
-
-        //        const char fileName2[] = "vshader2.glsl";
-        //        QFile mFile2(fileName2);
-        //        if(!CopyFileResources( mFile2 , ":/shaders/vshader2.glsl" )) return false;
-
-
-        //        const char fileName3[] = "fshader2.glsl";
-        //        QFile mFile3(fileName3);
-        //        if(!CopyFileResources( mFile3 , ":/shaders/fshader2.glsl" )) return false;
-
-    ///-------------------------------------------///
 
     NullAllKey();
 
@@ -139,11 +140,12 @@ bool UnitSceneLuaInterpretationSDK::initialization()
 ///------------------  render  -------------------------///
 /// \brief UnitSceneLuaInterpretationSDK::render
 /// \param FrameTime
+///
 void UnitSceneLuaInterpretationSDK::render(float FrameTime)
 {
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //glLoadIdentity();
+    //    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //    glLoadIdentity();
 
 
     //    glFrontFace(GL_CCW);
@@ -165,6 +167,7 @@ void UnitSceneLuaInterpretationSDK::render(float FrameTime)
 
 ///-----------------  update  -------------------------///
 /// \brief UnitSceneLuaInterpretationSDK::update
+///
 void UnitSceneLuaInterpretationSDK::update()
 {
 
@@ -183,6 +186,7 @@ void UnitSceneLuaInterpretationSDK::update()
 /// \brief UnitSceneLuaInterpretationSDK::resize
 /// \param w
 /// \param h
+///
 void UnitSceneLuaInterpretationSDK::resize(float w, float h)
 {
     width  = w;
@@ -203,48 +207,126 @@ void UnitSceneLuaInterpretationSDK::resize(float w, float h)
 /// \brief UnitSceneLuaInterpretationSDK::mouseMove
 /// \param x
 /// \param y
-void UnitSceneLuaInterpretationSDK::mouseMove(float x, float y)
+///
+void UnitSceneLuaInterpretationSDK::mouseMove(float x , float y , int button)
 {
+    mMouse.m_x = x;
+    mMouse.m_y = y;
+    mMouse.m_button = button;
 
+    try
+    {
+        luabind::call_function<void>(mLuaMashine.getVirtualMashinLua(), "mouseMove" , this);
+    }
+    catch(...)
+    {
+
+    }
 }
 
 ///--------------------- mousePress -----------------------///
 /// \brief UnitSceneLuaInterpretationSDK::mousePress
 /// \param x
 /// \param y
-void UnitSceneLuaInterpretationSDK::mousePress(float x, float y)
+/// \param button
+///
+void UnitSceneLuaInterpretationSDK::mousePress(float x , float y , int button)
 {
+    mMouse.m_x = x;
+    mMouse.m_y = y;
+    mMouse.m_button = button;
 
+    try
+    {
+        luabind::call_function<void>(mLuaMashine.getVirtualMashinLua(), "mousePress" , this);
+    }
+    catch(...)
+    {
+
+    }
+}
+
+
+///--------------------- mouseReleasePress -----------------------///
+/// \brief UnitSceneLuaInterpretationSDK::mouseReleasePress
+/// \param x
+/// \param y
+/// \param button
+///
+void UnitSceneLuaInterpretationSDK::mouseReleasePress(float x, float y, int button)
+{
+    mMouse.m_x = x;
+    mMouse.m_y = y;
+    mMouse.m_button = button;
+
+    try
+    {
+        luabind::call_function<void>(mLuaMashine.getVirtualMashinLua(), "mouseRelease" , this);
+    }
+    catch(...)
+    {
+
+    }
 }
 
 
 ///-------------------- mouseWheel ------------------------///
 /// \brief UnitSceneLuaInterpretationSDK::mouseWheel
 /// \param delta
+///
 void UnitSceneLuaInterpretationSDK::mouseWheel(float delta)
 {
 
+    try
+    {
+        luabind::call_function<void>(mLuaMashine.getVirtualMashinLua(), "mouseWheel" , this);
+    }
+    catch(...)
+    {
+
+    }
 }
 
 ///------------------- keyboard---------------------------///
 /// \brief UnitSceneLuaInterpretationSDK::keyboard
 /// \param key
+///
 void UnitSceneLuaInterpretationSDK::keyboard(int key)
 {
+    mHitKey = key;
 
+    try
+    {
+        luabind::call_function<void>(mLuaMashine.getVirtualMashinLua(), "keyboard" , this);
+    }
+    catch(...)
+    {
+
+    }
 }
 
 ///-------------------- destroy --------------------------///
 /// \brief UnitSceneLuaInterpretationSDK::destroy
+///
 void UnitSceneLuaInterpretationSDK::destroy()
 {
+    try
+    {
+        luabind::call_function<void>(mLuaMashine.getVirtualMashinLua(), "destroy" , this);
+    }
+    catch(...)
+    {
 
+    }
+
+    mLuaMashine.closet();
 }
 
 //---------------------------------------------------------------//
 ///----------------------------- run-script --------------------///
 /// \brief UnitSceneLuaInterpretationSDK::runScriptLua
 /// \param _str
+///
 void UnitSceneLuaInterpretationSDK::runScriptLua(const char *_str)
 {
    mLuaMashine.runString(_str);

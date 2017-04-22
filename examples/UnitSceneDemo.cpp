@@ -288,7 +288,7 @@ void UnitSceneDemo::resize(float w , float h )
 
 float oldX = 0;
 float oldY = 0;
-void UnitSceneDemo::mouseMove(float x, float y)
+void UnitSceneDemo::mouseMove(float x, float y , int button)
 {
 
     M1.setToIdentity();
@@ -301,10 +301,15 @@ void UnitSceneDemo::mouseMove(float x, float y)
 
 }
 
-void UnitSceneDemo::mousePress(float x, float y)
+void UnitSceneDemo::mousePress(float x, float y, int button)
 {
     oldX = x;
     oldY = y;
+}
+
+void UnitSceneDemo::mouseReleasePress(float x, float y, int button)
+{
+
 }
 
 void UnitSceneDemo::mouseWheel(float delta)

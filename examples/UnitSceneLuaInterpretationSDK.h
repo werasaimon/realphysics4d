@@ -1,11 +1,9 @@
 #ifndef UNITSCENELUAINTERPRETATIONSDK_H
 #define UNITSCENELUAINTERPRETATIONSDK_H
 
-
-#include "utilopengl.h"
-
 #include "UnitScene.h"
 #include "engine/lua-interpreter/lua_integration.h"
+#include "engine/lua-interpreter/lualibary.h"
 #include "engine/UI-engine/engine.h"
 
 #include <QFile>
@@ -17,6 +15,11 @@ namespace
 {
   struct mouse
   {
+      mouse()
+      {
+
+      }
+
       mouse(float x , float y)
       : m_x(x) , m_y(y)
       {
@@ -25,6 +28,7 @@ namespace
 
       float m_y;
       float m_x;
+      int   m_button;
   };
 
 
@@ -72,13 +76,18 @@ class UnitSceneLuaInterpretationSDK : public UnitScene
 
      //-------------------- Attribute --------------------//
 
-
     /// Lua interptation mashine
     lua_integration mLuaMashine;
 
     /// Resize window
     float width;
     float height;
+
+    /// Mouse
+    mouse mMouse;
+
+    /// Hit_Key
+    int   mHitKey;
 
     /// Initilization lua-interpritator
     bool initLua();
@@ -95,8 +104,9 @@ class UnitSceneLuaInterpretationSDK : public UnitScene
       void update();
       void resize( float w , float h );
 
-      void mouseMove( float x , float y);
-      void mousePress( float x , float y);
+      void mouseMove( float x , float y ,  int button);
+      void mousePress( float x , float y , int button );
+      void mouseReleasePress( float x , float y , int button );
       void mouseWheel( float delta );
 
       void keyboard(int key );

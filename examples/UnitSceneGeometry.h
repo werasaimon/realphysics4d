@@ -19,6 +19,9 @@ class UnitSceneGeometry : public UnitScene
         Vector3 mUp;
 
 
+        int mMouseRightButton;
+
+
         /// width and height size window
         float width;
         float height;
@@ -41,8 +44,9 @@ class UnitSceneGeometry : public UnitScene
      void render(float FrameTime);
      void update();
      void resize(     float w , float h);
-     void mouseMove(  float x , float y);
-     void mousePress( float x , float y);
+     void mouseMove(float x , float y   , int button );
+     void mousePress( float x , float y , int button );
+     void mouseReleasePress( float x , float y , int button );
      void mouseWheel( float delta );
      void keyboard(int key );
      void destroy();

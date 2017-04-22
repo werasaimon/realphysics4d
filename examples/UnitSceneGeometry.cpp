@@ -52,30 +52,32 @@ void UnitSceneGeometry::initGeometry()
 
 
     //---------------------------- loading texture --------------------------------//
-    // Load cube.png image
-    QOpenGLTexture *texture = new QOpenGLTexture(QImage(":/Files/cube.jpg").mirrored());
+    //    // Load cube.png image
+    //    QOpenGLTexture *texture = new QOpenGLTexture(QImage(":/Files/cube.jpg").mirrored());
 
-    // Set nearest filtering mode for texture minification
-    texture->setMinificationFilter(QOpenGLTexture::Nearest);
+    //    // Set nearest filtering mode for texture minification
+    //    texture->setMinificationFilter(QOpenGLTexture::Nearest);
 
-    // Set bilinear filtering mode for texture magnification
-    texture->setMagnificationFilter(QOpenGLTexture::Linear);
+    //    // Set bilinear filtering mode for texture magnification
+    //    texture->setMagnificationFilter(QOpenGLTexture::Linear);
 
-    // Wrap texture coordinates by repeating
-    // f.ex. texture coordinate (1.1, 1.2) is same as (0.1, 0.2)
-    texture->setWrapMode(QOpenGLTexture::Repeat);
+    //    // Wrap texture coordinates by repeating
+    //    // f.ex. texture coordinate (1.1, 1.2) is same as (0.1, 0.2)
+    //    texture->setWrapMode(QOpenGLTexture::Repeat);
 
 
-     Texture2D   texture2D(texture->textureId());
+    //     Texture2D   texture2D(texture->textureId());
     //-----------------------------------------------------------------------------//
 
 
 
      /**/
-     /// Add mesh-model in array meshes
-     const char fileName2[] = "plane.3DS";
-     QFile mFile2(fileName2);
-     CopyFileResources( mFile2 , ":/Files/plane.3DS" );
+    //     /// Add mesh-model in array meshes
+    //     const char fileName2[] = "plane.3DS";
+    //     QFile mFile2(fileName2);
+    //     CopyFileResources( mFile2 , ":/Files/plane.3DS" );
+
+
 
      for( int i =0 ; i < 10; ++i )
      {
@@ -93,10 +95,11 @@ void UnitSceneGeometry::initGeometry()
 
          mMeshes.push_back(meshModel);
      }
+
      /**/
 
 
-     mFile2.remove();
+     //mFile2.remove();
 
 }
 
@@ -120,7 +123,7 @@ void UnitSceneGeometry::render(float FrameTime)
      mCamera.LookAt( mEye , mCenter  , mUp );
 
      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-     glLoadIdentity();
+     //glLoadIdentity();
 
 
      glMatrixMode(GL_PROJECTION);
@@ -162,31 +165,78 @@ void UnitSceneGeometry::resize(float w, float h)
 }
 
 
-void UnitSceneGeometry::mouseMove(float x, float y)
+void UnitSceneGeometry::mouseMove(float x , float y , int button)
 {
 
+    float speedX = (x - oldX);
+    float speedY = (y - oldY);
+    oldX = x;
+    oldY = y;
 
     Matrix4 M;
     M.setToIdentity();
-    M = Matrix4::rotationMatrix( Vector3::Y , (x - oldX) * 0.01 ) * M;
-    M = Matrix4::rotationMatrix( Vector3::X , (y - oldY) * 0.01 ) * M;
 
-    mEye = M * mEye;
 
-    oldX = x;
-    oldY = y;
+    if( mMouseRightButton == Qt::MouseButton::RightButton )
+    {
+
+        M = Matrix4::rotationMatrix( Vector3::Y , speedX * 0.01 ) * M;
+        M = Matrix4::rotationMatrix( Vector3::X , speedY * 0.01 ) * M;
+
+        mEye = M * mEye;
+    }
+
+
+    //    if( mMouseRightButton == Qt::MouseButton::LeftButton )
+    //    {
+
+    //         Vector3 lookDir =  (mCenter - mEye).normalize();
+    //         Vector3 leftDir = -(lookDir.cross(Vector3::Y)).normalize();
+    //         Vector3 upDir   =  (Vector3::Y);
+
+    //         M = Matrix4::translationMatrix( leftDir * speedX * 0.01 ) * M;
+    //         M = Matrix4::translationMatrix(   upDir * speedY * 0.01 ) * M;
+
+    //         mEye    = M * mEye;
+    //         mCenter = M * mCenter;
+    //    }
+
+
 
 }
 
-void UnitSceneGeometry::mousePress(float x, float y)
+void UnitSceneGeometry::mousePress(float x, float y, int button)
 {
     oldX = x;
     oldY = y;
+
+
+    if( button == Qt::MouseButton::RightButton )
+    {
+        mMouseRightButton &= Qt::MouseButton::RightButton;
+    }
+    else if( button == Qt::MouseButton::LeftButton )
+    {
+        mMouseRightButton &= Qt::MouseButton::LeftButton;
+    }
+}
+
+void UnitSceneGeometry::mouseReleasePress(float x, float y, int button)
+{
+
+    if( button == Qt::MouseButton::RightButton )
+    {
+        mMouseRightButton |= ~Qt::MouseButton::RightButton;
+    }
+    else if( button == Qt::MouseButton::LeftButton )
+    {
+        mMouseRightButton |= ~Qt::MouseButton::LeftButton;
+    }
 }
 
 void UnitSceneGeometry::mouseWheel(float delta)
 {
-    mEye += (Vector3(0,0,0) - mEye).normalize() * delta * 0.095;
+    mEye += (mCenter - mEye).normalize() * delta * 0.005;
     delta = 0;
 }
 
