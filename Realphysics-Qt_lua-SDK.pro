@@ -18,10 +18,10 @@ QMAKE_CXXFLAGS += -std=c++11
 #LIBS +=  -lGLESv1_CM -lGLESv2
 
 #Linux
-#LIBS +=  -lGLEW -lGL -lGLU
+LIBS +=  -lGLEW -lGL -lGLU
 
 #Windows
-LIBS += -lopengl32 -lglu32 -lglew32
+#LIBS += -lopengl32 -lglu32 -lglew32
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings
@@ -176,9 +176,15 @@ SOURCES += main.cpp\
     examples/UnitSceneDemo.cpp \
     examples/UnitSceneGeometry.cpp \
     examples/UnitSceneLuaInterpretationSDK.cpp \
-    examples/utilopengl.cpp \
     glwidget.cpp \
-    formrunscript.cpp
+    formrunscript.cpp \
+    engine/lua-interpreter/utilopengl.cpp \
+    engine/lua-interpreter/loadlibarylua.cpp \
+    engine/lua-interpreter/loadlibaryluaopengl.cpp \
+    engine/lua-interpreter/loadlibaryluaphysicsengine.cpp \
+    engine/lua-interpreter/loadlibaryluauiengine.cpp \
+    engine/lua-interpreter/loadlibaryluashader.cpp \
+    engine/lua-interpreter/loadlibaryluavalue.cpp
 
 HEADERS  += widget.h \
     engine/physics-engine/Collision/Body/rpBody.h \
@@ -426,9 +432,16 @@ HEADERS  += widget.h \
     examples/UnitSceneDemo.h \
     examples/UnitSceneGeometry.h \
     examples/UnitSceneLuaInterpretationSDK.h \
-    examples/utilopengl.h \
     glwidget.h \
-    formrunscript.h
+    formrunscript.h \
+    engine/lua-interpreter/utilopengl.h \
+    engine/lua-interpreter/loadlibarylua.h \
+    engine/lua-interpreter/loadlibaryluaopengl.h \
+    engine/lua-interpreter/lualibary.h \
+    engine/lua-interpreter/loadlibaryluaphysicsengine.h \
+    engine/lua-interpreter/loadlibaryluauiengine.h \
+    engine/lua-interpreter/loadlibaryluashader.h \
+    engine/lua-interpreter/loadlibaryluavalue.h
 
 FORMS    += widget.ui \
     formrunscript.ui
