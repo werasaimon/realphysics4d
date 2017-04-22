@@ -17,25 +17,36 @@ extern "C"
 class lua_integration
 {
 
+
+    private:
+
+        //---------- Attribute ----------//
+
+        lua_State *mVirtualMashinLua;
+
+
     public:
+
+
 
         lua_integration();
 
+
+       //------------ Method ------------//
+
         void initialization();
         void closet();
-        void parserClassesLibrary();
 
-
-        void importToMethodScope(luabind::scope _importValue);
+        void importToScope(luabind::scope _importValue);
 
         void runString(const char *_str);
         void runFile(const char *_fileName);
 
+
+
         lua_State *getVirtualMashinLua() const;
 
-private:
 
-        lua_State *mVirtualMashinLua;
 
 };
 
