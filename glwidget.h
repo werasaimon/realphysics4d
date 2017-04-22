@@ -63,7 +63,6 @@
 #include "examples/UnitSceneGeometry.h"
 #include "examples/UnitSceneLuaInterpretationSDK.h"
 
-
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QMatrix4x4>

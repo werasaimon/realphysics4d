@@ -185,17 +185,17 @@ void GLWidget::wheelEvent(QWheelEvent *event)
 
 void GLWidget::mouseMoveEvent(QMouseEvent *e)
 {
-    mSceneOpenGL->mouseMove( e->pos().x() , e->pos().y() );
+    mSceneOpenGL->mouseMove( e->pos().x() , e->pos().y() , e->button() );
 }
 
 void GLWidget::mousePressEvent(QMouseEvent *e)
 {
-    mSceneOpenGL->mousePress( e->pos().x() , e->pos().y() );
+    mSceneOpenGL->mousePress( e->pos().x() , e->pos().y() , e->button() );
 }
 
 void GLWidget::mouseReleaseEvent(QMouseEvent *e)
 {
-
+    mSceneOpenGL->mouseReleasePress( e->pos().x() , e->pos().y() , e->button() );
 }
 
 

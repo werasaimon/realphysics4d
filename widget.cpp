@@ -26,15 +26,13 @@ Widget::~Widget()
 
 
 
-void Widget::keyPressEvent(QKeyEvent *event)
-{
+//void Widget::keyPressEvent(QKeyEvent *event)
+//{
+//}
 
-}
-
-void Widget::keyReleaseEvent(QKeyEvent *event)
-{
-
-}
+//void Widget::keyReleaseEvent(QKeyEvent *event)
+//{
+//}
 
 
 void Widget::runScript()
@@ -60,7 +58,7 @@ void Widget::fileDialog()
 
     QString filename = QFileDialog::getOpenFileName( this ,
                                                      tr("Open File") ,
-                                                     "C://" ,
+                                                     "//" ,
                                                      "All files (*.*);; Lua-File (*.lua *.txt)");
 
 
