@@ -211,7 +211,7 @@ class MeshBox: public Mesh
 
         for (uint i = 0; i < sizeof(vertices) / sizeof(Vector3); ++i)
         {
-            mVertices.push_back( vertices[i] * halfSize );
+            mVertices.push_back( vertices[i] * halfSize * 0.5f );
             mUVs.push_back( vUVs[i] );
         }
 

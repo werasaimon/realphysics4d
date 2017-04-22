@@ -129,9 +129,9 @@ class Mesh : public Object3D
 
 
                 glBegin(GL_TRIANGLES);
-                glNormal3f( face_a.x , face_a.y , face_a.z ); glTexCoord2f(UVa.x, UVa.y); glVertex3f(a.x , a.y , a.z); glColor4f(color_a.r , color_a.g , color_a.b , color_a.a);
-                glNormal3f( face_b.x , face_b.y , face_b.z ); glTexCoord2f(UVb.x, UVb.y); glVertex3f(b.x , b.y , b.z); glColor4f(color_b.r , color_b.g , color_b.b , color_b.a);
-                glNormal3f( face_c.x , face_c.y , face_c.z ); glTexCoord2f(UVc.x, UVc.y); glVertex3f(c.x , c.y , c.z); glColor4f(color_c.r , color_c.g , color_c.b , color_c.a);
+                 glNormal3f( face_a.x , face_a.y , face_a.z ); glTexCoord2f(UVa.x, UVa.y); glVertex3f(a.x , a.y , a.z); glColor4f(color_a.r , color_a.g , color_a.b , color_a.a);
+                 glNormal3f( face_b.x , face_b.y , face_b.z ); glTexCoord2f(UVb.x, UVb.y); glVertex3f(b.x , b.y , b.z); glColor4f(color_b.r , color_b.g , color_b.b , color_b.a);
+                 glNormal3f( face_c.x , face_c.y , face_c.z ); glTexCoord2f(UVc.x, UVc.y); glVertex3f(c.x , c.y , c.z); glColor4f(color_c.r , color_c.g , color_c.b , color_c.a);
                 glEnd();
 
             }

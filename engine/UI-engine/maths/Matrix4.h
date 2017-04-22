@@ -41,10 +41,19 @@ class Matrix4 {
         // -------------------- Methods -------------------- //
 
         // Constructor
-        Matrix4(float m_00=0, float m_01=0, float m_02=0, float m_03=0,
-                float m_10=0, float m_11=0, float m_12=0, float m_13=0,
-                float m_20=0, float m_21=0, float m_22=0, float m_23=0,
-                float m_30=0, float m_31=0, float m_32=0, float m_33=0)
+        Matrix4(void)
+        {
+            m[0][0] = 0.0; m[0][1] = 0.0; m[0][2] = 0.0;  m[0][3] = 0.0;
+            m[1][0] = 0.0; m[1][1] = 0.0; m[1][2] = 0.0;  m[1][3] = 0.0;
+            m[2][0] = 0.0; m[2][1] = 0.0; m[2][2] = 0.0;  m[2][3] = 0.0;
+            m[3][0] = 0.0; m[3][1] = 0.0; m[3][2] = 0.0;  m[3][3] = 0.0;
+        }
+
+        // Constructor
+        Matrix4(float m_00, float m_01, float m_02, float m_03,
+                float m_10, float m_11, float m_12, float m_13,
+                float m_20, float m_21, float m_22, float m_23,
+                float m_30, float m_31, float m_32, float m_33)
         {
             m[0][0] = m_00; m[0][1] = m_01; m[0][2] = m_02;  m[0][3] = m_03;
             m[1][0] = m_10; m[1][1] = m_11; m[1][2] = m_12;  m[1][3] = m_13;
@@ -152,26 +161,26 @@ class Matrix4 {
         // * operator
         Matrix4 operator*(const Matrix4 &n) const
         {
-            /**
-            Matrix4 o;
-            for(int i = 0; i  < 4; i++)
-            {
-                for(int j = 0; j < 4; j++)
-                {
-                    float v = 0;
-                    for(int k = 0; k < 4; k++)
+                    /**
+                    Matrix4 o;
+                    for(int i = 0; i  < 4; i++)
                     {
-                        v += m[i][k] * n.m[k][j];
+                        for(int j = 0; j < 4; j++)
+                        {
+                            float v = 0;
+                            for(int k = 0; k < 4; k++)
+                            {
+                                v += m[i][k] * n.m[k][j];
+                            }
+                            o.m[i][j] = v;
+                        }
                     }
-                    o.m[i][j] = v;
-                }
-            }
-           return o;
-           /**/
+                   return o;
+                   /**/
 
-          return dotMatrix(*this, n);
-
+            return dotMatrix(*this, n);
         }
+
 
         // * operator
         Vector3 operator*(const Vector3 &v) const

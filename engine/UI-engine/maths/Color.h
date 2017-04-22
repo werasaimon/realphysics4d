@@ -37,8 +37,10 @@ namespace utility_engine
 			static Color white() { return Color(1.0f, 1.0f, 1.0f, 1.0f);}
 
 			// = operator
-			Color& operator=(const Color& color) {
-				if (&color != this) {
+            Color& operator=(const Color& color)
+            {
+                if (&color != this)
+                {
 					r = color.r;
 					g = color.g;
 					b = color.b;
