@@ -151,7 +151,7 @@ bool MeshReadFile3DS::Load3DSFile(const char *fileName,
         indicess.push_back(C);
 
 
-        std::vector<uint> triIndex;
+        std::vector<uint> triIndex(0);
         triIndex.push_back(A);
         triIndex.push_back(B);
         triIndex.push_back(C);

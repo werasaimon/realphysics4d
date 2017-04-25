@@ -419,10 +419,6 @@ class Matrix4 {
         }
 
 
-        void GetTest()
-        {
-
-        }
 
         void setDataValue( const float *M )
         {

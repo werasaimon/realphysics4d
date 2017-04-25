@@ -13,18 +13,19 @@ namespace utility_engine
 
 // Class Vector4
 // This class represents a 4D vector.
-class Vector4 {
+class Vector4
+{
 
     public:
 
         // -------------------- Attributes -------------------- //
 
         // Components of the vector
-	union
-	{
-		struct {  float x, y, z, w; };
-		float data[4];
-	};
+        union
+        {
+            struct {  float x, y, z, w; };
+            float data[4];
+        };
 
 
         // -------------------- Methods -------------------- //
@@ -36,30 +37,39 @@ class Vector4 {
         Vector4(const Vector4& vector) : x(vector.x), y(vector.y), z(vector.z), w(vector.w) {}
 
         // + operator
-        Vector4 operator+(const Vector4 &v) const {
+        Vector4 operator+(const Vector4 &v) const
+        {
             return Vector4(x + v.x, y + v.y, z + v.z, w + v.w);
         }
 
         // += operator
-        Vector4& operator+=(const Vector4 &v) {
-            x += v.x; y += v.y; z += v.z; w += v.w;
+        Vector4& operator+=(const Vector4 &v)
+        {
+            x += v.x;
+            y += v.y;
+            z += v.z;
+            w += v.w;
             return *this;
         }
 
         // - operator
-        Vector4 operator-(const Vector4 &v) const {
+        Vector4 operator-(const Vector4 &v) const
+        {
             return Vector4(x - v.x, y - v.y, z - v.z, w - v.w);
         }
 
         // -= operator
-        Vector4& operator-=(const Vector4 &v) {
+        Vector4& operator-=(const Vector4 &v)
+        {
             x -= v.x; y -= v.y; z -= v.z, w -=v.w;
             return *this;
         }
 
         // = operator
-        Vector4& operator=(const Vector4& vector) {
-            if (&vector != this) {
+        Vector4& operator=(const Vector4& vector)
+        {
+            if (&vector != this)
+            {
                 x = vector.x;
                 y = vector.y;
                 z = vector.z;
@@ -69,73 +79,86 @@ class Vector4 {
         }
 
         // == operator
-        bool operator==(const Vector4 &v) const {
-            return x == v.x && y == v.y && z == v.z && w == v.w;
+        bool operator==(const Vector4 &v) const
+        {
+            return x == v.x &&
+                   y == v.y &&
+                   z == v.z &&
+                   w == v.w;
         }
 
         // * operator
-        Vector4 operator*(float f) const {
+        Vector4 operator*(float f) const
+        {
             return Vector4(f*x, f*y, f*z, f*w);
         }
 
         // *= operator
-        Vector4 &operator*=(float f) {
+        Vector4 &operator*=(float f)
+        {
             x *= f; y *= f; z *= f; w *= f;
             return *this;
         }
 
         // / operator
-        Vector4 operator/(float f) const {
+        Vector4 operator/(float f) const
+        {
             assert(f!=0);
             float inv = 1.f / f;
             return Vector4(x * inv, y * inv, z * inv, w * inv);
         }
 
         // /= operator
-        Vector4 &operator/=(float f) {
+        Vector4 &operator/=(float f)
+        {
             assert(f!=0);
             float inv = 1.f / f;
-            x *= inv; y *= inv; z *= inv; w *= inv;
+            x *= inv;
+            y *= inv;
+            z *= inv;
+            w *= inv;
             return *this;
         }
 
         // - operator
-        Vector4 operator-() const {
+        Vector4 operator-() const
+        {
             return Vector4(-x, -y, -z, -w);
         }
 
         // [] operator
-        float &operator[](int i) {
+        float &operator[](int i)
+        {
             assert(i >= 0 && i <= 3);
-            switch (i) {
-            case 0: return x;
-            case 1: return y;
-            case 2: return z;
-            case 3: return w;
+            switch (i)
+            {
+             case 0: return x;
+             case 1: return y;
+             case 2: return z;
+             case 3: return w;
             }
             return w;
         }
 
         // Dot product operator
-        float dot(const Vector4 &v) const {
+        float dot(const Vector4 &v) const
+        {
             return x * v.x + y * v.y + z * v.z + w * v.w;
         }
 
         // Multiply two vectors by their components
-        Vector4 componentMul(const Vector4 &v) const {
+        Vector4 componentMul(const Vector4 &v) const
+        {
             return Vector4(x * v.x, y * v.y, z * v.z, w * v.w);
         }
 
         // Clamp the values between 0 and 1
-        Vector4 clamp01() {
-            if (x>1.f) x=1.f;
-            else if (x<0.f) x=0.f;
-            if (y>1.f) y=1.f;
-            else if (y<0.f) y=0.f;
-            if (z>1.f) z=1.f;
-            else if (z<0.f) z=0.f;
-            if (w>1.f) w=1.f;
-            else if (w<0.f) w=0.f;
+        Vector4 clamp01()
+        {
+            if (x>1.f) x=1.f; else if (x<0.f) x=0.f;
+            if (y>1.f) y=1.f; else if (y<0.f) y=0.f;
+            if (z>1.f) z=1.f; else if (z<0.f) z=0.f;
+            if (w>1.f) w=1.f; else if (w<0.f) w=0.f;
             return *this;
         }
 
