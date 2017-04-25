@@ -11,7 +11,7 @@ local up         =  vector3(0,1,0)
 local cam    = camera();
 local shader = shaderProgram()
 
-local physWorld = dynamicsWorld( vector3(0,-30,0) )
+local physWorld = dynamics_world( vector3(0,-30,0) )
 
 --****** initilization ********--
 function setup( scene )
@@ -45,7 +45,7 @@ function setup( scene )
         m[i]:texture(texture,0);
         m[i]:translate( vector3( math.sin(i) * 2.1, -10 + 20*(i),-60) );
 
-        p[i] = physWorld:RigidBody( m[i]:matrix() )
+        p[i] = physWorld:RigidBody( m[i]:getMatrix() )
         p[i]:type( type )
 
         m[i]:identity();
@@ -71,7 +71,7 @@ function render( scene )
     shader:UniformValue( "ViewMatrix"       , cam:modelView() )
 
     for i = 0 , n do
-      shader:UniformValue( "ModelMatrix"  , m[i]:matrix() )
+      shader:UniformValue( "ModelMatrix"  , m[i]:getMatrix() )
       m[i]:draw(shader);
     end;
 
