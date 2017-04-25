@@ -46,10 +46,11 @@ bool UnitSceneLuaInterpretationSDK::initLua()
                                      .def(luabind::constructor<>())
                                      .def("keyDown", &UnitSceneLuaInterpretationSDK::keyDown)
                                      // value
-                                     .def_readwrite("width"  , &UnitSceneLuaInterpretationSDK::width)
-                                     .def_readwrite("height" , &UnitSceneLuaInterpretationSDK::height)
-                                     .def_readwrite("mouse"  , &UnitSceneLuaInterpretationSDK::mMouse)
-                                     .def_readwrite("hitKey" , &UnitSceneLuaInterpretationSDK::mHitKey));
+                                     .def_readwrite("width"   , &UnitSceneLuaInterpretationSDK::width)
+                                     .def_readwrite("height"  , &UnitSceneLuaInterpretationSDK::height)
+                                     .def_readwrite("mouse"   , &UnitSceneLuaInterpretationSDK::mMouse)
+                                     .def_readwrite("Z_wheel" , &UnitSceneLuaInterpretationSDK::mZ_Wheel)
+                                     .def_readwrite("hitKey"  , &UnitSceneLuaInterpretationSDK::mHitKey));
 
 
 
@@ -125,6 +126,8 @@ bool UnitSceneLuaInterpretationSDK::initialization()
 
     FileRead.close();
     FileRead.remove();
+
+    mZ_Wheel = 0;
 
     try
     {
@@ -276,6 +279,7 @@ void UnitSceneLuaInterpretationSDK::mouseReleasePress(float x, float y, int butt
 ///
 void UnitSceneLuaInterpretationSDK::mouseWheel(float delta)
 {
+    mZ_Wheel += delta;
 
     try
     {

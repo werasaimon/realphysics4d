@@ -93,6 +93,9 @@ class UnitSceneLuaInterpretationSDK : public UnitScene
     bool initLua();
     bool initGL();
 
+    /// Mouse wheel
+    float mZ_Wheel;
+
     public:
 
       UnitSceneLuaInterpretationSDK();
