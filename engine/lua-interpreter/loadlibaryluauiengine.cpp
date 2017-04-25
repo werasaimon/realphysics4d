@@ -14,14 +14,25 @@ void LoadLibaryLuaUIEngine::LoadLibary()
 
     //--------------------------------- UI-Engine -------------------------------------//
     importToScope( luabind::class_<utility_engine::Vector2>("vector2")
-                         // constructor
-                         .def(luabind::constructor<>())
-                         .def(luabind::constructor<float,float>())
-                         // method
-                         .def("lenght"     , &utility_engine::Vector2::length)
-                         .def("lenght2"    , &utility_engine::Vector2::lengthSquared)
-                         .def("normalize"  , &utility_engine::Vector2::normalize));
-
+                       // constructor
+                        .def(luabind::constructor<>())
+                        .def(luabind::constructor<float,float>())
+                       // method
+                       .def("lenght"     , &utility_engine::Vector2::length)
+                       .def("lenght2"    , &utility_engine::Vector2::lengthSquared)
+                       .def("normalize"  , &utility_engine::Vector2::normalize)
+                       .def("dot"        , &utility_engine::Vector2::dot)
+                       .def("cross"      , &utility_engine::Vector2::cross)
+                       // operator
+                       .def(luabind::const_self  +  utility_engine::Vector2())
+                       .def(luabind::const_self  -  utility_engine::Vector2())
+                       .def(luabind::const_self  *  utility_engine::Vector2())
+                       .def(luabind::const_self ==  utility_engine::Vector2())
+                       .def(luabind::const_self  /  float())
+                       .def(luabind::const_self  *  float())
+                       // value
+                       .def_readwrite("x", &utility_engine::Vector2::x)
+                       .def_readwrite("y", &utility_engine::Vector2::y));
 
 
     importToScope( luabind::class_<utility_engine::Vector3>("vector3")
@@ -32,9 +43,9 @@ void LoadLibaryLuaUIEngine::LoadLibary()
                          // method
                          .def("lenght"     , &utility_engine::Vector3::length)
                          .def("lenght2"    , &utility_engine::Vector3::lengthSquared)
+                         .def("normalize"  , &utility_engine::Vector3::normalize)
                          .def("dot"        , &utility_engine::Vector3::dot)
                          .def("cross"      , &utility_engine::Vector3::cross)
-                         .def("normalize"  , &utility_engine::Vector3::normalize)
                          // operator
                          .def(luabind::const_self  +  utility_engine::Vector3())
                          .def(luabind::const_self  -  utility_engine::Vector3())
@@ -48,6 +59,21 @@ void LoadLibaryLuaUIEngine::LoadLibary()
                          .def_readwrite("y", &utility_engine::Vector3::y)
                          .def_readwrite("z", &utility_engine::Vector3::z));
 
+
+
+    importToScope( luabind::class_<utility_engine::Vector4>("vector4")
+                         // constructor
+                         .def(luabind::constructor<>())
+                         .def(luabind::constructor<float,float,float,float>())
+                        // method
+                         .def("lenght"     , &utility_engine::Vector4::length)
+                         .def("lenght2"    , &utility_engine::Vector4::lengthSquared));
+
+
+    /// Colors
+    importToScope( luabind::class_<utility_engine::Color>("color4")
+                         // constructor
+                         .def(luabind::constructor<float,float,float,float>()));
 
 
 
@@ -73,10 +99,6 @@ void LoadLibaryLuaUIEngine::LoadLibary()
                         .def(luabind::const_self  *  utility_engine::Vector4())
                         .def(luabind::const_self  *  float()));
 
-    /// Colors
-    importToScope( luabind::class_<utility_engine::Color>("color4")
-                         // constructor
-                         .def(luabind::constructor<float,float,float,float>()));
 
 
     /// Object3d orintation space
@@ -85,8 +107,8 @@ void LoadLibaryLuaUIEngine::LoadLibary()
                           .def(luabind::constructor<>())
                           // method
                           .def("identity"  , &utility_engine::Object3D::setToIdentity)
-                          .def("matrix"    , &utility_engine::Object3D::setTransformMatrix)
-                          .def("matrix"    , &utility_engine::Object3D::getTransformMatrix)
+                          .def("setMatrix" , &utility_engine::Object3D::setTransformMatrix)
+                          .def("getMatrix" , &utility_engine::Object3D::getTransformMatrix)
                           .def("translate" , &utility_engine::Object3D::translateWorld)
                           .def("rotate"    , &utility_engine::Object3D::rotateWorld));
 
@@ -110,7 +132,20 @@ void LoadLibaryLuaUIEngine::LoadLibary()
                           .def("draw"     , &utility_engine::Mesh::Draw)
                           .def("draw"     , &utility_engine::Mesh::DrawOpenGL)
                           .def("texture"  , &utility_engine::Mesh::setTexture)
-                          .def("vColor"   , &utility_engine::Mesh::setColor));
+                          .def("vColor"   , &utility_engine::Mesh::setColor)
+                          .def("vColor"   , &utility_engine::Mesh::setColorToAllVertices));
+
+
+    /// mesh model plane
+    importToScope(  luabind::class_<utility_engine::MeshPlane , luabind::bases< utility_engine::Mesh , utility_engine::Object3D>>("mesh_plane")
+                          // constructor
+                          .def( luabind::constructor<float,float>() ) );
+
+    /// mesh model box
+    importToScope(  luabind::class_<utility_engine::MeshBox , luabind::bases< utility_engine::Mesh , utility_engine::Object3D>>("mesh_box")
+                          // constructor
+                          .def( luabind::constructor<const utility_engine::Vector3>())
+                          .def("halfSize" , &utility_engine::MeshBox::halfSize));
 
 
     /// mesh model 3DS-file (3DS-MAX)
@@ -118,19 +153,6 @@ void LoadLibaryLuaUIEngine::LoadLibary()
                           // constructor
                           .def( luabind::constructor<const char*>() ) );
 
-
-
-    /// mesh model box
-    importToScope(  luabind::class_<utility_engine::MeshBox , luabind::bases< utility_engine::Mesh , utility_engine::Object3D>>("mesh_box")
-                          // constructor
-                          .def( luabind::constructor<const utility_engine::Vector3>() ) );
-
-
-
-    /// mesh model plane
-    importToScope(  luabind::class_<utility_engine::MeshPlane , luabind::bases< utility_engine::Mesh , utility_engine::Object3D>>("mesh_plane")
-                          // constructor
-                          .def( luabind::constructor<float,float>() ) );
 
 
 
@@ -142,7 +164,7 @@ void LoadLibaryLuaUIEngine::LoadLibary()
 
     //-----------------------------  UI-Engine : Physics ------------------------------------//
 
-     importToScope(  luabind::class_<utility_engine::DynamicsWorld>("dynamicsWorld")
+     importToScope(  luabind::class_<utility_engine::DynamicsWorld>("dynamics_world")
                            .def(luabind::constructor<const utility_engine::Vector3&>())
                            .def( "RigidBody" , &utility_engine::DynamicsWorld::createRigidBody )
                            .def( "Joint"     , &utility_engine::DynamicsWorld::createJoint )
