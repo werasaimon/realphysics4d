@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>scripts/file.lua</file>
         <file>scripts/primitives.lua</file>
+        <file>scripts/stackcubes(dynamics).lua</file>
     </qresource>
 </RCC>
