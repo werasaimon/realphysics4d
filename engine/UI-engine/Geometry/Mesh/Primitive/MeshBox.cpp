@@ -23,7 +23,7 @@ MeshBox::~MeshBox()
     // TODO Auto-generated destructor stub
 }
 
-Vector3 MeshBox::halfSize() const
+const Vector3 MeshBox::halfSize() const
 {
     return mHalfSize;
 }

@@ -5,9 +5,10 @@
 namespace utility_engine
 {
     Camera::Camera()
+    :Object3D()
     {
          mTransformMatrix.setToIdentity();
-        mProjectionMatrix.setToIdentity();
+         mProjectionMatrix.setToIdentity();
     }
 
     void Camera::ProjectionMatrix(float FieldOfView, float aspect, float NearPlane, float FarPlane)
