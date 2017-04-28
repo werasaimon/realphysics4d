@@ -40,10 +40,10 @@ function setup( scene )
 
     M:identity()
 
-    for i = -10 , 10 do
+    for i = 0 , 10 do
 
-        halfSize = vector3(0.5,5,2);
-        pos = vector3( i * 2 , -5 , 0 );
+        halfSize = vector3(2,2,2);
+        pos      = vector3( 10 , -5 + i * 4 , 0 );
 
         if( n_size == 0 ) then halfSize = vector3(100,3,100); pos = vector3(0,-10,0) end;
 
@@ -146,7 +146,7 @@ function mousePress( scene )
           primitives[n_size] = mesh_box( halfSize );
           primitives[n_size]:identity();
           primitives[n_size]:setMatrix( camera:getMatrix():inverse() );
-          primitives[n_size]:vColor( color4(0,0,1,1) );
+          primitives[n_size]:vColor( color4(1,0,1,1) );
 
 
           bodies[NbBodies] = DynamicsWorld:RigidBody( primitives[n_size]:getMatrix() )
@@ -194,6 +194,7 @@ function keyboard( scene )
                 type = ultimate_physics.dynamic;
 
                 if( i == 0 ) then  type = ultimate_physics.static; end;
+                if( i == n_size-1 ) then  type = ultimate_physics.static; end;
 
 
                 bodies[NbBodies] = DynamicsWorld:RigidBody( primitives[i]:getMatrix() )

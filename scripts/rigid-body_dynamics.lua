@@ -38,20 +38,22 @@ function setup( scene )
     aspect = scene.width / scene.height
     camera:project( fov , aspect , zNear , zFar );
 
+    M:identity()
 
+    for i = -10 , 10 do
 
-    for i = 0 , 10 do
+        halfSize = vector3(0.5,5,2);
+        pos = vector3( i * 2 , -5 , 0 );
 
-        halfSize = vector3(3,3,3);
-
-        if( i == 0 ) then halfSize = vector3(100,3,100); end;
+        if( n_size == 0 ) then halfSize = vector3(100,3,100); pos = vector3(0,-10,0) end;
 
         primitives[n_size] = mesh_box( halfSize );
         primitives[n_size]:identity();
-        primitives[n_size]:translate( vector3(math.sin(i) , -10 + 4 * i ,0)  );
-        primitives[n_size]:vColor( color4(1,0,1,0) )
+        primitives[n_size]:translate( pos );
+        primitives[n_size]:vColor( color4(0,0,1,0) )
 
-        if( i == 0 ) then  primitives[n_size]:vColor( color4(1,1,1,1) );end;
+        if( n_size == 0 ) then  primitives[n_size]:vColor( color4(1,1,1,1) );end;
+
         n_size   = n_size   + 1;
 
     end;
@@ -66,11 +68,6 @@ function render( scene )
     GL.glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT )
     GL.glViewport( 0 , 0 , scene.width , scene.height );
 
-
-
-    M:identity()
-    M = M.rotate( vector3(0,1,0)  , -mouseAngleX) * M;
-    M = M.rotate( vector3(1,0,0)  , -mouseAngleY) * M;
 
     camera:setMatrix( M:transpose() );
     camera:translate( eye );
@@ -91,14 +88,17 @@ end;
 timeStep = (1.0/60.0);
 function update( scene )
 
+
         if pause then
-                DynamicsWorld:update(timeStep);
-                for i = 0 , NbBodies do
-                   bodies[i]:update()
-                end;
+            DynamicsWorld:update(timeStep);
         end;
 
 
+        if pause then
+             for i = 0 , NbBodies do
+                bodies[i]:update()
+             end;
+        end;
 
 end
 
@@ -125,6 +125,11 @@ function mouseMove( scene )
     mouseAngleX = mouseAngleX + speedX  *  0.01;
     mouseAngleY = mouseAngleY + speedY  *  0.01;
 
+
+    M:identity()
+    M = M.rotate( vector3(0,1,0)  , -mouseAngleX) * M;
+    M = M.rotate( vector3(1,0,0)  , -mouseAngleY) * M;
+
 end
 
 
@@ -136,7 +141,7 @@ function mousePress( scene )
 
     if ( scene.mouse.button == MOUSE_RIGHT ) then
 
-          halfSize = vector3(2,2,2);
+          halfSize = vector3(1,1,1);
 
           primitives[n_size] = mesh_box( halfSize );
           primitives[n_size]:identity();
@@ -148,9 +153,9 @@ function mousePress( scene )
           bodies[NbBodies]:type( ultimate_physics.dynamic );
 
           primitives[n_size]:identity();
-          bodies[NbBodies]:addBox(  primitives[n_size] , halfSize * 0.5 , 2.0 );
+          bodies[NbBodies]:addBox(  primitives[n_size] , halfSize * 0.5 , 20.0 );
 
-          bodies[NbBodies]:applyForceToCenter( M * vector3(0,0,1) * -8000.0 );
+          bodies[NbBodies]:applyForceToCenter( M * vector3(0,0,1) * -90000.0 );
 
           n_size   = n_size   + 1;
           NbBodies = NbBodies + 1;
@@ -208,7 +213,7 @@ function keyboard( scene )
 
     -------------------------------------------------
 
-    local speedMove = 0.6;
+    local speedMove = 0.5;
 
 
     if ( scene.hitKey == Key_W ) then
