@@ -145,8 +145,8 @@ rpBoxShape::rpBoxShape(const Vector3& extent, scalar margin)
     assert(extent.y > scalar(0.0) && extent.y > margin);
     assert(extent.z > scalar(0.0) && extent.z > margin);
 
-    mNbMaxPeturberationIteration = (4); // maximum iteration  for Axis Peturberation
-    mEpsilonPeturberation = (0.08f);// epsilon for Peturberation
+    mNbMaxPeturberationIteration = (4); // maximum iteration  for Peturberation
+    mEpsilonPeturberation = (0.088f);// epsilon for Peturberation
 }
 
 // Destructor

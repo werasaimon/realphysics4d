@@ -42,7 +42,7 @@ namespace real_physics
 
 
 
-  // Declarations
+  //Extern declarations
   class rpProxyShape;
 
 
@@ -100,7 +100,7 @@ namespace real_physics
 
 
           /// Return a local support point in a given direction with the object margin
-          Vector3 getLocalSupportPointWithMarginn(const Vector3& direction ) const
+          const Vector3 getLocalSupportPointWithMarginn(const Vector3& direction ) const
           {
         	  return getLocalSupportPointWithMargin( direction , NULL);
           }

@@ -37,7 +37,6 @@ rpPhysicsObject::~rpPhysicsObject()
 rpProxyShape* rpPhysicsObject::addCollisionShape(rpCollisionShape* collisionShape , scalar mass , const Transform& transform )
 {
 
-
     assert(mass > scalar(0.0));
 
     // Create a new proxy collision shape to attach the collision shape to the body
@@ -85,8 +84,6 @@ SIMD_INLINE void rpPhysicsObject::removeCollisionShape(const rpProxyShape* proxy
 
 SIMD_INLINE void rpPhysicsObject::updateBroadPhaseState() const
 {
-
-	 //PROFILE("RigidBody::updateBroadPhaseState()");
 
 	    //DynamicsWorld& world = static_cast<DynamicsWorld&>(mWorld);
 	 	const Vector3 displacement =  Vector3::ZERO;//world.mTimeStep * mLinearVelocity;
