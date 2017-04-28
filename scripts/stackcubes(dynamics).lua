@@ -52,14 +52,14 @@ function setup( scene )
         type = ultimate_physics.dynamic;
 
         if( i == 0 ) then  type = ultimate_physics.static; end;
-        if( i == 0 ) then  primitives[n_size]:vColor( color4(1,1,1,0) );end;
+        if( i == 0 ) then  primitives[n_size]:vColor( color4(1,1,1,1) );end;
 
 
 
         bodies[NbBodies] = DynamicsWorld:RigidBody( primitives[n_size]:getMatrix() )
         bodies[NbBodies]:type( type )
-        
-        primitives[n_size]:identity(); 
+
+        primitives[n_size]:identity();
 
         bodies[NbBodies]:addHull( primitives[n_size] , 2.0 )
 
@@ -104,7 +104,7 @@ end;
 --******* update *********--
 timeStep = (1.0/60.0);
 function update( scene )
- 
+
     if pause then
         DynamicsWorld:update(timeStep);
         for i = 0 , NbBodies do
