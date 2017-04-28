@@ -217,10 +217,10 @@ void LoadLibaryLuaUIEngine::LoadLibary()
     ///---------------------------------- Ultimatium joint function ----------------------------------------------///
     /// \brief importToScope
     ///
-    importToScope(  luabind::def( "DistanceJointInfo"      , &utility_engine::UltimateJointInfo::DistanceJointInfo) );
-    importToScope(  luabind::def( "BallAndSocketJointInfo" , &utility_engine::UltimateJointInfo::BallAndSocketJointInfo) );
-    importToScope(  luabind::def( "FixedJointInfo"         , &utility_engine::UltimateJointInfo::FixedJointInfo) );
-    importToScope(  luabind::def( "HingeJointInfo"         , (real_physics::rpHingeJointInfo(*)( utility_engine::UltimatePhysicsBody* ,
+    importToScope(  luabind::def( "distance_joint_info"      , &utility_engine::UltimateJointInfo::DistanceJointInfo) );
+    importToScope(  luabind::def( "ball_joint_info"          , &utility_engine::UltimateJointInfo::BallAndSocketJointInfo) );
+    importToScope(  luabind::def( "fixed_joint_info"         , &utility_engine::UltimateJointInfo::FixedJointInfo) );
+    importToScope(  luabind::def( "hinge_joint_info"         , (real_physics::rpHingeJointInfo(*)( utility_engine::UltimatePhysicsBody* ,
                                                                                                        utility_engine::UltimatePhysicsBody* ,
                                                                                                        const utility_engine::Vector3&,
                                                                                                        const utility_engine::Vector3&))&utility_engine::UltimateJointInfo::HingeJointInfo) );

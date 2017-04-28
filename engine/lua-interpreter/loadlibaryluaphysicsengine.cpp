@@ -15,6 +15,31 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
 
     //---------------------------------------- Physics-Engine -------------------------------------------------------------//
 
+    /// Vector2D
+    importToScope(luabind::namespace_("physics")
+                  [
+                     luabind::class_<real_physics::Vector2>("vector2")
+                    // constructor
+                    .def(luabind::constructor<>())
+                    .def(luabind::constructor<real_physics::scalar,real_physics::scalar>())
+                    // method
+                    .def("lenght"    , &real_physics::Vector2::length)
+                    .def("lenght2"   , &real_physics::Vector2::lengthSquare)
+                    .def("normalize" , &real_physics::Vector2::getUnit)
+                    .def("dot"       , &real_physics::Vector2::dot)
+                    .def("cross"     , &real_physics::Vector2::cross)
+                    // operator
+                    .def(luabind::const_self  +  real_physics::Vector2())
+                    .def(luabind::const_self  -  real_physics::Vector2())
+                    .def(luabind::const_self  *  real_physics::Vector2())
+                    .def(luabind::const_self  /  real_physics::Vector2())
+                    .def(luabind::const_self ==  real_physics::Vector2())
+                    // value
+                    .def_readwrite("x", &real_physics::Vector2::x)
+                    .def_readwrite("y", &real_physics::Vector2::y)
+                  ]);
+
+
     /// Vector3D
     importToScope(luabind::namespace_("physics")
                 [
@@ -23,9 +48,12 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
                         .def(luabind::constructor<>())
                         .def(luabind::constructor<real_physics::scalar,real_physics::scalar,real_physics::scalar>())
                          // method
-                        .def("lenght" , &real_physics::Vector3::length)
-                        .def("lenght2", &real_physics::Vector3::length2)
-                        .def("angle"  , &real_physics::Vector3::AngleBetweenVectors)
+                        .def("lenght"    , &real_physics::Vector3::length)
+                        .def("lenght2"   , &real_physics::Vector3::length2)
+                        .def("normalize" , &real_physics::Vector3::getUnit)
+                        .def("angle"     , &real_physics::Vector3::AngleBetweenVectors)
+                        .def("dot"       , &real_physics::Vector3::dot)
+                        .def("cross"     , &real_physics::Vector3::cross)
                          // operator
                         .def(luabind::const_self  +  real_physics::Vector3())
                         .def(luabind::const_self  -  real_physics::Vector3())
