@@ -110,7 +110,9 @@ void LoadLibaryLuaUIEngine::LoadLibary()
                           .def("setMatrix" , &utility_engine::Object3D::setTransformMatrix)
                           .def("getMatrix" , &utility_engine::Object3D::getTransformMatrix)
                           .def("translate" , &utility_engine::Object3D::translateWorld)
-                          .def("rotate"    , &utility_engine::Object3D::rotateWorld));
+                          .def("rotate"    , &utility_engine::Object3D::rotateWorld)
+                          .def("origin"    , &utility_engine::Object3D::getOrigin)
+                          .def("position"  , &utility_engine::Object3D::getOrigin));
 
 
     /// Object camera eya look
@@ -184,11 +186,24 @@ void LoadLibaryLuaUIEngine::LoadLibary()
     importToScope(  luabind::class_<utility_engine::UltimatePhysicsBody>("ultimate_physics")
                           // constructor
                           .def( luabind::constructor<real_physics::rpPhysicsBody*>())
-                          .def("type"       ,   &utility_engine::UltimatePhysicsBody::setType)
-                          .def("addCollide" ,   &utility_engine::UltimatePhysicsBody::addCollisionGeometry)
-                          .def("addHull"    ,   (void(utility_engine::UltimatePhysicsBody::*)(utility_engine::Mesh* , float)) &utility_engine::UltimatePhysicsBody::addCollisionGeometry_ConvexHull)
-                          .def("addHull"    ,   (void(utility_engine::UltimatePhysicsBody::*)(utility_engine::Mesh* , const utility_engine::Matrix4& , float)) &utility_engine::UltimatePhysicsBody::addCollisionGeometry_ConvexHull)
+                          .def("type"        ,   &utility_engine::UltimatePhysicsBody::setType)
+                          .def("addCollide"  ,   &utility_engine::UltimatePhysicsBody::addCollisionGeometry)
+                          .def("addHull"     ,   (void(utility_engine::UltimatePhysicsBody::*)(utility_engine::Mesh* , float)) &utility_engine::UltimatePhysicsBody::addCollisionGeometry_ConvexHull)
+                          .def("addHull"     ,   (void(utility_engine::UltimatePhysicsBody::*)(utility_engine::Mesh* , const utility_engine::Matrix4& , float)) &utility_engine::UltimatePhysicsBody::addCollisionGeometry_ConvexHull)
+                          .def("addSphere"   ,   (void(utility_engine::UltimatePhysicsBody::*)(utility_engine::Mesh* , float , float )) &utility_engine::UltimatePhysicsBody::addCollisionGeometry_Sphere)
+                          .def("addSphere"   ,   (void(utility_engine::UltimatePhysicsBody::*)(utility_engine::Mesh* , const utility_engine::Matrix4& , float , float )) &utility_engine::UltimatePhysicsBody::addCollisionGeometry_Sphere)
+                          .def("addBox"      ,   (void(utility_engine::UltimatePhysicsBody::*)(utility_engine::Mesh* , const utility_engine::Vector3& , float )) &utility_engine::UltimatePhysicsBody::addCollisionGeometry_Box)
+                          .def("addBox"      ,   (void(utility_engine::UltimatePhysicsBody::*)(utility_engine::Mesh* , const utility_engine::Matrix4& , const utility_engine::Vector3& , float )) &utility_engine::UltimatePhysicsBody::addCollisionGeometry_Box)
+
+                          .def("applyImpuls"        ,   &utility_engine::UltimatePhysicsBody::applyImpulse)
+                          .def("applyImpulsAngular" ,   &utility_engine::UltimatePhysicsBody::applyImpulseAngular)
+                          .def("applyImpulsLinear"  ,   &utility_engine::UltimatePhysicsBody::applyImpulseLinear)
+                          .def("applyForceToCenter" ,   &utility_engine::UltimatePhysicsBody::applyForceToCenterOfMass)
+                          .def("applyForce"         ,   &utility_engine::UltimatePhysicsBody::applyForce)
+                          .def("applyTorque"        ,   &utility_engine::UltimatePhysicsBody::applyTorque)
+
                           .def("update"     ,   &utility_engine::UltimatePhysicsBody::update)
+
                           .enum_("BodyType")
                           [
                             luabind::value("static"    , utility_engine::UltimatePhysicsBody::BodyType::STATIC    ),
