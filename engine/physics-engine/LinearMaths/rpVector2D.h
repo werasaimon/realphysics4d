@@ -29,8 +29,8 @@ namespace real_physics
       T f[2];
       struct
       {
-	T x;
-	T y;
+        T x;
+        T y;
       };
     };
 
@@ -95,8 +95,7 @@ namespace real_physics
     bool isZero() const;
 
 
-    //-------------------------------------------------------------------//
-
+    //---------------------- orto-normals -----------------------//
 
 
     /// Return the corresponding unit vector
@@ -106,21 +105,17 @@ namespace real_physics
     rpVector2D<T>  getOneUnitOrthogonalVector() const;
 
 
-
-    //-------------------------------------------------------------------//
-
-
-
-
     //---------------------- operator method --------------------//
 
-    /// Dot product of two vectors
+    /// Dot product of two vector
     T dot(const rpVector2D<T>& vector) const;
+
+    /// Croos Product of two vector
+    T cross(const rpVector2D<T>& vector) const;
+
 
     /// Normalize the vector
     void normalize();
-
-
 
     /// Overloaded operator for the equality condition
     bool operator == (const rpVector2D<T>& vector) const;
@@ -315,7 +310,11 @@ namespace real_physics
     return (x*vector.x + y*vector.y);
   }
 
-
+  template<class T>
+  SIMD_INLINE T rpVector2D<T>::cross(const rpVector2D<T> &vector) const
+  {
+      return (x*vector.y - y*vector.x);
+  }
 
   template<class T>
   SIMD_INLINE void rpVector2D<T>::normalize()
@@ -394,10 +393,10 @@ namespace real_physics
   SIMD_INLINE rpVector2D<T>& rpVector2D<T>::operator =(const rpVector2D<T>& vector)
   {
     if (&vector != this)
-      {
-	x = vector.x;
-	y = vector.y;
-      }
+    {
+       x = vector.x;
+       y = vector.y;
+    }
     return *this;
   }
 
