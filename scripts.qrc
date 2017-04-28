@@ -3,5 +3,6 @@
         <file>scripts/file.lua</file>
         <file>scripts/primitives.lua</file>
         <file>scripts/stackcubes(dynamics).lua</file>
+        <file>scripts/demo-scene.lua</file>
     </qresource>
 </RCC>
