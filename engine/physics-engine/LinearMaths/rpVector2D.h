@@ -181,26 +181,26 @@ namespace real_physics
 
 
     friend rpVector2D<T> operator * (const rpVector2D<T>& vector, T number)
-        	 {
+    {
       return rpVector2D<T>(number * vector.x, number * vector.y);
-        	 }
+    }
 
 
     friend rpVector2D<T> operator * (T number, const rpVector2D<T>& vector)
-        	 {
+    {
       return vector * number;
-        	 }
+    }
 
     friend rpVector2D<T> operator * (const rpVector2D<T>& vector1, const rpVector2D<T>& vector2)
-        	 {
+    {
       return rpVector2D<T>(vector1.x * vector2.x, vector1.y * vector2.y);
-        	 }
+    }
 
     friend rpVector2D<T> operator / (const rpVector2D<T>& vector, T number)
-        	 {
+    {
       assert(number > MACHINE_EPSILON);
       return rpVector2D<T>(vector.x / number, vector.y / number);
-        	 }
+    }
 
     friend rpVector2D<T> operator/(const rpVector2D<T>& vector1, const rpVector2D<T>& vector2)
     {
