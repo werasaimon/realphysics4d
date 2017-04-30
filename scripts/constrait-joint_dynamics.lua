@@ -26,6 +26,7 @@ local DynamicsWorld = dynamics_world( gravity )
 
 local NbBodies = 0;
 local bodies = {};
+local joints = {};
 
 
 
@@ -73,8 +74,8 @@ function render( scene )
     camera:translate( eye );
 
 
-    GL.glProjection(  camera:project() )
-    GL.glModelView( camera:modelView() )
+    GL.glProjection(  camera:project() );
+    GL.glModelView( camera:modelView() );
 
 
     for i=0 , n_size do
@@ -96,7 +97,7 @@ function update( scene )
 
         if pause then
              for i = 0 , NbBodies do
-                bodies[i]:update()
+                bodies[i]:update();
              end;
         end;
 
@@ -106,7 +107,7 @@ end
 --******* resize *********--
 function resize( scene )
 
-    aspect = scene.width / scene.height
+    aspect = scene.width / scene.height;
     camera:project( fov , aspect , zNear , zFar );
 
 end
@@ -155,7 +156,7 @@ function mousePress( scene )
           primitives[n_size]:identity();
           bodies[NbBodies]:addBox(  primitives[n_size] , halfSize * 0.5 , 20.0 );
 
-          bodies[NbBodies]:applyForceToCenter( M * vector3(0,0,1) * -90000.0 );
+          bodies[NbBodies]:applyForceToCenter( M * vector3(0,0,1) * -50000.0 );
 
           n_size   = n_size   + 1;
           NbBodies = NbBodies + 1;
@@ -189,7 +190,7 @@ function keyboard( scene )
 
             pause = true;
 
-            for i = 0 , n_size do
+            for i = 0 , n_size-1 do
 
                 type = ultimate_physics.dynamic;
 
@@ -209,7 +210,17 @@ function keyboard( scene )
                 NbBodies = NbBodies + 1;
 
 
+            end
+
+            for i = 2 , n_size-1 do
+
+                   anchor = vector3( 10 , -5 + i * 4 , 0 );
+
+                   joint_info  =  ball_joint_info( bodies[i-1] , bodies[i] , anchor );
+                   joints[i-2] =  DynamicsWorld:Joint( joint_info );
             end;
+
+
     end;
 
     -------------------------------------------------
