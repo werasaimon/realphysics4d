@@ -26,7 +26,7 @@ long double rpTimer::getCurrentSystemTime()
     LARGE_INTEGER ticks;
     QueryPerformanceFrequency(&ticksPerSecond);
     QueryPerformanceCounter(&ticks);
-    return (long double(ticks.QuadPart) / long double(ticksPerSecond.QuadPart));
+    return  ( double(ticks.QuadPart) / double(ticksPerSecond.QuadPart));
 #else
     // Initialize the lastUpdateTime with the current time in seconds
     timeval timeValue;
