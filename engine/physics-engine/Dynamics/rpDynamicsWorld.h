@@ -26,7 +26,7 @@
 #include "Joint/rpHingeJoint.h"
 #include "Joint/rpSliderJoint.h"
 
-
+#include "rpTimer.h"
 
 
 using namespace std;
@@ -90,6 +90,8 @@ class rpDynamicsWorld : public rpCollisionWorld
 
 
 	// -------------------- Attributes -------------------- //
+
+    rpTimer mTimer;
 
 	/// Number of iterations for the velocity solver of the Sequential Impulses technique
 	uint mNbVelocitySolverIterations;
@@ -175,8 +177,10 @@ class rpDynamicsWorld : public rpCollisionWorld
 
 	//***************************************************//
 
-	///  Update Physics simulation - Real-Time
-	void update( scalar timeStep );
+    ///  Update Physics simulation - Real-Time ( Semi-AntiFixed timestep )
+    void update( scalar timeStep );
+
+    void updateFixedTime( scalar timeStep );
 
     /// Get the number of iterations for the velocity constraint solver
     uint getNbIterationsVelocitySolver() const;

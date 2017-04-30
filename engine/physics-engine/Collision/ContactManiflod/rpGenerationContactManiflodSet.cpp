@@ -113,7 +113,7 @@ SIMD_INLINE void rpGenerationContactManiflodSet::CollidePointEdgeContacts(const 
 }
 
 SIMD_INLINE void rpGenerationContactManiflodSet::CollideEdgeEdgeContacts(const Vector3& A0, const Vector3& A1,
-		                                                     const Vector3& B0, const Vector3& B1)
+                                                                         const Vector3& B0, const Vector3& B1)
 {
 
 	Vector3 AD = A1 - A0;
@@ -143,7 +143,7 @@ SIMD_INLINE void rpGenerationContactManiflodSet::CollideEdgeEdgeContacts(const V
 
 //======================= Algoritm for Cliping ===================================//
 
-SIMD_INLINE void rpGenerationContactManiflodSet::CollidePolygonContacts(const Vector3* Poly, int iPolySize,
+SIMD_INLINE void rpGenerationContactManiflodSet::CollidePolygonContacts(const Vector3* Poly   , int iPolySize,
 		                                                                const Vector3* Clipper, int iClipperSize)
 {
 

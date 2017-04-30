@@ -21,8 +21,8 @@ class rpPhysicsBody;
 
 class rpContactSolver
 {
-    protected:
 
+ protected:
 
 	bool isFakeCollid;
 

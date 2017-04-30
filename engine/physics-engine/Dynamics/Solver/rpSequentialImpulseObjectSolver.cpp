@@ -73,7 +73,7 @@ void rpSequentialImpulseObjectSolver::initManiflod(rpContactManifold* manilod)
 
 
 
-void rpSequentialImpulseObjectSolver::initializeForIsland(scalar dt)
+SIMD_INLINE void rpSequentialImpulseObjectSolver::initializeForIsland(scalar dt)
 {
 
 
@@ -94,8 +94,8 @@ void rpSequentialImpulseObjectSolver::initializeForIsland(scalar dt)
     mTimeStep = dt;
 
 	mNbContactManifolds = 1;
-	rpContactManifold* externalManifold = mContactManifolds;//[i];
-	ContactManifoldSolver* internalManifold = mContactConstraints;//[i];
+    rpContactManifold* externalManifold = mContactManifolds;
+    ContactManifoldSolver* internalManifold = mContactConstraints;
 
 
 
@@ -217,7 +217,7 @@ void rpSequentialImpulseObjectSolver::initializeForIsland(scalar dt)
 
 
 
-void rpSequentialImpulseObjectSolver::initializeContactConstraints()
+SIMD_INLINE void rpSequentialImpulseObjectSolver::initializeContactConstraints()
 {
 
 
@@ -392,7 +392,7 @@ void rpSequentialImpulseObjectSolver::initializeContactConstraints()
 /// For each constraint, we apply the previous impulse (from the previous step)
 /// at the beginning. With this technique, we will converge faster towards
 /// the solution of the linear system
-void rpSequentialImpulseObjectSolver::warmStart()
+SIMD_INLINE void rpSequentialImpulseObjectSolver::warmStart()
 {
 
 
@@ -546,10 +546,10 @@ void rpSequentialImpulseObjectSolver::warmStart()
         	// ------ Twist friction constraint at the center of the contact manifold ------ //
 
         	// Compute the impulse P = J^T * lambda
-        	linearImpulseBody1  = Vector3(0.0, 0.0, 0.0);
+            linearImpulseBody1  =  Vector3(0.0, 0.0, 0.0);
         	angularImpulseBody1 = -contactManifold.normal * contactManifold.frictionTwistImpulse;
-        	linearImpulseBody2  = Vector3(0.0, 0.0, 0.0);
-        	angularImpulseBody2 = contactManifold.normal * contactManifold.frictionTwistImpulse;
+            linearImpulseBody2  =  Vector3(0.0, 0.0, 0.0);
+            angularImpulseBody2 =  contactManifold.normal * contactManifold.frictionTwistImpulse;
 
 
           	body1->applyImpulseAngular(angularImpulseBody1);
@@ -584,7 +584,7 @@ void rpSequentialImpulseObjectSolver::warmStart()
 
 }
 
-void rpSequentialImpulseObjectSolver::solveVelocityConstraint()
+SIMD_INLINE void rpSequentialImpulseObjectSolver::solveVelocityConstraint()
 {
 
     if( mIsError ) return;
@@ -796,10 +796,10 @@ void rpSequentialImpulseObjectSolver::solveVelocityConstraint()
 	   deltaLambda = contactManifold->friction2Impulse - lambdaTemp;
 
 	   // Compute the impulse P=J^T * lambda
-	   linearImpulseBody1 = -contactManifold->frictionVector2 * deltaLambda;
+       linearImpulseBody1  = -contactManifold->frictionVector2 * deltaLambda;
 	   angularImpulseBody1 = -contactManifold->r1CrossT2 * deltaLambda;
-	   linearImpulseBody2 = contactManifold->frictionVector2 * deltaLambda;
-	   angularImpulseBody2 = contactManifold->r2CrossT2 * deltaLambda;
+       linearImpulseBody2  =  contactManifold->frictionVector2 * deltaLambda;
+       angularImpulseBody2 =  contactManifold->r2CrossT2 * deltaLambda;
 
 
 
@@ -870,7 +870,7 @@ void rpSequentialImpulseObjectSolver::solveVelocityConstraint()
 
 
 
-void rpSequentialImpulseObjectSolver::solvePositionConstraint()
+SIMD_INLINE void rpSequentialImpulseObjectSolver::solvePositionConstraint()
 {
 
 
@@ -952,8 +952,8 @@ void rpSequentialImpulseObjectSolver::solvePositionConstraint()
 
 
 /**********************************************************************************************/
-scalar rpSequentialImpulseObjectSolver::computeMixedRestitutionFactor( rpRigidPhysicsBody*  body1 ,
-		                                                               rpRigidPhysicsBody*  body2) const
+SIMD_INLINE scalar rpSequentialImpulseObjectSolver::computeMixedRestitutionFactor( rpRigidPhysicsBody*  body1 ,
+                                                                                   rpRigidPhysicsBody*  body2) const
 {
 	scalar restitution1 = body1->getMaterial().getBounciness();
 	scalar restitution2 = body2->getMaterial().getBounciness();
@@ -962,16 +962,16 @@ scalar rpSequentialImpulseObjectSolver::computeMixedRestitutionFactor( rpRigidPh
 	return (restitution1 > restitution2) ? restitution1 : restitution2;
 }
 
-scalar rpSequentialImpulseObjectSolver::computeMixedFrictionCoefficient( rpRigidPhysicsBody*  body1 ,
-		                                                                 rpRigidPhysicsBody*  body2) const
+SIMD_INLINE scalar rpSequentialImpulseObjectSolver::computeMixedFrictionCoefficient( rpRigidPhysicsBody*  body1 ,
+                                                                                     rpRigidPhysicsBody*  body2) const
 {
 	// Use the geometric mean to compute the mixed friction coefficient
 	return SquareRoot(body1->getMaterial().getFrictionCoefficient() *
 			          body2->getMaterial().getFrictionCoefficient());
 }
 
-scalar rpSequentialImpulseObjectSolver::computeMixedRollingResistance( rpRigidPhysicsBody*  body1 ,
-		                                                               rpRigidPhysicsBody*  body2) const
+SIMD_INLINE scalar rpSequentialImpulseObjectSolver::computeMixedRollingResistance( rpRigidPhysicsBody*  body1 ,
+                                                                                   rpRigidPhysicsBody*  body2) const
 {
 	return scalar(0.5f) * (body1->getMaterial().getRollingResistance() +
 			               body2->getMaterial().getRollingResistance());
@@ -979,16 +979,10 @@ scalar rpSequentialImpulseObjectSolver::computeMixedRollingResistance( rpRigidPh
 
 
 
-void rpSequentialImpulseObjectSolver::computeFrictionVectors( const Vector3& deltaVelocity, ContactPointSolver& contactPoint) const
+SIMD_INLINE void rpSequentialImpulseObjectSolver::computeFrictionVectors( const Vector3& deltaVelocity, ContactPointSolver& contactPoint) const
 {
 	assert(contactPoint.normal.length() > 0.0);
 
-	//	        // Compute the velocity difference vector in the tangential and normal
-//			Vector3::btPlaneSpace1(contactPoint.normal, contactPoint.frictionVector1 ,
-//														contactPoint.frictionVector2 );
-
-
-			/**/
 
 	// Compute the velocity difference vector in the tangential plane
 	Vector3 normalVelocity  = deltaVelocity.dot(contactPoint.normal) * contactPoint.normal;
@@ -1026,14 +1020,9 @@ void rpSequentialImpulseObjectSolver::computeFrictionVectors( const Vector3& del
 
 
 
-void rpSequentialImpulseObjectSolver::computeFrictionVectors( const Vector3& deltaVelocity ,
-		                                                       ContactManifoldSolver* contact ) const
+SIMD_INLINE void rpSequentialImpulseObjectSolver::computeFrictionVectors( const Vector3& deltaVelocity , ContactManifoldSolver* contact ) const
 {
     assert(contact->normal.length() > 0.0);
-
-//	  // Compute the velocity difference vector in the tangential and normal
-//    Vector3::btPlaneSpace1(contact->normal, contact->frictionVector1 ,
-//    		                                contact->frictionVector2 );
 
     /**/
     // Compute the velocity difference vector in the tangential plane

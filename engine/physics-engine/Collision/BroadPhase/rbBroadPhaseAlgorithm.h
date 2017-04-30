@@ -194,8 +194,7 @@ class rpBroadPhaseAlgorithm
         void removeProxyCollisionShape(rpProxyShape* proxyShape);
 
         /// Notify the broad-phase that a collision shape has moved and need to be updated
-        void updateProxyCollisionShape(rpProxyShape* proxyShape, const rpAABB& aabb,
-                                       const Vector3& displacement, bool forceReinsert = false);
+        void updateProxyCollisionShape(rpProxyShape* proxyShape, const rpAABB& aabb, const Vector3& displacement, bool forceReinsert = false);
 
         /// Add a collision shape in the array of shapes that have moved in the last simulation step
         /// and that need to be tested again for broad-phase overlapping.
@@ -215,8 +214,7 @@ class rpBroadPhaseAlgorithm
         bool testOverlappingShapes(const rpProxyShape* shape1, const rpProxyShape* shape2) const;
 
         /// Ray casting method
-        void raycast(const Ray& ray, RaycastTest& raycastTest,
-                     unsigned short raycastWithCategoryMaskBits) const;
+        void raycast(const Ray& ray, RaycastTest& raycastTest , unsigned short raycastWithCategoryMaskBits) const;
 };
 
 // Method used to compare two pairs for sorting algorithm

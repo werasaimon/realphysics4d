@@ -21,7 +21,8 @@ bool status;
 rpDynamicsWorld::rpDynamicsWorld(const Vector3& gravity)
 : mGravity(gravity),
   mNbVelocitySolverIterations(DEFAULT_VELOCITY_SOLVER_NB_ITERATIONS),
-  mNbPositionSolverIterations(DEFAULT_POSITION_SOLVER_NB_ITERATIONS)
+  mNbPositionSolverIterations(DEFAULT_POSITION_SOLVER_NB_ITERATIONS),
+  mTimer( scalar(1.0) )
 {
    status = true;
 }
@@ -96,6 +97,9 @@ void rpDynamicsWorld::destroy()
 
     status = false;
 
+    // Stop timer
+    mTimer.stop();
+
     // Destroy all the joints that have not been removed
     for (auto itJoints = mPhysicsJoints.begin(); itJoints != mPhysicsJoints.end();)
     {
@@ -149,19 +153,52 @@ void rpDynamicsWorld::destroy()
 
 void rpDynamicsWorld::update(scalar timeStep)
 {
-	if(!status) return;
+    if(!status) return;
 
-	integrateGravity(timeStep);
+     mTimer.setTimeStep(timeStep);
+     mTimer.start();
+     mTimer.update();
+
+     while( mTimer.isPossibleToTakeStep() )
+     {
+
+             /****************************/
+             integrateGravity(timeStep);
+
+             /****************************/
+             updateBodiesState(timeStep);
+
+             /****************************/
+             CollidePhase();
+             DynamicPhase(timeStep);
+
+             /****************************/
+             integrateBodiesVelocities(timeStep);
 
 
-	/****************************/
-	updateBodiesState(timeStep);
-	/****************************/
-	CollidePhase();
-	DynamicPhase(timeStep);
-	/****************************/
-	integrateBodiesVelocities(timeStep);
+         // next step simulation
+         mTimer.nextStep();
+     }
 
+}
+
+void rpDynamicsWorld::updateFixedTime(scalar timeStep)
+{
+    if(!status) return;
+
+
+    /****************************/
+    integrateGravity(timeStep);
+
+    /****************************/
+    updateBodiesState(timeStep);
+
+    /****************************/
+    CollidePhase();
+    DynamicPhase(timeStep);
+
+    /****************************/
+    integrateBodiesVelocities(timeStep);
 
 }
 

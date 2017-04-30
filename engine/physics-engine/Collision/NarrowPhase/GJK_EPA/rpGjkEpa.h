@@ -272,10 +272,10 @@ struct	GJK
 		m_simplices[0].p[0]	=	1;
 		m_ray				=	m_simplices[0].c[0]->w;
 		sqdist				=	sqrl;
-		lastw[0]			=
-				lastw[1]			=
-						lastw[2]			=
-								lastw[3]			=	m_ray;
+        lastw[0]			=
+        lastw[1]			=
+        lastw[2]			=
+        lastw[3]			=	m_ray;
 		/* Loop						*/
 		do
 		{
