@@ -5,6 +5,7 @@
 #include "../../../physics-engine/physics.h"
 #include "../Body/UltimatePhysicsBody.h"
 
+
 namespace utility_engine
 {
 
@@ -184,6 +185,7 @@ namespace utility_engine
        public:
 
 
+         UltimateJoint(){}
 
          /// Constructor joint
          UltimateJoint(real_physics::rpJoint *_joint);

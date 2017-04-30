@@ -38,7 +38,7 @@ namespace utility_engine
     /// Create a constraint-joint into the physics world.
     UltimateJoint *DynamicsWorld::createJoint(const real_physics::rpJointInfo &jointInfo)
     {
-        return new UltimateJoint( mDynamicsWorld.createJoint(jointInfo) );
+         return  new UltimateJoint(mDynamicsWorld.createJoint(jointInfo));
     }
 
 

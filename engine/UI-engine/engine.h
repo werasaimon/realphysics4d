@@ -19,7 +19,6 @@
 
 
 #include "Geometry/Camera/camera.h"
-#include "Geometry/Camera/CCameraEya.h"
 
 #include "Geometry/Mesh/Mesh.h"
 #include "Geometry/Mesh/Primitive/MeshPlane.h"

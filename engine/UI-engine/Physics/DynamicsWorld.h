@@ -58,7 +58,7 @@ namespace utility_engine
 
 
             /// Create a constraint-joint into the physics world.
-            UltimateJoint* createJoint(const real_physics::rpJointInfo& jointInfo);
+            UltimateJoint* createJoint(const real_physics::rpJointInfo &jointInfo);
 
             /// Destroy a constraint-joints
             void destroyJoint( real_physics::rpJoint* joint);
