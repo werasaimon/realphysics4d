@@ -180,6 +180,7 @@ class rpDynamicsWorld : public rpCollisionWorld
     ///  Update Physics simulation - Real-Time ( Semi-AntiFixed timestep )
     void update( scalar timeStep );
 
+    ///  Update Physics simulation - Real-Time ( Fixed timestep )
     void updateFixedTime( scalar timeStep );
 
     /// Get the number of iterations for the velocity constraint solver
