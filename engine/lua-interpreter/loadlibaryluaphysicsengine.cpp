@@ -34,6 +34,8 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
                     .def(luabind::const_self  *  real_physics::Vector2())
                     .def(luabind::const_self  /  real_physics::Vector2())
                     .def(luabind::const_self ==  real_physics::Vector2())
+                    .def(luabind::const_self  *  real_physics::scalar())
+                    .def(luabind::const_self  /  real_physics::scalar())
                     // value
                     .def_readwrite("x", &real_physics::Vector2::x)
                     .def_readwrite("y", &real_physics::Vector2::y)
@@ -50,8 +52,8 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
                          // method
                         .def("lenght"    , &real_physics::Vector3::length)
                         .def("lenght2"   , &real_physics::Vector3::length2)
-                        .def("normalize" , &real_physics::Vector3::getUnit)
                         .def("angle"     , &real_physics::Vector3::AngleBetweenVectors)
+                        .def("normalize" , &real_physics::Vector3::getUnit)
                         .def("dot"       , &real_physics::Vector3::dot)
                         .def("cross"     , &real_physics::Vector3::cross)
                          // operator
@@ -60,6 +62,8 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
                         .def(luabind::const_self  *  real_physics::Vector3())
                         .def(luabind::const_self  /  real_physics::Vector3())
                         .def(luabind::const_self ==  real_physics::Vector3())
+                        .def(luabind::const_self  *  real_physics::scalar())
+                        .def(luabind::const_self  /  real_physics::scalar())
                          // value
                         .def_readwrite("x", &real_physics::Vector3::x)
                         .def_readwrite("y", &real_physics::Vector3::y)
@@ -99,7 +103,11 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
                          [
                             luabind::class_<real_physics::Transform>("transform")
                             // constructor
-                           .def(luabind::constructor<const real_physics::Vector3& ,const real_physics::Quaternion&>())
+                            .def(luabind::constructor<const real_physics::Vector3& ,const real_physics::Quaternion&>())
+                            .def( "position"   ,  &real_physics::Transform::getPosition    )
+                            .def( "quaternion" ,  &real_physics::Transform::getOrientation )
+                            .def( "basis"      ,  &real_physics::Transform::getBasis       )
+
                          ]);
 
 
@@ -129,7 +137,7 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
     /// Collsion shape shpere
     importToScope( luabind::namespace_("physics")
                          [
-                            luabind::class_< real_physics::rpSphereShape ,  luabind::bases<real_physics::rpCollisionShape> >("shape-sphere")
+                            luabind::class_< real_physics::rpSphereShape ,  luabind::bases<real_physics::rpCollisionShape> >("shape_sphere")
                             // constructor
                             .def(luabind::constructor<real_physics::scalar>())
                          ]);
@@ -147,7 +155,7 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
     /// Collsion shape convex-hull
     importToScope( luabind::namespace_("physics")
                          [
-                             luabind::class_<real_physics::rpConvexHullShape , luabind::bases<real_physics::rpCollisionShape>>("shape-hull")
+                             luabind::class_<real_physics::rpConvexHullShape , luabind::bases<real_physics::rpCollisionShape>>("shape_hull")
                              // constructor
                              .def(luabind::constructor<real_physics::rpModelConvexHull*>())
 
@@ -158,7 +166,7 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
     /// Meneger systems collisions
     importToScope( luabind::namespace_("physics")
                          [
-                            luabind::class_<real_physics::rpCollisionDetection>("collid-meneger")
+                            luabind::class_<real_physics::rpCollisionDetection>("collid_meneger")
                              // constructor
                             .def(luabind::constructor<>())
                          ]);
@@ -176,9 +184,10 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
     ///Collision on body
     importToScope( luabind::namespace_("physics")
                          [
-                                luabind::class_<real_physics::rpCollisionBody ,luabind::bases<real_physics::rpBody>>("collid-body")
+                                luabind::class_<real_physics::rpCollisionBody , luabind::bases<real_physics::rpBody>>("collid_body")
                                 // constructor
                                 .def(luabind::constructor<const real_physics::Transform& , real_physics::rpCollisionDetection* , real_physics::bodyindex>())
+                                .def( "transform" , &real_physics::rpCollisionBody::getTransform )
                                 .enum_("BodyType")
                                 [
                                   luabind::value("static"    ,real_physics::BodyType::STATIC),
@@ -191,7 +200,7 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
 
     importToScope( luabind::namespace_("physics")
                          [
-                               luabind::class_<real_physics::rpCollisionWorld>("collisions-world")
+                               luabind::class_<real_physics::rpCollisionWorld>("collisions_world")
                                // constructor
                                .def(luabind::constructor<>())
                          ]);
@@ -212,7 +221,7 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
     ///Physics on object
     importToScope(  luabind::namespace_("physics")
                           [
-                              luabind::class_<real_physics::rpPhysicsObject , luabind::bases<real_physics::rpCollisionBody> >("physics-object")
+                              luabind::class_<real_physics::rpPhysicsObject , luabind::bases<real_physics::rpCollisionBody> >("physics_object")
                               // constructor
                               .def(luabind::constructor<const real_physics::Transform& , real_physics::rpCollisionDetection* , real_physics::bodyindex>())
                               .enum_("BodyType")
@@ -228,7 +237,7 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
     ///Physics on body
     importToScope( luabind::namespace_("physics")
                          [
-                            luabind::class_<real_physics::rpPhysicsBody , luabind::bases<real_physics::rpPhysicsObject> >("physics-body")
+                            luabind::class_<real_physics::rpPhysicsBody , luabind::bases<real_physics::rpPhysicsObject , real_physics::rpCollisionBody> >("physics_body")
                             // constructor
                             .def(luabind::constructor<const real_physics::Transform& , real_physics::rpCollisionDetection* , real_physics::bodyindex>())
                          ]);
@@ -237,7 +246,7 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
     ///Physics on rigid-body
     importToScope( luabind::namespace_("physics")
                          [
-                            luabind::class_<real_physics::rpRigidPhysicsBody , luabind::bases<real_physics::rpPhysicsBody> >("rigid-body")
+                            luabind::class_<real_physics::rpRigidPhysicsBody , luabind::bases<real_physics::rpPhysicsBody,real_physics::rpPhysicsObject,real_physics::rpCollisionBody>>("rigid_body")
                             // constructor
                             .def(luabind::constructor<const real_physics::Transform& , real_physics::rpCollisionDetection* , real_physics::bodyindex>())
                          ]);
@@ -248,7 +257,7 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
 
     importToScope( luabind::namespace_("physics")
                          [
-                               luabind::class_<real_physics::rpJointInfo>("joint-info")
+                               luabind::class_<real_physics::rpJointInfo>("joint_info")
                               // constructor
                               .def(luabind::constructor<real_physics::JointType>())
                               .def(luabind::constructor<real_physics::rpPhysicsBody* , real_physics::rpPhysicsBody* , real_physics::JointType>())
@@ -266,7 +275,7 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
 
     importToScope( luabind::namespace_("physics")
                          [
-                            luabind::class_<real_physics::rpDistanceJointInfo , luabind::bases<real_physics::rpJointInfo> >("dist-info")
+                            luabind::class_<real_physics::rpDistanceJointInfo , luabind::bases<real_physics::rpJointInfo> >("dist_info")
                             // constructor
                            .def(luabind::constructor<real_physics::rpPhysicsBody* , real_physics::rpPhysicsBody* , const real_physics::scalar&>())
                          ]);
@@ -275,7 +284,7 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
 
     importToScope( luabind::namespace_("physics")
                          [
-                             luabind::class_<real_physics::rpBallAndSocketJointInfo , luabind::bases<real_physics::rpJointInfo> >("ball-info")
+                             luabind::class_<real_physics::rpBallAndSocketJointInfo , luabind::bases<real_physics::rpJointInfo> >("ball_info")
                              // constructor
                              .def(luabind::constructor<real_physics::rpPhysicsBody* , real_physics::rpPhysicsBody* , const real_physics::Vector3&>())
                          ]);
@@ -296,7 +305,7 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
 
     importToScope(  luabind::namespace_("physics")
                           [
-                             luabind::class_<real_physics::rpDistanceJoint , luabind::bases<real_physics::rpJoint> >("dist-joint")
+                             luabind::class_<real_physics::rpDistanceJoint , luabind::bases<real_physics::rpJoint> >("dist_joint")
                              // constructor
                              .def(luabind::constructor<const real_physics::rpDistanceJointInfo&>())
                           ]);
@@ -304,7 +313,7 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
 
     importToScope(  luabind::namespace_("physics")
                           [
-                             luabind::class_<real_physics::rpBallAndSocketJoint , luabind::bases<real_physics::rpJoint> >("ball-joint")
+                             luabind::class_<real_physics::rpBallAndSocketJoint , luabind::bases<real_physics::rpJoint> >("ball_joint")
                               // constructor
                              .def(luabind::constructor<const real_physics::rpBallAndSocketJointInfo&>())
                           ]);
@@ -313,10 +322,15 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
 
     importToScope(  luabind::namespace_("physics")
                           [
-                            luabind::class_< real_physics::rpDynamicsWorld ,luabind::bases<real_physics::rpCollisionWorld>>("dynamics-world")
+                            luabind::class_< real_physics::rpDynamicsWorld ,luabind::bases<real_physics::rpCollisionWorld>>("dynamics_world")
                             // constructor
                             .def(luabind::constructor<const real_physics::Vector3&>())
                           ]);
 
 
 }
+
+
+
+
+

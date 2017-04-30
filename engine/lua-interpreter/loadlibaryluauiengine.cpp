@@ -202,7 +202,8 @@ void LoadLibaryLuaUIEngine::LoadLibary()
                           .def("applyForce"         ,   &utility_engine::UltimatePhysicsBody::applyForce)
                           .def("applyTorque"        ,   &utility_engine::UltimatePhysicsBody::applyTorque)
 
-                          .def("update"     ,   &utility_engine::UltimatePhysicsBody::update)
+                          .def("update"     , &utility_engine::UltimatePhysicsBody::update)
+                          .def("getPhysics" , &utility_engine::UltimatePhysicsBody::getPhysicsBody)
 
                           .enum_("BodyType")
                           [
@@ -212,11 +213,24 @@ void LoadLibaryLuaUIEngine::LoadLibary()
                           ]);
 
 
+    importToScope(  luabind::class_<utility_engine::UltimateJoint>("ultimate_joint")
+                          // constructor
+                          .def( luabind::constructor<real_physics::rpJoint*>())
+                          .def("getJoint" , &utility_engine::UltimateJoint::getJoint));
+
+
 
 
     ///---------------------------------- Ultimatium joint function ----------------------------------------------///
     /// \brief importToScope
     ///
+    ///
+
+    importToScope(  luabind::class_<utility_engine::UltimateJointInfo>("ultimate_joint_info")
+                    // constructor
+                    .def( luabind::constructor<>()));
+
+
     importToScope(  luabind::def( "distance_joint_info"      , &utility_engine::UltimateJointInfo::DistanceJointInfo) );
     importToScope(  luabind::def( "ball_joint_info"          , &utility_engine::UltimateJointInfo::BallAndSocketJointInfo) );
     importToScope(  luabind::def( "fixed_joint_info"         , &utility_engine::UltimateJointInfo::FixedJointInfo) );
