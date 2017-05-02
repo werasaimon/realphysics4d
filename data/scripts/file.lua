@@ -13,6 +13,8 @@ local shader = shaderProgram()
 
 local physWorld = dynamics_world( vector3(0,-30,0) )
 
+
+
 --****** initilization ********--
 function setup( scene )
 
