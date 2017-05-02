@@ -1,9 +1,1 @@
-<RCC>
-    <qresource prefix="/">
-        <file>scripts/file.lua</file>
-        <file>scripts/primitives.lua</file>
-        <file>scripts/stackcubes(dynamics).lua</file>
-        <file>scripts/rigid-body_dynamics.lua</file>
-        <file>scripts/constrait-joint_dynamics.lua</file>
-    </qresource>
-</RCC>
+<RCC/>
