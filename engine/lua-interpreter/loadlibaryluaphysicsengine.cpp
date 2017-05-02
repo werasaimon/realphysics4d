@@ -80,6 +80,7 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
                    .def(luabind::constructor<real_physics::scalar,real_physics::scalar,
                                              real_physics::scalar,real_physics::scalar>())
                    // method
+                   .def( "identity"    , &real_physics::Matrix2x2::setToIdentity)
                    .def( "determinant" , &real_physics::Matrix2x2::getDeterminant)
                    .def( "inverse"     , &real_physics::Matrix2x2::getInverse)
                    .def( "transpose"   , &real_physics::Matrix2x2::getTranspose)
@@ -104,6 +105,7 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
                                                             real_physics::scalar,real_physics::scalar,real_physics::scalar,
                                                             real_physics::scalar,real_physics::scalar,real_physics::scalar>())
                                   // method
+                                  .def( "identity"    , &real_physics::Matrix3x3::setToIdentity)
                                   .def( "determinant" , &real_physics::Matrix3x3::getDeterminant)
                                   .def( "inverse"     , &real_physics::Matrix3x3::getInverse)
                                   .def( "transpose"   , &real_physics::Matrix3x3::getTranspose)
@@ -118,9 +120,11 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
     /// Matrix3x3
     importToScope(luabind::namespace_("physics")
                   [
-                      luabind::class_<real_physics::Matrix4x4>("matrix4x4")
-                      // constructor
-                      .def(luabind::constructor<>())
+                         luabind::class_<real_physics::Matrix4x4>("matrix4x4")
+                        // constructor
+                        .def(luabind::constructor<>())
+                        // method
+                        .def( "identity"   , &real_physics::Matrix4x4::setToIdentity)
                   ]);
 
 
@@ -140,15 +144,15 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
 
     /// Transform
     importToScope( luabind::namespace_("physics")
-                         [
-                            luabind::class_<real_physics::Transform>("transform")
-                            // constructor
-                            .def(luabind::constructor<const real_physics::Vector3& ,const real_physics::Quaternion&>())
-                            .def( "position"   ,  &real_physics::Transform::getPosition    )
-                            .def( "quaternion" ,  &real_physics::Transform::getOrientation )
-                            .def( "basis"      ,  &real_physics::Transform::getBasis       )
+                       [
+                          luabind::class_<real_physics::Transform>("transform")
+                          // constructor
+                          .def(luabind::constructor<const real_physics::Vector3& ,const real_physics::Quaternion&>())
+                          .def( "position"   ,  &real_physics::Transform::getPosition    )
+                          .def( "quaternion" ,  &real_physics::Transform::getOrientation )
+                          .def( "basis"      ,  &real_physics::Transform::getBasis       )
 
-                         ]);
+                       ]);
 
 
 
