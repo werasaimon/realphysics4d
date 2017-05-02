@@ -8,6 +8,11 @@ UnitSceneLuaInterpretationSDK::UnitSceneLuaInterpretationSDK()
 
 }
 
+UnitSceneLuaInterpretationSDK::~UnitSceneLuaInterpretationSDK()
+{
+    mLuaMashine.closet();
+}
+
 ///-------------------------------------------------------///
 /// Initilization lua-interpritator
 ///-------------------------------------------------------///
@@ -322,8 +327,6 @@ void UnitSceneLuaInterpretationSDK::destroy()
     {
 
     }
-
-    mLuaMashine.closet();
 }
 
 //---------------------------------------------------------------//

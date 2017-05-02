@@ -98,7 +98,8 @@ class UnitSceneLuaInterpretationSDK : public UnitScene
 
     public:
 
-      UnitSceneLuaInterpretationSDK();
+       UnitSceneLuaInterpretationSDK();
+      ~UnitSceneLuaInterpretationSDK();
 
 
       bool initialization();
