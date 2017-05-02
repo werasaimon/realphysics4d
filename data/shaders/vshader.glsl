@@ -40,6 +40,7 @@ varying vec3 LightDirection_cameraspace;
 
 void main()
 {
+
     vec4 Position = modelToWorldMatrix * a_vertex;
 
 

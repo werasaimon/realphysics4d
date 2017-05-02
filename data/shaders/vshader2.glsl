@@ -22,8 +22,8 @@ varying vec2 v_texcoord;
 
 void main()
 {
-    vec4 Position = ModelMatrix * a_vertex;
 
+    vec4 Position = ModelMatrix * a_vertex;
 
     v_texcoord = a_texcoord;
     //v_texcoord = gl_MultiTexCoord0.xy;

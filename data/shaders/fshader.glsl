@@ -19,6 +19,7 @@ varying vec3 H;
 uniform int Texturing;
 
 
+
 uniform sampler2D texture;
 
 //uniform sampler2D ShadowMap;
