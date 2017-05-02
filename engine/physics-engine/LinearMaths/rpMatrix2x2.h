@@ -244,8 +244,8 @@ template<class T>
 SIMD_INLINE rpMatrix2x2<T> real_physics::rpMatrix2x2<T>::getTranspose() const
 {
 	 // Return the transpose matrix
-	    return Matrix2x2(mRows[0][0], mRows[1][0],
-	                     mRows[0][1], mRows[1][1]);
+        return rpMatrix2x2<T>(mRows[0][0], mRows[1][0],
+                              mRows[0][1], mRows[1][1]);
 }
 
 template<class T>
@@ -266,8 +266,8 @@ SIMD_INLINE T real_physics::rpMatrix2x2<T>::getTrace() const
 template<class T>
 SIMD_INLINE rpMatrix2x2<T> real_physics::rpMatrix2x2<T>::getAbsoluteMatrix() const
 {
-	return rpMatrix2x2<T>(fabs(mRows[0][0]), fabs(mRows[0][1]),
-	                     fabs(mRows[1][0]), fabs(mRows[1][1]));
+    return rpMatrix2x2<T>(fabs(mRows[0][0]), fabs(mRows[0][1]),
+                          fabs(mRows[1][0]), fabs(mRows[1][1]));
 }
 
 template<class T>
