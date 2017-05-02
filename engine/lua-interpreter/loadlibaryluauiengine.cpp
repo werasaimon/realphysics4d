@@ -168,12 +168,13 @@ void LoadLibaryLuaUIEngine::LoadLibary()
 
      importToScope(  luabind::class_<utility_engine::DynamicsWorld>("dynamics_world")
                            .def(luabind::constructor<const utility_engine::Vector3&>())
-                           .def( "RigidBody" , &utility_engine::DynamicsWorld::createRigidBody )
-                           .def( "Joint"     , &utility_engine::DynamicsWorld::createJoint )
-                           .def( "destroy"   , &utility_engine::DynamicsWorld::destroyBody )
-                           .def( "destroy"   , &utility_engine::DynamicsWorld::destroyJoint )
-                           .def( "destroy"   , &utility_engine::DynamicsWorld::destroy )
-                           .def( "update"    , &utility_engine::DynamicsWorld::update ));
+                           .def( "RigidBody"        , &utility_engine::DynamicsWorld::createRigidBody )
+                           .def( "Joint"            , &utility_engine::DynamicsWorld::createJoint )
+                           .def( "destroy"          , &utility_engine::DynamicsWorld::destroyBody )
+                           .def( "destroy"          , &utility_engine::DynamicsWorld::destroyJoint )
+                           .def( "destroy"          , &utility_engine::DynamicsWorld::destroy )
+                           .def( "updateFixedStep"  , &utility_engine::DynamicsWorld::updateFixedStep )
+                           .def( "update"           , &utility_engine::DynamicsWorld::update ));
 
 
 

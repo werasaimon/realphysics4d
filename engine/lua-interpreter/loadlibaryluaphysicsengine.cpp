@@ -71,17 +71,57 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
                 ]);
 
 
+    /// Matrix2x2
+    importToScope(luabind::namespace_("physics")
+                  [
+                    luabind::class_<real_physics::Matrix2x2>("matrix2x2")
+                   // constructor
+                   .def(luabind::constructor<>())
+                   .def(luabind::constructor<real_physics::scalar,real_physics::scalar,
+                                             real_physics::scalar,real_physics::scalar>())
+                   // method
+                   .def( "determinant" , &real_physics::Matrix2x2::getDeterminant)
+                   .def( "inverse"     , &real_physics::Matrix2x2::getInverse)
+                   .def( "transpose"   , &real_physics::Matrix2x2::getTranspose)
+                   // operator
+                   .def(luabind::const_self  +  real_physics::Matrix2x2())
+                   .def(luabind::const_self  -  real_physics::Matrix2x2())
+                   .def(luabind::const_self  *  real_physics::Matrix2x2())
+                   .def(luabind::const_self  *  real_physics::scalar())
+
+                  ]);
+
+
+
     /// Matrix3x3
     importToScope(luabind::namespace_("physics")
                         [
-                                  luabind::class_<real_physics::Matrix3x3>("matrix3")
+                                  luabind::class_<real_physics::Matrix3x3>("matrix3x3")
                                   // constructor
                                   .def(luabind::constructor<>())
                                   //.def(luabind::constructor<real_physics::Quaternion>())
                                   .def(luabind::constructor<real_physics::scalar,real_physics::scalar,real_physics::scalar,
                                                             real_physics::scalar,real_physics::scalar,real_physics::scalar,
                                                             real_physics::scalar,real_physics::scalar,real_physics::scalar>())
+                                  // method
+                                  .def( "determinant" , &real_physics::Matrix3x3::getDeterminant)
+                                  .def( "inverse"     , &real_physics::Matrix3x3::getInverse)
+                                  .def( "transpose"   , &real_physics::Matrix3x3::getTranspose)
+                                  // operator
+                                  .def(luabind::const_self  +  real_physics::Matrix3x3())
+                                  .def(luabind::const_self  -  real_physics::Matrix3x3())
+                                  .def(luabind::const_self  *  real_physics::Matrix3x3())
+                                  .def(luabind::const_self  *  real_physics::scalar())
                         ]);
+
+
+    /// Matrix3x3
+    importToScope(luabind::namespace_("physics")
+                  [
+                      luabind::class_<real_physics::Matrix4x4>("matrix4x4")
+                      // constructor
+                      .def(luabind::constructor<>())
+                  ]);
 
 
     /// Quaternion
