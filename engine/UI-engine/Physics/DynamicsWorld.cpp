@@ -19,7 +19,6 @@ namespace utility_engine
     }
 
 
-
     /// Create a rigid body into the physics world.
     UltimatePhysicsBody *DynamicsWorld::createRigidBody(const Matrix4 &transform)
     {
@@ -50,13 +49,17 @@ namespace utility_engine
     }
 
 
-
     /// Update real-time physics simulate
     void DynamicsWorld::update( float timeStep )
     {
         mDynamicsWorld.update( timeStep );
     }
 
+    /// Update real-time physics simulate (Fixed TimeStep)
+    void DynamicsWorld::updateFixedStep(float timeStep)
+    {
+        mDynamicsWorld.updateFixedTime(timeStep);
+    }
 
     /// Realase and a delete memory
     void DynamicsWorld::destroy()
