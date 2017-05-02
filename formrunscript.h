@@ -24,6 +24,7 @@ public:
      void keyReleaseEvent(QKeyEvent *event);
 #endif
 
+     void closeEvent(QCloseEvent *event);
 
 private:
 

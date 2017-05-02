@@ -7,6 +7,9 @@
 #include <QTextStream>
 #include <QMessageBox>
 
+
+
+
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Widget)
@@ -18,6 +21,9 @@ Widget::Widget(QWidget *parent) :
     connect( ui->pushButton_2 , SIGNAL(clicked(bool)) , this , SLOT(fileDialog()) );
     connect( ui->pushButton_3 , SIGNAL(clicked(bool)) , this , SLOT(saveFile()) );
 }
+
+
+
 
 Widget::~Widget()
 {

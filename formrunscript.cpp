@@ -28,3 +28,13 @@ void FormRunScript::keyReleaseEvent(QKeyEvent *event)
 }
 
 #endif
+
+
+
+void FormRunScript::closeEvent(QCloseEvent *event)
+{
+    ui->widget->closeEvent(event);
+    event->accept();
+}
+
+

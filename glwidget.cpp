@@ -78,6 +78,13 @@ GLWidget::~GLWidget()
     // and the buffers.
     makeCurrent();
     doneCurrent();
+
+    if( mSceneOpenGL != NULL )
+    {
+       mSceneOpenGL->destroy();
+       delete mSceneOpenGL;
+       mSceneOpenGL = NULL;
+    }
 }
 
 
@@ -199,6 +206,12 @@ void GLWidget::mouseReleaseEvent(QMouseEvent *e)
 }
 
 
+
+void GLWidget::closeEvent(QCloseEvent *event)
+{
+   mSceneOpenGL->destroy();
+   event->accept();
+}
 
 
 

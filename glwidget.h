@@ -109,6 +109,7 @@ public:
     void keyPressEvent( QKeyEvent *keyEvent ) Q_DECL_OVERRIDE;
     void keyReleaseEvent( QKeyEvent *keyEvent ) Q_DECL_OVERRIDE;
 
+    void closeEvent(QCloseEvent *event);
 
 
 private:
