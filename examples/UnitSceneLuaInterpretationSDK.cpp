@@ -2,6 +2,16 @@
 #include <QFile>
 
 
+namespace
+{
+
+  void Delete( void* element )
+  {
+      delete element;
+  }
+
+}
+
 
 UnitSceneLuaInterpretationSDK::UnitSceneLuaInterpretationSDK()
 {
@@ -39,6 +49,7 @@ bool UnitSceneLuaInterpretationSDK::initLua()
 
     ///--------------------------------------------------------------------------///
 
+    mLuaMashine.importToScope( luabind::def("delete" , &Delete) );
 
     mLuaMashine.importToScope( luabind::class_<mouse>("mouse")
                                      // value
