@@ -251,8 +251,6 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
 
     //---------------------------------------- Physics-Engine -------------------------------------------------------------//
 
-
-
     ///Physics material
     importToScope( luabind::namespace_("physics")
                          [
@@ -284,6 +282,14 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
                             luabind::class_<real_physics::rpPhysicsBody , luabind::bases<real_physics::rpPhysicsObject , real_physics::rpCollisionBody> >("physics_body")
                             // constructor
                             .def(luabind::constructor<const real_physics::Transform& , real_physics::rpCollisionDetection* , real_physics::bodyindex>())
+                            .def( "integrate"           ,  &real_physics::rpPhysicsBody::Integrate)
+                            .def( "applyGravity"        ,  &real_physics::rpPhysicsBody::applyGravity)
+                            .def( "applyImpulseLinear"  ,  &real_physics::rpPhysicsBody::applyImpulseLinear)
+                            .def( "applyImpulseAngular" ,  &real_physics::rpPhysicsBody::applyImpulseAngular)
+                            .def( "applyImpulse"        ,  &real_physics::rpPhysicsBody::applyImpulse)
+                            .def( "applyForce"          ,  &real_physics::rpPhysicsBody::applyForceToCenterOfMass)
+                            .def( "applyForce"          ,  &real_physics::rpPhysicsBody::applyForce)
+                            .def( "applyTorque"         ,  &real_physics::rpPhysicsBody::applyTorque)
                          ]);
 
 
@@ -293,11 +299,13 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
                             luabind::class_<real_physics::rpRigidPhysicsBody , luabind::bases<real_physics::rpPhysicsBody,real_physics::rpPhysicsObject,real_physics::rpCollisionBody>>("rigid_body")
                             // constructor
                             .def(luabind::constructor<const real_physics::Transform& , real_physics::rpCollisionDetection* , real_physics::bodyindex>())
+                            .def( "changeToFrameOfReference" , &real_physics::rpRigidPhysicsBody::changeToFrameOfReference )
                          ]);
 
 
 
 
+    //------------------------------------------ Joints Info -----------------------------------------------------//
 
     importToScope( luabind::namespace_("physics")
                          [
@@ -335,6 +343,48 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
 
 
 
+    importToScope( luabind::namespace_("physics")
+                         [
+                             luabind::class_<real_physics::rpHingeJointInfo , luabind::bases<real_physics::rpJointInfo> >("hinge_info")
+                             // constructor
+                             .def(luabind::constructor<real_physics::rpPhysicsBody* , real_physics::rpPhysicsBody* ,
+                                                       const real_physics::Vector3& , const real_physics::Vector3&>())
+
+                             .def(luabind::constructor<real_physics::rpPhysicsBody* , real_physics::rpPhysicsBody* ,
+                                                       const real_physics::Vector3& , const real_physics::Vector3& ,
+                                                       real_physics::scalar , real_physics::scalar>())
+
+                             .def(luabind::constructor<real_physics::rpPhysicsBody* , real_physics::rpPhysicsBody* ,
+                                                       const real_physics::Vector3& , const real_physics::Vector3& ,
+                                                       real_physics::scalar , real_physics::scalar ,
+                                                       real_physics::scalar , real_physics::scalar>())
+                         ]);
+
+
+
+    importToScope( luabind::namespace_("physics")
+                         [
+                             luabind::class_<real_physics::rpSliderJointInfo , luabind::bases<real_physics::rpJointInfo> >("slider_info")
+                             // constructor
+                             .def(luabind::constructor<real_physics::rpPhysicsBody* , real_physics::rpPhysicsBody* ,
+                                                       const real_physics::Vector3& , const real_physics::Vector3&>())
+
+                             .def(luabind::constructor<real_physics::rpPhysicsBody* , real_physics::rpPhysicsBody* ,
+                                                       const real_physics::Vector3& , const real_physics::Vector3& ,
+                                                              real_physics::scalar  ,       real_physics::scalar>())
+                         ]);
+
+
+    importToScope( luabind::namespace_("physics")
+                         [
+                             luabind::class_<real_physics::rpFixedJointInfo , luabind::bases<real_physics::rpJointInfo> >("fixed_info")
+                            // constructor
+                            .def(luabind::constructor<real_physics::rpPhysicsBody* , real_physics::rpPhysicsBody* , const real_physics::Vector3&>())
+
+                         ]);
+
+
+    //------------------------------------------ Joints -----------------------------------------------------//
 
     importToScope(  luabind::namespace_("physics")
                           [
@@ -348,28 +398,55 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
 
 
     importToScope(  luabind::namespace_("physics")
-                          [
-                             luabind::class_<real_physics::rpDistanceJoint , luabind::bases<real_physics::rpJoint> >("dist_joint")
-                             // constructor
-                             .def(luabind::constructor<const real_physics::rpDistanceJointInfo&>())
-                          ]);
+                     [
+                         luabind::class_<real_physics::rpDistanceJoint , luabind::bases<real_physics::rpJoint> >("dist_joint")
+                         // constructor
+                         .def(luabind::constructor<const real_physics::rpDistanceJointInfo&>())
+                     ]);
 
 
     importToScope(  luabind::namespace_("physics")
-                          [
-                             luabind::class_<real_physics::rpBallAndSocketJoint , luabind::bases<real_physics::rpJoint> >("ball_joint")
-                              // constructor
-                             .def(luabind::constructor<const real_physics::rpBallAndSocketJointInfo&>())
-                          ]);
+                    [
+                       luabind::class_<real_physics::rpBallAndSocketJoint , luabind::bases<real_physics::rpJoint> >("ball_joint")
+                       // constructor
+                       .def(luabind::constructor<const real_physics::rpBallAndSocketJointInfo&>())
+                    ]);
 
 
 
     importToScope(  luabind::namespace_("physics")
-                          [
-                            luabind::class_< real_physics::rpDynamicsWorld ,luabind::bases<real_physics::rpCollisionWorld>>("dynamics_world")
-                            // constructor
-                            .def(luabind::constructor<const real_physics::Vector3&>())
-                          ]);
+                    [
+                        luabind::class_<real_physics::rpHingeJoint , luabind::bases<real_physics::rpJoint> >("hinge_joint")
+                        // constructor
+                        .def(luabind::constructor<const real_physics::rpHingeJointInfo&>())
+                    ]);
+
+
+
+    importToScope(  luabind::namespace_("physics")
+                    [
+                        luabind::class_<real_physics::rpSliderJoint , luabind::bases<real_physics::rpJoint> >("slider_joint")
+                        // constructor
+                        .def(luabind::constructor<const real_physics::rpSliderJointInfo&>())
+                    ]);
+
+
+
+    importToScope(  luabind::namespace_("physics")
+                    [
+                        luabind::class_<real_physics::rpFixedJoint , luabind::bases<real_physics::rpJoint> >("fixed_joint")
+                        // constructor
+                        .def(luabind::constructor<const real_physics::rpFixedJointInfo&>())
+                    ]);
+
+      //------------------------------------------------- physics world ------------------------------------------------------------//
+
+    importToScope(  luabind::namespace_("physics")
+                    [
+                       luabind::class_< real_physics::rpDynamicsWorld ,luabind::bases<real_physics::rpCollisionWorld>>("dynamics_world")
+                       // constructor
+                       .def(luabind::constructor<const real_physics::Vector3&>())
+                    ]);
 
 
 }
