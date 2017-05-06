@@ -1,6 +1,7 @@
 #ifdef __ANDROID__
 #elif defined(WIN32) || defined(__linux__)
-#include <GL/glew.h>
+//#include <GL/glew.h>
+#include <GL/gl.h>
 #endif
 #include <qopengl.h>
 // Libraries
