@@ -162,12 +162,13 @@ class rpRigidPhysicsBody: public rpPhysicsBody
 		void setIsSleeping(bool isSleeping);
 
 
-		//// Integrate Velocity
+        //// Integrate
 		void Integrate(scalar _dt);
 
 
 		//// Change the body of the observer
-	    void observerLookChange( rpRigidPhysicsBody *rigidBody );
+        void changeToFrameOfReference( rpRigidPhysicsBody *rigidBody );
+
 
 
 		/// Recompute the center of mass, total mass and inertia tensor of the body using all

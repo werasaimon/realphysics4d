@@ -31,63 +31,7 @@ rpDynamicsWorld::rpDynamicsWorld(const Vector3& gravity)
 // Destroy all the  world
 rpDynamicsWorld::~rpDynamicsWorld()
 {
-
     destroy();
-
-    /**
-
-        status = false;
-
-        // Destroy all the joints that have not been removed
-        for (auto itJoints = mPhysicsJoints.begin(); itJoints != mPhysicsJoints.end();)
-        {
-            std::set<rpJoint*>::iterator itToRemove = itJoints;
-            ++itJoints;
-            destroyJoint(*itToRemove);
-
-        }
-
-        // Destroy all the rigid bodies that have not been removed
-        for (auto itRigidBodies = mPhysicsBodies.begin(); itRigidBodies != mPhysicsBodies.end();)
-        {
-            std::set<rpPhysicsBody*>::iterator itToRemove = itRigidBodies;
-            ++itRigidBodies;
-            destroyBody(*itToRemove);
-        }
-
-
-        // Destroy all pair collisions that have not been removed
-        if(!mContactSolvers.empty())
-        {
-            for( auto pairs : mContactSolvers )
-            {
-                delete pairs.second;
-            }
-
-            mContactSolvers.clear();
-        }
-
-
-        // Destroy all pair collisions that have not been removed
-        if(!mCollisionContactOverlappingPairs.empty())
-        {
-            for( auto pair : mCollisionContactOverlappingPairs )
-            {
-                delete pair.second;
-            }
-
-            mCollisionContactOverlappingPairs.clear();
-
-        }
-
-
-        assert(mPhysicsJoints.size() == 0);
-        assert(mPhysicsBodies.size() == 0);
-        assert(mContactSolvers.empty());
-        assert(mCollisionContactOverlappingPairs.empty());
-
-    /**/
-
 }
 
 
@@ -119,33 +63,33 @@ void rpDynamicsWorld::destroy()
     }
 
 
-    // Destroy all pair collisions that have not been removed
-    if(!mContactSolvers.empty())
-    {
-        for( auto pairs : mContactSolvers )
+        //        // Destroy all pair collisions that have not been removed
+        //        if(!mContactSolvers.empty())
+        //        {
+        //            for( auto pairs : mContactSolvers )
+        //            {
+        //                delete pairs.second;
+        //            }
+
+        //            mContactSolvers.clear();
+        //        }
+
+
+        // Destroy all pair collisions that have not been removed
+        if(!mCollisionContactOverlappingPairs.empty())
         {
-            delete pairs.second;
+            for( auto pair : mCollisionContactOverlappingPairs )
+            {
+                delete pair.second;
+            }
+
+            mCollisionContactOverlappingPairs.clear();
         }
-
-        mContactSolvers.clear();
-    }
-
-
-    // Destroy all pair collisions that have not been removed
-    if(!mCollisionContactOverlappingPairs.empty())
-    {
-        for( auto pair : mCollisionContactOverlappingPairs )
-        {
-            delete pair.second;
-        }
-
-        mCollisionContactOverlappingPairs.clear();
-    }
 
     assert(mPhysicsJoints.size() == 0);
     assert(mPhysicsBodies.size() == 0);
-    assert(mContactSolvers.empty());
-    assert(mCollisionContactOverlappingPairs.empty());
+//    assert(mContactSolvers.empty());
+//    assert(mCollisionContactOverlappingPairs.empty());
 
 }
 

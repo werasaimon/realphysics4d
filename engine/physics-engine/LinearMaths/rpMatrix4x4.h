@@ -224,15 +224,14 @@ template<class T> class  rpMatrix4x4
 	}
 
 
-    rpMatrix4x4<T> getMetricesTensor4DSpaceMinkowski( bool contject = true ) const
+    static rpMatrix4x4<T> getMetricesTensor4DSpaceMinkowski( bool contject = true )
 	{
 		T n = (contject)? 1.0 : -1.0;
 
-		m[0][0]= -n; m[0][1]= 0; m[0][2]= 0; m[0][3]= 0;
-		m[1][0]=0;   m[1][1]= n; m[1][2]= 0; m[1][3]= 0;
-		m[2][0]=0;   m[2][1]= 0; m[2][2]= n; m[2][3]= 0;
-		m[3][0]=0;   m[3][1]= 0; m[3][2]= 0; m[3][3]= n;
-
+        return rpMatrix4x4<T>(n , 0  , 0  , 0,
+                              0 , -n , 0  , 0,
+                              0 , 0  , -n , 0,
+                              0 , 0  , 0  , -n);
 	}
 
 
