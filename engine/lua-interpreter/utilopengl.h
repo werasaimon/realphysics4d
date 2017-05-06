@@ -1,7 +1,7 @@
 #ifndef UTILOPENGL_H
 #define UTILOPENGL_H
 
-#include <GL/glew.h>
+//#include <GL/glew.h>
 
 #include "engine/UI-engine/engine.h"
 
