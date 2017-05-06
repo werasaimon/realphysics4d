@@ -237,3 +237,16 @@ function keyboard( scene )
 end
 
 
+function destroy( scene )
+  
+   DynamicsWorld:destroy();
+   delete( DynamicsWorld );
+
+
+    for i=0 , n_size do
+        delete( primitives[i] );
+    end;
+
+end;
+
+

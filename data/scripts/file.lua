@@ -121,6 +121,10 @@ end
 
 
 
+function destroy( scene ) 
+   physWorld:destroy(); 
+   delete( physWorld ); 
+end;
 
 
 
