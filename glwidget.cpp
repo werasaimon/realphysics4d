@@ -107,9 +107,9 @@ void GLWidget::initializeGL()
 
     initializeOpenGLFunctions();
 
-//    glClearColor(0, 0, 0, 1);
-//    glEnable(GL_DEPTH_TEST);
-//    glEnable(GL_CULL_FACE);
+    glClearColor(0, 0, 0, 1);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
 
 
     //mSceneOpenGL = new UnitSceneDemo();
@@ -120,7 +120,7 @@ void GLWidget::initializeGL()
     mSceneOpenGL->initialization();
 
     // Use QBasicTimer because its faster than QTimer
-    timer.start(12, this);
+    timer.start( 1 , this);
 }
 
 
@@ -158,7 +158,6 @@ void GLWidget::resizeGL(int w, int h)
 
 void GLWidget::paintGL()
 {
-    //mSceneOpenGL->render(1./60.);
       mSceneOpenGL->render(1./60.);
 }
 
