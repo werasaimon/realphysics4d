@@ -16,7 +16,7 @@ namespace real_physics
 {
 
 
-bool status;
+
 
 rpDynamicsWorld::rpDynamicsWorld(const Vector3& gravity)
 : mGravity(gravity),
@@ -24,7 +24,7 @@ rpDynamicsWorld::rpDynamicsWorld(const Vector3& gravity)
   mNbPositionSolverIterations(DEFAULT_POSITION_SOLVER_NB_ITERATIONS),
   mTimer( scalar(1.0) )
 {
-   status = true;
+
 }
 
 
@@ -39,7 +39,6 @@ rpDynamicsWorld::~rpDynamicsWorld()
 void rpDynamicsWorld::destroy()
 {
 
-    status = false;
 
     // Stop timer
     mTimer.stop();
@@ -75,21 +74,21 @@ void rpDynamicsWorld::destroy()
         //        }
 
 
-        // Destroy all pair collisions that have not been removed
-        if(!mCollisionContactOverlappingPairs.empty())
-        {
-            for( auto pair : mCollisionContactOverlappingPairs )
-            {
-                delete pair.second;
-            }
+    // Destroy all pair collisions that have not been removed
+    if(!mCollisionContactOverlappingPairs.empty())
+    {
+    	for( auto pair : mCollisionContactOverlappingPairs )
+    	{
+    		delete pair.second;
+    	}
 
-            mCollisionContactOverlappingPairs.clear();
-        }
+    	mCollisionContactOverlappingPairs.clear();
+    }
 
     assert(mPhysicsJoints.size() == 0);
     assert(mPhysicsBodies.size() == 0);
-//    assert(mContactSolvers.empty());
-//    assert(mCollisionContactOverlappingPairs.empty());
+    assert(mContactSolvers.empty());
+    assert(mCollisionContactOverlappingPairs.empty());
 
 }
 
@@ -97,7 +96,6 @@ void rpDynamicsWorld::destroy()
 
 void rpDynamicsWorld::update(scalar timeStep)
 {
-    if(!status) return;
 
      mTimer.setTimeStep(timeStep);
      mTimer.start();
@@ -128,9 +126,6 @@ void rpDynamicsWorld::update(scalar timeStep)
 
 void rpDynamicsWorld::updateFixedTime(scalar timeStep)
 {
-    if(!status) return;
-
-
     /****************************/
     integrateGravity(timeStep);
 

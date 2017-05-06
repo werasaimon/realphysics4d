@@ -38,7 +38,7 @@ class rpPhysicsObject : public rpCollisionBody
         rpPhysicsObject(const Transform& transform, rpCollisionDetection *CollideWorld, bodyindex id );
 
 
-		~rpPhysicsObject();
+		virtual ~rpPhysicsObject();
 
         /// Add a collision shape to the body.
         virtual rpProxyShape* addCollisionShape(rpCollisionShape* collisionShape , scalar mass ,  const Transform& transform = Transform::identity() );
