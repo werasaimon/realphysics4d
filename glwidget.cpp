@@ -49,10 +49,10 @@
 ****************************************************************************/
 
 
-#ifdef __ANDROID__
-#elif defined(WIN32) || defined(__linux__)
-#include <GL/glew.h>
-#endif
+//#ifdef __ANDROID__
+//#elif defined(WIN32) || defined(__linux__)
+//#include <GL/glew.h>
+//#endif
 
 
 #include "glwidget.h"
@@ -93,16 +93,16 @@ void GLWidget::initializeGL()
 {
 
 
-#ifdef __ANDROID__
-#elif defined(WIN32) || defined(__linux__)
+//#ifdef __ANDROID__
+//#elif defined(WIN32) || defined(__linux__)
 
-    GLenum err = glewInit();
-    if(err != GLEW_OK)
-    {
-        printf("%s",glewGetErrorString(err));
-    }
+//    GLenum err = glewInit();
+//    if(err != GLEW_OK)
+//    {
+//        printf("%s",glewGetErrorString(err));
+//    }
 
-#endif
+//#endif
 
 
     initializeOpenGLFunctions();
