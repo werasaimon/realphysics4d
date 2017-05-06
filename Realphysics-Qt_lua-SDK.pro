@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2017-04-19T04:28:11
+# Project created by QtCreator 2017-05-07T02:14:31
 #
 #-------------------------------------------------
 
@@ -12,17 +12,17 @@ TARGET = Realphysics-Qt_lua-SDK
 TEMPLATE = app
 
 
-QMAKE_CXXFLAGS += -m32
+#QMAKE_CXXFLAGS += -m32
 QMAKE_CXXFLAGS += -std=c++11
 
 #Android
 #LIBS +=  -lGLESv1_CM -lGLESv2
 
 #Linux
-#LIBS +=  -lGLEW -lGL -lGLU
+LIBS += -lGL -lGLU # -lGLEW
 
 #Windows
-LIBS += -lopengl32 -lglu32 -lglew32
+#LIBS += -lopengl32 -lglu32 # -lglew32
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings
@@ -38,6 +38,36 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
         widget.cpp \
+    glwidget.cpp \
+    engine/lua-interpreter/luabind/class.cpp \
+    engine/lua-interpreter/luabind/class_info.cpp \
+    engine/lua-interpreter/luabind/class_registry.cpp \
+    engine/lua-interpreter/luabind/class_rep.cpp \
+    engine/lua-interpreter/luabind/create_class.cpp \
+    engine/lua-interpreter/luabind/error.cpp \
+    engine/lua-interpreter/luabind/exception_handler.cpp \
+    engine/lua-interpreter/luabind/function.cpp \
+    engine/lua-interpreter/luabind/function_introspection.cpp \
+    engine/lua-interpreter/luabind/headertest.cpp \
+    engine/lua-interpreter/luabind/inheritance.cpp \
+    engine/lua-interpreter/luabind/link_compatibility.cpp \
+    engine/lua-interpreter/luabind/object_rep.cpp \
+    engine/lua-interpreter/luabind/open.cpp \
+    engine/lua-interpreter/luabind/operator.cpp \
+    engine/lua-interpreter/luabind/pcall.cpp \
+    engine/lua-interpreter/luabind/scope.cpp \
+    engine/lua-interpreter/luabind/set_package_preload.cpp \
+    engine/lua-interpreter/luabind/stack_content_by_name.cpp \
+    engine/lua-interpreter/luabind/weak_ref.cpp \
+    engine/lua-interpreter/luabind/wrapper_base.cpp \
+    engine/lua-interpreter/loadlibarylua.cpp \
+    engine/lua-interpreter/loadlibaryluaopengl.cpp \
+    engine/lua-interpreter/loadlibaryluaphysicsengine.cpp \
+    engine/lua-interpreter/loadlibaryluashader.cpp \
+    engine/lua-interpreter/loadlibaryluauiengine.cpp \
+    engine/lua-interpreter/loadlibaryluavalue.cpp \
+    engine/lua-interpreter/lua_integration.cpp \
+    engine/lua-interpreter/utilopengl.cpp \
     engine/physics-engine/Collision/Body/rpBody.cpp \
     engine/physics-engine/Collision/Body/rpCollisionBody.cpp \
     engine/physics-engine/Collision/BroadPhase/rbBroadPhaseAlgorithm.cpp \
@@ -82,6 +112,7 @@ SOURCES += main.cpp\
     engine/physics-engine/Dynamics/Solver/rpContactSolver.cpp \
     engine/physics-engine/Dynamics/Solver/rpSequentialImpulseObjectSolver.cpp \
     engine/physics-engine/Dynamics/rpDynamicsWorld.cpp \
+    engine/physics-engine/Dynamics/rpTimer.cpp \
     engine/physics-engine/Geometry/QuickHull/QuickHull.cpp \
     engine/physics-engine/Geometry/rpGrahamScan2dConvexHull.cpp \
     engine/physics-engine/Geometry/rpPolygonClipping.cpp \
@@ -97,28 +128,25 @@ SOURCES += main.cpp\
     engine/physics-engine/LinearMaths/rpVector2D.cpp \
     engine/physics-engine/LinearMaths/rpVector3D.cpp \
     engine/physics-engine/Memory/rpAlignedallocator.cpp \
-    engine/lua-interpreter/luabind/class.cpp \
-    engine/lua-interpreter/luabind/class_info.cpp \
-    engine/lua-interpreter/luabind/class_registry.cpp \
-    engine/lua-interpreter/luabind/class_rep.cpp \
-    engine/lua-interpreter/luabind/create_class.cpp \
-    engine/lua-interpreter/luabind/error.cpp \
-    engine/lua-interpreter/luabind/exception_handler.cpp \
-    engine/lua-interpreter/luabind/function.cpp \
-    engine/lua-interpreter/luabind/function_introspection.cpp \
-    engine/lua-interpreter/luabind/headertest.cpp \
-    engine/lua-interpreter/luabind/inheritance.cpp \
-    engine/lua-interpreter/luabind/link_compatibility.cpp \
-    engine/lua-interpreter/luabind/object_rep.cpp \
-    engine/lua-interpreter/luabind/open.cpp \
-    engine/lua-interpreter/luabind/operator.cpp \
-    engine/lua-interpreter/luabind/pcall.cpp \
-    engine/lua-interpreter/luabind/scope.cpp \
-    engine/lua-interpreter/luabind/set_package_preload.cpp \
-    engine/lua-interpreter/luabind/stack_content_by_name.cpp \
-    engine/lua-interpreter/luabind/weak_ref.cpp \
-    engine/lua-interpreter/luabind/wrapper_base.cpp \
-    engine/lua-interpreter/lua_integration.cpp \
+    engine/UI-engine/Geometry/Camera/camera.cpp \
+    engine/UI-engine/Geometry/Camera/CCameraEya.cpp \
+    engine/UI-engine/Geometry/Mesh/Loaders/MeshReadFile3DS.cpp \
+    engine/UI-engine/Geometry/Mesh/Primitive/MeshBox.cpp \
+    engine/UI-engine/Geometry/Mesh/Primitive/MeshPlane.cpp \
+    engine/UI-engine/Geometry/Mesh/Primitive/MeshTriangle.cpp \
+    engine/UI-engine/Geometry/Mesh/GLUtilityGeometry.cpp \
+    engine/UI-engine/Geometry/Mesh/Mesh.cpp \
+    engine/UI-engine/Geometry/Object/Object3D.cpp \
+    engine/UI-engine/Light/Light.cpp \
+    engine/UI-engine/maths/glmath.cpp \
+    engine/UI-engine/maths/Matrix4.cpp \
+    engine/UI-engine/maths/Vector3.cpp \
+    engine/UI-engine/Physics/Body/GroupMesh.cpp \
+    engine/UI-engine/Physics/Body/UltimatePhysicsBody.cpp \
+    engine/UI-engine/Physics/Joint/UltimateJoint.cpp \
+    engine/UI-engine/Physics/DynamicsWorld.cpp \
+    engine/UI-engine/Shader/Shader.cpp \
+    engine/UI-engine/Texture/Texture2D.cpp \
     engine/lua-interpreter/lua/lapi.c \
     engine/lua-interpreter/lua/lauxlib.c \
     engine/lua-interpreter/lua/lbaselib.c \
@@ -155,129 +183,13 @@ SOURCES += main.cpp\
     engine/lua-interpreter/lua/lvm.c \
     engine/lua-interpreter/lua/lzio.c \
     engine/lua-interpreter/lua/net.c \
-    engine/UI-engine/Geometry/Camera/camera.cpp \
-    engine/UI-engine/Geometry/Mesh/Loaders/MeshReadFile3DS.cpp \
-    engine/UI-engine/Geometry/Mesh/Primitive/MeshBox.cpp \
-    engine/UI-engine/Geometry/Mesh/Primitive/MeshPlane.cpp \
-    engine/UI-engine/Geometry/Mesh/Primitive/MeshTriangle.cpp \
-    engine/UI-engine/Geometry/Mesh/GLUtilityGeometry.cpp \
-    engine/UI-engine/Geometry/Mesh/Mesh.cpp \
-    engine/UI-engine/Geometry/Object/Object3D.cpp \
-    engine/UI-engine/Light/Light.cpp \
-    engine/UI-engine/maths/glmath.cpp \
-    engine/UI-engine/maths/Matrix4.cpp \
-    engine/UI-engine/maths/Vector3.cpp \
-    engine/UI-engine/Physics/Body/GroupMesh.cpp \
-    engine/UI-engine/Physics/Body/UltimatePhysicsBody.cpp \
-    engine/UI-engine/Physics/Joint/UltimateJoint.cpp \
-    engine/UI-engine/Physics/DynamicsWorld.cpp \
-    engine/UI-engine/Shader/Shader.cpp \
-    engine/UI-engine/Texture/Texture2D.cpp \
     examples/UnitSceneDemo.cpp \
     examples/UnitSceneGeometry.cpp \
     examples/UnitSceneLuaInterpretationSDK.cpp \
-    glwidget.cpp \
-    formrunscript.cpp \
-    engine/lua-interpreter/utilopengl.cpp \
-    engine/lua-interpreter/loadlibarylua.cpp \
-    engine/lua-interpreter/loadlibaryluaopengl.cpp \
-    engine/lua-interpreter/loadlibaryluaphysicsengine.cpp \
-    engine/lua-interpreter/loadlibaryluauiengine.cpp \
-    engine/lua-interpreter/loadlibaryluashader.cpp \
-    engine/lua-interpreter/loadlibaryluavalue.cpp \
-    engine/physics-engine/Dynamics/rpTimer.cpp
+    formrunscript.cpp
 
 HEADERS  += widget.h \
-    engine/physics-engine/Collision/Body/rpBody.h \
-    engine/physics-engine/Collision/Body/rpCollisionBody.h \
-    engine/physics-engine/Collision/BroadPhase/rbBroadPhaseAlgorithm.h \
-    engine/physics-engine/Collision/BroadPhase/rpDynamicAABBTree.h \
-    engine/physics-engine/Collision/ContactManiflod/maniflod.h \
-    engine/physics-engine/Collision/ContactManiflod/rpContactManifold.h \
-    engine/physics-engine/Collision/ContactManiflod/rpContactManifoldSet.h \
-    engine/physics-engine/Collision/ContactManiflod/rpContactPoint.h \
-    engine/physics-engine/Collision/ContactManiflod/rpGenerationContactManiflodSet.h \
-    engine/physics-engine/Collision/NarrowPhase/EPA/rpEdgeEPA.h \
-    engine/physics-engine/Collision/NarrowPhase/EPA/rpEPAAlgorithm.h \
-    engine/physics-engine/Collision/NarrowPhase/EPA/rpTriangleEPA.h \
-    engine/physics-engine/Collision/NarrowPhase/EPA/rpTrianglesStore.h \
-    engine/physics-engine/Collision/NarrowPhase/GJK/rpGJKAlgorithm.h \
-    engine/physics-engine/Collision/NarrowPhase/GJK/rpSimplex.h \
-    engine/physics-engine/Collision/NarrowPhase/GJK_EPA/rpComputeGjkEpaPenetration.h \
-    engine/physics-engine/Collision/NarrowPhase/GJK_EPA/rpGjkCollisionDescription.h \
-    engine/physics-engine/Collision/NarrowPhase/GJK_EPA/rpGjkEpa.h \
-    engine/physics-engine/Collision/NarrowPhase/GJK_EPA/rpGJKEPAAlgorithm.h \
-    engine/physics-engine/Collision/NarrowPhase/GJK_EPA/rpSimplexSolverInterface.h \
-    engine/physics-engine/Collision/NarrowPhase/GJK_EPA/rpVoronoiSimplexSolver.h \
-    engine/physics-engine/Collision/NarrowPhase/rpNarrowPhaseCollisionAlgorithm.h \
-    engine/physics-engine/Collision/Shapes/rpAABB.h \
-    engine/physics-engine/Collision/Shapes/rpBoxShape.h \
-    engine/physics-engine/Collision/Shapes/rpCollisionShape.h \
-    engine/physics-engine/Collision/Shapes/rpConvexHullShape.h \
-    engine/physics-engine/Collision/Shapes/rpConvexShape.h \
-    engine/physics-engine/Collision/Shapes/rpSphereShape.h \
-    engine/physics-engine/Collision/Shapes/rpTriangleShape.h \
-    engine/physics-engine/Collision/collision.h \
-    engine/physics-engine/Collision/rpCollisionDetection.h \
-    engine/physics-engine/Collision/rpCollisionShapeInfo.h \
-    engine/physics-engine/Collision/rpCollisionWorld.h \
-    engine/physics-engine/Collision/rpOverlappingPair.h \
-    engine/physics-engine/Collision/rpProxyShape.h \
-    engine/physics-engine/Collision/rpRaycastInfo.h \
-    engine/physics-engine/Dynamics/Body/rpPhysicsBody.h \
-    engine/physics-engine/Dynamics/Body/rpPhysicsObject.h \
-    engine/physics-engine/Dynamics/Body/rpRigidPhysicsBody.h \
-    engine/physics-engine/Dynamics/Joint/JointAngle/rpAngleJoint.h \
-    engine/physics-engine/Dynamics/Joint/rpBallAndSocketJoint.h \
-    engine/physics-engine/Dynamics/Joint/rpDistanceJoint.h \
-    engine/physics-engine/Dynamics/Joint/rpFixedJoint.h \
-    engine/physics-engine/Dynamics/Joint/rpHingeJoint.h \
-    engine/physics-engine/Dynamics/Joint/rpJoint.h \
-    engine/physics-engine/Dynamics/Joint/rpSliderJoint.h \
-    engine/physics-engine/Dynamics/Material/rpPhysicsMaterial.h \
-    engine/physics-engine/Dynamics/Solver/rpContactSolver.h \
-    engine/physics-engine/Dynamics/Solver/rpSequentialImpulseObjectSolver.h \
-    engine/physics-engine/Dynamics/dynamics.h \
-    engine/physics-engine/Dynamics/rpDynamicsWorld.h \
-    engine/physics-engine/Geometry/QuickHull/Structs/Mesh.hpp \
-    engine/physics-engine/Geometry/QuickHull/Structs/Plane.hpp \
-    engine/physics-engine/Geometry/QuickHull/Structs/Pool.hpp \
-    engine/physics-engine/Geometry/QuickHull/Structs/Ray.hpp \
-    engine/physics-engine/Geometry/QuickHull/Structs/Vector3.hpp \
-    engine/physics-engine/Geometry/QuickHull/Structs/VertexDataSource.hpp \
-    engine/physics-engine/Geometry/QuickHull/ConvexHull.hpp \
-    engine/physics-engine/Geometry/QuickHull/HalfEdgeMesh.hpp \
-    engine/physics-engine/Geometry/QuickHull/MathUtils.hpp \
-    engine/physics-engine/Geometry/QuickHull/QuickHull.hpp \
-    engine/physics-engine/Geometry/QuickHull/Types.hpp \
-    engine/physics-engine/Geometry/geometry.h \
-    engine/physics-engine/Geometry/rpGrahamScan2dConvexHull.h \
-    engine/physics-engine/Geometry/rpPolygonClipping.h \
-    engine/physics-engine/LinearMaths/mathematics.h \
-    engine/physics-engine/LinearMaths/rpGyroscopic.h \
-    engine/physics-engine/LinearMaths/rpLinearMtah.h \
-    engine/physics-engine/LinearMaths/rpLorentzContraction.h \
-    engine/physics-engine/LinearMaths/rpMatrix2x2.h \
-    engine/physics-engine/LinearMaths/rpMatrix3x3.h \
-    engine/physics-engine/LinearMaths/rpMatrix4x4.h \
-    engine/physics-engine/LinearMaths/rpMinkowskiVector4.h \
-    engine/physics-engine/LinearMaths/rpProjectPlane.h \
-    engine/physics-engine/LinearMaths/rpQuaternion.h \
-    engine/physics-engine/LinearMaths/rpRay.h \
-    engine/physics-engine/LinearMaths/rpRelativityFunction.h \
-    engine/physics-engine/LinearMaths/rpTransform.h \
-    engine/physics-engine/LinearMaths/rpTransformUtil.h \
-    engine/physics-engine/LinearMaths/rpVector2D.h \
-    engine/physics-engine/LinearMaths/rpVector3D.h \
-    engine/physics-engine/Memory/memory.h \
-    engine/physics-engine/Memory/rpAlignedallocator.h \
-    engine/physics-engine/Memory/rpAlignedobjectarray.h \
-    engine/physics-engine/Memory/rpList.h \
-    engine/physics-engine/Memory/rpStack.h \
-    engine/physics-engine/config.h \
-    engine/physics-engine/physics.h \
-    engine/physics-engine/realphysics.h \
-    engine/physics-engine/scalar.h \
+    glwidget.h \
     engine/lua-interpreter/lua/lapi.h \
     engine/lua-interpreter/lua/lauxlib.h \
     engine/lua-interpreter/lua/lcode.h \
@@ -401,8 +313,108 @@ HEADERS  += widget.h \
     engine/lua-interpreter/luabind/weak_ref.hpp \
     engine/lua-interpreter/luabind/wrapper_base.hpp \
     engine/lua-interpreter/luabind/yield_policy.hpp \
+    engine/lua-interpreter/loadlibarylua.h \
+    engine/lua-interpreter/loadlibaryluaopengl.h \
+    engine/lua-interpreter/loadlibaryluaphysicsengine.h \
+    engine/lua-interpreter/loadlibaryluashader.h \
+    engine/lua-interpreter/loadlibaryluauiengine.h \
+    engine/lua-interpreter/loadlibaryluavalue.h \
     engine/lua-interpreter/lua_integration.h \
+    engine/lua-interpreter/lualibary.h \
+    engine/lua-interpreter/utilopengl.h \
+    engine/physics-engine/Collision/Body/rpBody.h \
+    engine/physics-engine/Collision/Body/rpCollisionBody.h \
+    engine/physics-engine/Collision/BroadPhase/rbBroadPhaseAlgorithm.h \
+    engine/physics-engine/Collision/BroadPhase/rpDynamicAABBTree.h \
+    engine/physics-engine/Collision/ContactManiflod/maniflod.h \
+    engine/physics-engine/Collision/ContactManiflod/rpContactManifold.h \
+    engine/physics-engine/Collision/ContactManiflod/rpContactManifoldSet.h \
+    engine/physics-engine/Collision/ContactManiflod/rpContactPoint.h \
+    engine/physics-engine/Collision/ContactManiflod/rpGenerationContactManiflodSet.h \
+    engine/physics-engine/Collision/NarrowPhase/EPA/rpEdgeEPA.h \
+    engine/physics-engine/Collision/NarrowPhase/EPA/rpEPAAlgorithm.h \
+    engine/physics-engine/Collision/NarrowPhase/EPA/rpTriangleEPA.h \
+    engine/physics-engine/Collision/NarrowPhase/EPA/rpTrianglesStore.h \
+    engine/physics-engine/Collision/NarrowPhase/GJK/rpGJKAlgorithm.h \
+    engine/physics-engine/Collision/NarrowPhase/GJK/rpSimplex.h \
+    engine/physics-engine/Collision/NarrowPhase/GJK_EPA/rpComputeGjkEpaPenetration.h \
+    engine/physics-engine/Collision/NarrowPhase/GJK_EPA/rpGjkCollisionDescription.h \
+    engine/physics-engine/Collision/NarrowPhase/GJK_EPA/rpGjkEpa.h \
+    engine/physics-engine/Collision/NarrowPhase/GJK_EPA/rpGJKEPAAlgorithm.h \
+    engine/physics-engine/Collision/NarrowPhase/GJK_EPA/rpSimplexSolverInterface.h \
+    engine/physics-engine/Collision/NarrowPhase/GJK_EPA/rpVoronoiSimplexSolver.h \
+    engine/physics-engine/Collision/NarrowPhase/rpNarrowPhaseCollisionAlgorithm.h \
+    engine/physics-engine/Collision/Shapes/rpAABB.h \
+    engine/physics-engine/Collision/Shapes/rpBoxShape.h \
+    engine/physics-engine/Collision/Shapes/rpCollisionShape.h \
+    engine/physics-engine/Collision/Shapes/rpConvexHullShape.h \
+    engine/physics-engine/Collision/Shapes/rpConvexShape.h \
+    engine/physics-engine/Collision/Shapes/rpSphereShape.h \
+    engine/physics-engine/Collision/Shapes/rpTriangleShape.h \
+    engine/physics-engine/Collision/collision.h \
+    engine/physics-engine/Collision/rpCollisionDetection.h \
+    engine/physics-engine/Collision/rpCollisionShapeInfo.h \
+    engine/physics-engine/Collision/rpCollisionWorld.h \
+    engine/physics-engine/Collision/rpOverlappingPair.h \
+    engine/physics-engine/Collision/rpProxyShape.h \
+    engine/physics-engine/Collision/rpRaycastInfo.h \
+    engine/physics-engine/Dynamics/Body/rpPhysicsBody.h \
+    engine/physics-engine/Dynamics/Body/rpPhysicsObject.h \
+    engine/physics-engine/Dynamics/Body/rpRigidPhysicsBody.h \
+    engine/physics-engine/Dynamics/Joint/JointAngle/rpAngleJoint.h \
+    engine/physics-engine/Dynamics/Joint/rpBallAndSocketJoint.h \
+    engine/physics-engine/Dynamics/Joint/rpDistanceJoint.h \
+    engine/physics-engine/Dynamics/Joint/rpFixedJoint.h \
+    engine/physics-engine/Dynamics/Joint/rpHingeJoint.h \
+    engine/physics-engine/Dynamics/Joint/rpJoint.h \
+    engine/physics-engine/Dynamics/Joint/rpSliderJoint.h \
+    engine/physics-engine/Dynamics/Material/rpPhysicsMaterial.h \
+    engine/physics-engine/Dynamics/Solver/rpContactSolver.h \
+    engine/physics-engine/Dynamics/Solver/rpSequentialImpulseObjectSolver.h \
+    engine/physics-engine/Dynamics/dynamics.h \
+    engine/physics-engine/Dynamics/rpDynamicsWorld.h \
+    engine/physics-engine/Dynamics/rpTimer.h \
+    engine/physics-engine/Geometry/QuickHull/Structs/Mesh.hpp \
+    engine/physics-engine/Geometry/QuickHull/Structs/Plane.hpp \
+    engine/physics-engine/Geometry/QuickHull/Structs/Pool.hpp \
+    engine/physics-engine/Geometry/QuickHull/Structs/Ray.hpp \
+    engine/physics-engine/Geometry/QuickHull/Structs/Vector3.hpp \
+    engine/physics-engine/Geometry/QuickHull/Structs/VertexDataSource.hpp \
+    engine/physics-engine/Geometry/QuickHull/ConvexHull.hpp \
+    engine/physics-engine/Geometry/QuickHull/HalfEdgeMesh.hpp \
+    engine/physics-engine/Geometry/QuickHull/MathUtils.hpp \
+    engine/physics-engine/Geometry/QuickHull/QuickHull.hpp \
+    engine/physics-engine/Geometry/QuickHull/Types.hpp \
+    engine/physics-engine/Geometry/geometry.h \
+    engine/physics-engine/Geometry/rpGrahamScan2dConvexHull.h \
+    engine/physics-engine/Geometry/rpPolygonClipping.h \
+    engine/physics-engine/LinearMaths/mathematics.h \
+    engine/physics-engine/LinearMaths/rpGyroscopic.h \
+    engine/physics-engine/LinearMaths/rpLinearMtah.h \
+    engine/physics-engine/LinearMaths/rpLorentzContraction.h \
+    engine/physics-engine/LinearMaths/rpMatrix2x2.h \
+    engine/physics-engine/LinearMaths/rpMatrix3x3.h \
+    engine/physics-engine/LinearMaths/rpMatrix4x4.h \
+    engine/physics-engine/LinearMaths/rpMinkowskiVector4.h \
+    engine/physics-engine/LinearMaths/rpProjectPlane.h \
+    engine/physics-engine/LinearMaths/rpQuaternion.h \
+    engine/physics-engine/LinearMaths/rpRay.h \
+    engine/physics-engine/LinearMaths/rpRelativityFunction.h \
+    engine/physics-engine/LinearMaths/rpTransform.h \
+    engine/physics-engine/LinearMaths/rpTransformUtil.h \
+    engine/physics-engine/LinearMaths/rpVector2D.h \
+    engine/physics-engine/LinearMaths/rpVector3D.h \
+    engine/physics-engine/Memory/memory.h \
+    engine/physics-engine/Memory/rpAlignedallocator.h \
+    engine/physics-engine/Memory/rpAlignedobjectarray.h \
+    engine/physics-engine/Memory/rpList.h \
+    engine/physics-engine/Memory/rpStack.h \
+    engine/physics-engine/config.h \
+    engine/physics-engine/physics.h \
+    engine/physics-engine/realphysics.h \
+    engine/physics-engine/scalar.h \
     engine/UI-engine/Geometry/Camera/camera.h \
+    engine/UI-engine/Geometry/Camera/CCameraEya.h \
     engine/UI-engine/Geometry/Mesh/Loaders/MeshReadFile3DS.h \
     engine/UI-engine/Geometry/Mesh/Primitive/MeshBox.h \
     engine/UI-engine/Geometry/Mesh/Primitive/MeshPlane.h \
@@ -432,26 +444,17 @@ HEADERS  += widget.h \
     examples/UnitSceneDemo.h \
     examples/UnitSceneGeometry.h \
     examples/UnitSceneLuaInterpretationSDK.h \
-    glwidget.h \
-    formrunscript.h \
-    engine/lua-interpreter/utilopengl.h \
-    engine/lua-interpreter/loadlibarylua.h \
-    engine/lua-interpreter/loadlibaryluaopengl.h \
-    engine/lua-interpreter/lualibary.h \
-    engine/lua-interpreter/loadlibaryluaphysicsengine.h \
-    engine/lua-interpreter/loadlibaryluauiengine.h \
-    engine/lua-interpreter/loadlibaryluashader.h \
-    engine/lua-interpreter/loadlibaryluavalue.h \
-    engine/physics-engine/Dynamics/rpTimer.h
+    formrunscript.h
 
 FORMS    += widget.ui \
     formrunscript.ui
 
+RESOURCES += \
+    files.qrc \
+    shaders.qrc \
+    scripts.qrc
+
+
 CONFIG += mobility
 MOBILITY =
-
-RESOURCES += \
-    shaders.qrc \
-    scripts.qrc \
-    files.qrc
 
