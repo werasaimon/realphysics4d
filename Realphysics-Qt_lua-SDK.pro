@@ -12,7 +12,7 @@ TARGET = Realphysics-Qt_lua-SDK
 TEMPLATE = app
 
 
-#QMAKE_CXXFLAGS += -m32
+
 QMAKE_CXXFLAGS += -std=c++11
 
 #Android
@@ -23,6 +23,9 @@ LIBS += -lGL -lGLU # -lGLEW
 
 #Windows
 #LIBS += -lopengl32 -lglu32 # -lglew32
+
+
+QMAKE_RPATHDIR += $ORIGIN/lib
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings
