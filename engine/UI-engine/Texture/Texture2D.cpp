@@ -1,7 +1,10 @@
+
 #ifdef __ANDROID__
 #elif defined(WIN32) || defined(__linux__)
+//#define GL_GLEXT_PROTOTYPES
 //#include <GL/glew.h>
 #include <GL/gl.h>
+#include <GL/glext.h>
 #endif
 #include <qopengl.h>
 // Libraries
@@ -9,6 +12,9 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+
+
+#define glActiveTexture  ((PFNGLTEXIMAGE3DPROC) wglGetProcAddress("glActiveTexture"));
 
 using namespace utility_engine;
 
@@ -151,6 +157,8 @@ void Texture2D::unbind() const
     glActiveTexture(GL_TEXTURE0 + mLayer);
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
+
+
 }
 
 
