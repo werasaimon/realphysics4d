@@ -13,7 +13,7 @@
 #include <iostream>
 #include <string>
 
-#ifdef defined(WIN32) || defined(WIN64)
+#ifdef WIN32
     #define glActiveTexture  ((PFNGLTEXIMAGE3DPROC) wglGetProcAddress("glActiveTexture"));
 #endif
 
