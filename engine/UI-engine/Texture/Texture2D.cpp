@@ -13,8 +13,9 @@
 #include <iostream>
 #include <string>
 
-
-#define glActiveTexture  ((PFNGLTEXIMAGE3DPROC) wglGetProcAddress("glActiveTexture"));
+#ifdef defined(WIN32) || defined(WIN64)
+    #define glActiveTexture  ((PFNGLTEXIMAGE3DPROC) wglGetProcAddress("glActiveTexture"));
+#endif
 
 using namespace utility_engine;
 
