@@ -62,16 +62,16 @@ void rpDynamicsWorld::destroy()
     }
 
 
-        //        // Destroy all pair collisions that have not been removed
-        //        if(!mContactSolvers.empty())
-        //        {
-        //            for( auto pairs : mContactSolvers )
-        //            {
-        //                delete pairs.second;
-        //            }
+    // Destroy all pair collisions that have not been removed
+    if(!mContactSolvers.empty())
+    {
+        for( auto pairs : mContactSolvers )
+        {
+            delete pairs.second;
+        }
 
-        //            mContactSolvers.clear();
-        //        }
+        mContactSolvers.clear();
+    }
 
 
     // Destroy all pair collisions that have not been removed
