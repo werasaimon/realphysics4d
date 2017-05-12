@@ -8,12 +8,12 @@ QT       += core gui opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = Realphysics-Qt_lua-SDK
+TARGET = realphysics-interpreter
 TEMPLATE = app
 
 
 
-#QMAKE_CXXFLAGS += -m32
+QMAKE_CXXFLAGS += -m32
 QMAKE_CXXFLAGS += -std=c++11
 
 #Android
