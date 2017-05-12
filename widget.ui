@@ -24,6 +24,9 @@
          <bold>true</bold>
         </font>
        </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(165, 165, 165);</string>
+       </property>
        <property name="text">
         <string>run</string>
        </property>
@@ -41,6 +44,9 @@
          <strikeout>false</strikeout>
         </font>
        </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(165, 165, 165);</string>
+       </property>
        <property name="text">
         <string>open_script</string>
        </property>
@@ -54,13 +60,20 @@
          <bold>true</bold>
         </font>
        </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(165, 165, 165);</string>
+       </property>
        <property name="text">
         <string>save_script</string>
        </property>
       </widget>
      </item>
      <item row="0" column="0" colspan="3">
-      <widget class="QTextEdit" name="textEdit"/>
+      <widget class="QTextEdit" name="textEdit">
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(165, 165, 165);</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
