@@ -34,8 +34,11 @@ private slots:
 private:
 
     Ui::Widget *ui;
+    FormRunScript *widget;
 
     QString mStringFilePathName;
+
+    bool    mIsActiveButtonRunScript = false;
 };
 
 #endif // WIDGET_H

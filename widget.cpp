@@ -54,8 +54,20 @@ void Widget::runScript()
     // this->hide();
    // this->close();
 
-    FormRunScript *widget = new FormRunScript();
-    widget->show();
+    if( !mIsActiveButtonRunScript )
+    {
+       widget = new FormRunScript();
+       widget->show();
+       mIsActiveButtonRunScript = true;
+       ui->pushButton->setText("stop");
+    }
+    else
+    {
+       widget->close();
+       delete widget;
+       mIsActiveButtonRunScript = false;
+       ui->pushButton->setText("run..");
+    }
 
 }
 
