@@ -13,7 +13,7 @@ TEMPLATE = app
 
 
 
-#QMAKE_CXXFLAGS += -m32
+QMAKE_CXXFLAGS += -m32
 QMAKE_CXXFLAGS += -std=c++11
 
 #Android
