@@ -67,7 +67,7 @@ namespace utility_engine
             void update( float timeStep );
 
             /// Update real-time physics simulate (Fixed-TimeStep)
-            void updateFixedTime( float timeStep );
+            void updateFixedStep( float timeStep );
 
             /// Realase and a delete memory
             void destroy();
