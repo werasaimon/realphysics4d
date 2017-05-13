@@ -173,7 +173,7 @@ void LoadLibaryLuaUIEngine::LoadLibary()
                            .def( "destroy"          , &utility_engine::DynamicsWorld::destroyBody )
                            .def( "destroy"          , &utility_engine::DynamicsWorld::destroyJoint )
                            .def( "destroy"          , &utility_engine::DynamicsWorld::destroy )
-                           .def( "updateFixedTime"  , &utility_engine::DynamicsWorld::updateFixedTime )
+                           .def( "updateFixedStep"  , &utility_engine::DynamicsWorld::updateFixedStep )
                            .def( "update"           , &utility_engine::DynamicsWorld::update ));
 
 

@@ -12,9 +12,6 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
 {
 
 
-    /// Scalar 1D
-    /// importToScope( luabind::class_<real_physics::scalar>("scalar"));
-
 
     //---------------------------------------- Physics-Engine -------------------------------------------------------------//
 
