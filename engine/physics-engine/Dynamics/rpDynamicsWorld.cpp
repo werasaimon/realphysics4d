@@ -117,10 +117,11 @@ void rpDynamicsWorld::update(scalar timeStep)
              /****************************/
              integrateBodiesVelocities(timeStep);
 
-
          // next step simulation
          mTimer.nextStep();
      }
+
+
 
 }
 
