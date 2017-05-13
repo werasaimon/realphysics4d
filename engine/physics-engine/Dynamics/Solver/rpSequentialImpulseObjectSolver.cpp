@@ -225,7 +225,7 @@ SIMD_INLINE void rpSequentialImpulseObjectSolver::initializeContactConstraints()
 	rpRigidPhysicsBody*  body2 = (rpRigidPhysicsBody* )(mBody2);
 
 
-	ContactManifoldSolver* manifold = mContactConstraints;//[c];
+    ContactManifoldSolver* manifold = mContactConstraints;
 
 	// Get the inertia tensors of both bodies
 	Matrix3x3& I1 = manifold->inverseInertiaTensorBody1;
@@ -925,26 +925,26 @@ SIMD_INLINE void rpSequentialImpulseObjectSolver::solvePositionConstraint()
 
 
 
-		if (contactManifold->rollingResistanceFactor > 0)
-		{
+        if (contactManifold->rollingResistanceFactor > 0)
+        {
 
-			// Compute J*v
-			const Vector3 JvRolling = w2Split  - w1Split;
+            // Compute J*v
+            const Vector3 JvRolling = w2Split  - w1Split;
 
-			// Compute the Lagrange multiplier lambda
-			Vector3 deltaLambdaRolling = contactManifold->inverseRollingResistance * (-JvRolling);
-			scalar rollingLimit = contactManifold->rollingResistanceFactor * _accumulaterSplit;
-			Vector3 lambdaTempRolling = _accumulaterRollingResistanceImpulseDelta;
-			_accumulaterRollingResistanceImpulseDelta = Vector3::clamp(_accumulaterRollingResistanceImpulseDelta + deltaLambdaRolling, rollingLimit);
-			deltaLambdaRolling = _accumulaterRollingResistanceImpulseDelta - lambdaTempRolling;
-
-
-			///Apply the pseudo impulses
-			body1->applySplitImpulseAngular(-deltaLambdaRolling);
-			body2->applySplitImpulseAngular( deltaLambdaRolling);
+            // Compute the Lagrange multiplier lambda
+            Vector3 deltaLambdaRolling = contactManifold->inverseRollingResistance * (-JvRolling);
+            scalar rollingLimit = contactManifold->rollingResistanceFactor * _accumulaterSplit;
+            Vector3 lambdaTempRolling = _accumulaterRollingResistanceImpulseDelta;
+            _accumulaterRollingResistanceImpulseDelta = Vector3::clamp(_accumulaterRollingResistanceImpulseDelta + deltaLambdaRolling, rollingLimit);
+            deltaLambdaRolling = _accumulaterRollingResistanceImpulseDelta - lambdaTempRolling;
 
 
-		}
+            ///Apply the pseudo impulses
+            body1->applySplitImpulseAngular(-deltaLambdaRolling);
+            body2->applySplitImpulseAngular( deltaLambdaRolling);
+
+
+        }
 
 	}
 
