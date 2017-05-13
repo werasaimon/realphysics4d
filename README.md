@@ -4,10 +4,5 @@ realphysics-engine
 
 Главная цель движка(RealPhysics) , создать платформа независимый скриптовый язык realphysics-lua. язык realphysics-lua , это язык для быстрого моделирования физических сцен , физических состояний .и.т.д!
 
-Для рендера сцен используется OpneGL( glut , glew , gl ) .
-
-GLUT: http://freeglut.sourceforge.net/
-
-GLEW: http://glew.sourceforge.net/
 
 RealPhysics language:C++11,Qt-SDK ....
