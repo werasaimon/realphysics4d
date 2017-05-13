@@ -56,7 +56,7 @@ namespace utility_engine
     }
 
     /// Update real-time physics simulate (Fixed TimeStep)
-    void DynamicsWorld::updateFixedStep(float timeStep)
+    void DynamicsWorld::updateFixedTime(float timeStep)
     {
         mDynamicsWorld.updateFixedTime(timeStep);
     }
