@@ -120,7 +120,7 @@ void GLWidget::initializeGL()
     mSceneOpenGL->initialization();
 
     // Use QBasicTimer because its faster than QTimer
-    timer.start( 1 , this);
+    timer.start( 10 , this);
 }
 
 
@@ -158,7 +158,8 @@ void GLWidget::resizeGL(int w, int h)
 
 void GLWidget::paintGL()
 {
-      mSceneOpenGL->render(1./60.);
+      const float timeStep = 1.0/60.0;
+      mSceneOpenGL->render(timeStep);
 }
 
 
