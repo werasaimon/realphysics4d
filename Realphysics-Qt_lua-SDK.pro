@@ -93,15 +93,7 @@ SOURCES += main.cpp\
     engine/physics-engine/Collision/ContactManiflod/rpContactManifoldSet.cpp \
     engine/physics-engine/Collision/ContactManiflod/rpContactPoint.cpp \
     engine/physics-engine/Collision/ContactManiflod/rpGenerationContactManiflodSet.cpp \
-    engine/physics-engine/Collision/NarrowPhase/EPA/rpEdgeEPA.cpp \
-    engine/physics-engine/Collision/NarrowPhase/EPA/rpEPAAlgorithm.cpp \
-    engine/physics-engine/Collision/NarrowPhase/EPA/rpTriangleEPA.cpp \
-    engine/physics-engine/Collision/NarrowPhase/EPA/rpTrianglesStore.cpp \
-    engine/physics-engine/Collision/NarrowPhase/GJK/rpGJKAlgorithm.cpp \
-    engine/physics-engine/Collision/NarrowPhase/GJK/rpSimplex.cpp \
     engine/physics-engine/Collision/NarrowPhase/GJK_EPA/rpGjkEpa.cpp \
-    engine/physics-engine/Collision/NarrowPhase/GJK_EPA/rpGJKEPAAlgorithm.cpp \
-    engine/physics-engine/Collision/NarrowPhase/GJK_EPA/rpVoronoiSimplexSolver.cpp \
     engine/physics-engine/Collision/NarrowPhase/rpNarrowPhaseCollisionAlgorithm.cpp \
     engine/physics-engine/Collision/Shapes/rpAABB.cpp \
     engine/physics-engine/Collision/Shapes/rpBoxShape.cpp \
@@ -203,7 +195,9 @@ SOURCES += main.cpp\
     examples/UnitSceneDemo.cpp \
     examples/UnitSceneGeometry.cpp \
     examples/UnitSceneLuaInterpretationSDK.cpp \
-    formrunscript.cpp
+    formrunscript.cpp \
+    engine/physics-engine/Collision/NarrowPhase/Simplex/rpVoronoiSimplexSolver.cpp \
+    engine/physics-engine/Collision/NarrowPhase/rpNarrowPhaseGjkEpaAlgorithm.cpp
 
 HEADERS  += widget.h \
     glwidget.h \
@@ -348,18 +342,9 @@ HEADERS  += widget.h \
     engine/physics-engine/Collision/ContactManiflod/rpContactManifoldSet.h \
     engine/physics-engine/Collision/ContactManiflod/rpContactPoint.h \
     engine/physics-engine/Collision/ContactManiflod/rpGenerationContactManiflodSet.h \
-    engine/physics-engine/Collision/NarrowPhase/EPA/rpEdgeEPA.h \
-    engine/physics-engine/Collision/NarrowPhase/EPA/rpEPAAlgorithm.h \
-    engine/physics-engine/Collision/NarrowPhase/EPA/rpTriangleEPA.h \
-    engine/physics-engine/Collision/NarrowPhase/EPA/rpTrianglesStore.h \
-    engine/physics-engine/Collision/NarrowPhase/GJK/rpGJKAlgorithm.h \
-    engine/physics-engine/Collision/NarrowPhase/GJK/rpSimplex.h \
     engine/physics-engine/Collision/NarrowPhase/GJK_EPA/rpComputeGjkEpaPenetration.h \
     engine/physics-engine/Collision/NarrowPhase/GJK_EPA/rpGjkCollisionDescription.h \
     engine/physics-engine/Collision/NarrowPhase/GJK_EPA/rpGjkEpa.h \
-    engine/physics-engine/Collision/NarrowPhase/GJK_EPA/rpGJKEPAAlgorithm.h \
-    engine/physics-engine/Collision/NarrowPhase/GJK_EPA/rpSimplexSolverInterface.h \
-    engine/physics-engine/Collision/NarrowPhase/GJK_EPA/rpVoronoiSimplexSolver.h \
     engine/physics-engine/Collision/NarrowPhase/rpNarrowPhaseCollisionAlgorithm.h \
     engine/physics-engine/Collision/Shapes/rpAABB.h \
     engine/physics-engine/Collision/Shapes/rpBoxShape.h \
@@ -461,7 +446,10 @@ HEADERS  += widget.h \
     examples/UnitSceneDemo.h \
     examples/UnitSceneGeometry.h \
     examples/UnitSceneLuaInterpretationSDK.h \
-    formrunscript.h
+    formrunscript.h \
+    engine/physics-engine/Collision/NarrowPhase/Simplex/rpVoronoiSimplexSolver.h \
+    engine/physics-engine/Collision/NarrowPhase/Simplex/rpSimplexSolverInterface.h \
+    engine/physics-engine/Collision/NarrowPhase/rpNarrowPhaseGjkEpaAlgorithm.h
 
 FORMS    += widget.ui \
     formrunscript.ui
