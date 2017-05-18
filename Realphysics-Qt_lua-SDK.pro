@@ -449,7 +449,8 @@ HEADERS  += widget.h \
     formrunscript.h \
     engine/physics-engine/Collision/NarrowPhase/Simplex/rpVoronoiSimplexSolver.h \
     engine/physics-engine/Collision/NarrowPhase/Simplex/rpSimplexSolverInterface.h \
-    engine/physics-engine/Collision/NarrowPhase/rpNarrowPhaseGjkEpaAlgorithm.h
+    engine/physics-engine/Collision/NarrowPhase/rpNarrowPhaseGjkEpaAlgorithm.h \
+    engine/engine.h
 
 FORMS    += widget.ui \
     formrunscript.ui
