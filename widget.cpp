@@ -57,6 +57,10 @@ void Widget::runScript()
     if( !mIsActiveButtonRunScript )
     {
        widget = new FormRunScript();
+       widget->setWindowFlags( Qt::Dialog |
+                               Qt::CustomizeWindowHint |
+                               Qt::WindowTitleHint |
+                               Qt::WindowMinMaxButtonsHint );
        widget->show();
        mIsActiveButtonRunScript = true;
        ui->pushButton->setText("stop");
