@@ -135,10 +135,6 @@ void rpCollisionWorld::UpdateCollision()
 	}
 	/********************************************************************/
 
-
-
-
-
 }
 
 // Set the collision dispatch configuration

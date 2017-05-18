@@ -10,15 +10,11 @@
 
 
 
-#include "../GJK_EPA/rpSimplexSolverInterface.h"
+#include "rpSimplexSolverInterface.h"
 
 
 namespace real_physics
 {
-
-
-
-
 
 
 #define VORONOI_SIMPLEX_MAX_VERTS 5

@@ -59,13 +59,13 @@ Vector3 rpConvexHullShape::getLocalSupportPointWithoutMargin(const Vector3& dire
 
 bool rpConvexHullShape::testPointInside(const Vector3& localPoint, rpProxyShape* proxyShape) const
 {
-	return NarrowPhaseGJKAlgorithm.testPointInside(localPoint, proxyShape);
+    return true;//NarrowPhaseGJKAlgorithm.testPointInside(localPoint, proxyShape);
 }
 
 
 bool rpConvexHullShape::raycast(const Ray& ray, RaycastInfo& raycastInfo, rpProxyShape* proxyShape) const
 {
-	return NarrowPhaseGJKAlgorithm.raycast(ray, raycastInfo, proxyShape);
+    return true;//NarrowPhaseGJKAlgorithm.raycast(ray, raycastInfo, proxyShape);
 }
 
 

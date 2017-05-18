@@ -17,8 +17,7 @@
 #include "../LinearMaths/rpLinearMtah.h"
 #include "../LinearMaths/rpMatrix3x3.h"
 #include "../LinearMaths/rpVector3D.h"
-#include "NarrowPhase/EPA/rpEPAAlgorithm.h"
-#include "NarrowPhase/GJK_EPA/rpGJKEPAAlgorithm.h"
+#include "NarrowPhase/rpNarrowPhaseGjkEpaAlgorithm.h"
 #include "rpCollisionShapeInfo.h"
 #include "rpProxyShape.h"
 #include "rpRaycastInfo.h"
@@ -387,7 +386,7 @@ void rpCollisionDetection::computeNarrowPhase( std::map<overlappingpairid, rpOve
 
 	        /**********************************************************************/
 
-	        NarrowPhaseCollisionAlgorithm* narrowPhaseAlgorithm = new rpGJK_EPAAlgorithm();// mCollisionMatrix[shape1Type][shape2Type];
+            rpNarrowPhaseCollisionAlgorithm* narrowPhaseAlgorithm = new rpNarrowPhaseGjkEpaAlgorithm();// mCollisionMatrix[shape1Type][shape2Type];
 
 	        // If there is no collision algorithm between those two kinds of shapes
 	        if (narrowPhaseAlgorithm == NULL) continue;
@@ -396,13 +395,13 @@ void rpCollisionDetection::computeNarrowPhase( std::map<overlappingpairid, rpOve
 	        narrowPhaseAlgorithm->setCurrentOverlappingPair(pair);
 
 	        // Create the CollisionShapeInfo objects
-	        CollisionShapeInfo shape1Info( shape1->getCollisionShape(),
-	        		                       shape1->getWorldTransform(),
-					                       shape1->getCachedCollisionData());
+            rpCollisionShapeInfo shape1Info( shape1->getCollisionShape(),
+                                             shape1->getWorldTransform(),
+                                             shape1->getCachedCollisionData());
 
-	        CollisionShapeInfo shape2Info( shape2->getCollisionShape(),
-	        		                       shape2->getWorldTransform(),
-					                       shape2->getCachedCollisionData());
+            rpCollisionShapeInfo shape2Info( shape2->getCollisionShape(),
+                                             shape2->getWorldTransform(),
+                                             shape2->getCachedCollisionData());
 
 
 				//	        const Vector3 &p1 = shape1->getWorldTransform().getPosition();

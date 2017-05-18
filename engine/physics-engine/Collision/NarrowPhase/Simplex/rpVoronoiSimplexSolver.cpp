@@ -5,13 +5,10 @@
  *      Author: wera
  */
 
-#include "../GJK_EPA/rpVoronoiSimplexSolver.h"
+#include "rpVoronoiSimplexSolver.h"
 
 namespace real_physics
 {
-
-
-
 
 #define VERTA  0
 #define VERTB  1

@@ -13,8 +13,9 @@
 
 #include "../../../LinearMaths/mathematics.h" // Note that Vector3 might be double precision...
 #include "../GJK_EPA/rpGjkCollisionDescription.h"
-#include "../GJK_EPA/rpVoronoiSimplexSolver.h"
+#include "../Simplex/rpVoronoiSimplexSolver.h"
 #include "rpGjkEpa.h"
+
 
 namespace real_physics
 {
@@ -23,33 +24,22 @@ namespace real_physics
 #define SIMD_EPSILON 1e-8
 
 
-
-template <typename btConvexTemplate>
-bool btGjkEpaCalcPenDepth(const btConvexTemplate& a,
-		                  const btConvexTemplate& b,
-						  const btGjkCollisionDescription& colDesc,
-                          Vector3& normal,
-						  Vector3& wWitnessOnA,
-						  Vector3& wWitnessOnB,
-						  scalar&  wDepth)
+template<typename btConvexTemplate>
+bool GjkEpaCalcPenDepth(const btConvexTemplate &a,
+                        const btConvexTemplate &b,
+                        Vector3 &normal,
+                        Vector3 &wWitnessOnA,
+                        Vector3 &wWitnessOnB,
+                        scalar  &wDepth)
 {
-    (void)normal;
-
-    //	const scalar				radialmargin(scalar(0.));
-
-
 
     Vector3	guessVector(b.getWorldTransform().getPosition() -
-    		            a.getWorldTransform().getPosition());//?? why not use the GJK input?
+                        a.getWorldTransform().getPosition());//?? why not use the GJK input?
 
-    btGjkEpaSolver3::sResults	results;
+    rpGjkEpaSolver::sResults	results;
 
-
-    if(btGjkEpaSolver3_Penetration(a,b,guessVector,results))
+    if(rpGjkEpaSolver::Penetration(a,b,guessVector,results))
     {
-        //	debugDraw->drawLine(results.witnesses[1],results.witnesses[1]+results.normal,Vector3(255,0,0));
-        //resultOut->addContactPoint(results.normal,results.witnesses[1],-results.depth);
-
         wWitnessOnA = results.witnesses[0];
         wWitnessOnB = results.witnesses[1];
 
@@ -61,34 +51,31 @@ bool btGjkEpaCalcPenDepth(const btConvexTemplate& a,
     }
     else
     {
-    	if(btGjkEpaSolver3_Distance(a,b,guessVector,results))
-    	{
-    		wWitnessOnA = results.witnesses[0];
-    		wWitnessOnB = results.witnesses[1];
+        if(rpGjkEpaSolver::Distance(a,b,guessVector,results))
+        {
+            wWitnessOnA = results.witnesses[0];
+            wWitnessOnB = results.witnesses[1];
 
-    		normal = results.normal;
-    		wDepth = results.distance;
+            normal = results.normal;
+            wDepth = results.distance;
 
-    		return false;
-    	}
+            return false;
+        }
     }
 
 
     return false;
+
 }
 
 
 
-//-------------------------------------------------------------------------------------------------------//
-
-
-
 template <typename btConvexTemplate, typename btGjkDistanceTemplate>
-int	btComputeGjkEpaPenetration(const btConvexTemplate& a,
-		                       const btConvexTemplate& b,
-		                       const btGjkCollisionDescription& colDesc,
-							   btVoronoiSimplexSolver& simplexSolver,
-							   btGjkDistanceTemplate* distInfo)
+int	  ComputeGjkEpaPenetrationSimplex(const btConvexTemplate& a,
+                                      const btConvexTemplate& b,
+                                      const btGjkCollisionDescription& colDesc,
+                                            btVoronoiSimplexSolver& simplexSolver,
+                                            btGjkDistanceTemplate* distInfo)
 {
 
 
@@ -348,8 +335,6 @@ int	btComputeGjkEpaPenetration(const btConvexTemplate& a,
                 ///reports a valid positive distance. Use the results of the second GJK instead of failing.
                 ///thanks to Jacob.Langford for the reproduction case
                 ///http://code.google.com/p/bullet/issues/detail?id=250
-
-
                 if (m_cachedSeparatingAxis.length2() > scalar(0.))
                 {
                     scalar distance2 = (tmpPointOnA-tmpPointOnB).length()-margin;
@@ -377,15 +362,16 @@ int	btComputeGjkEpaPenetration(const btConvexTemplate& a,
 
 
 
+
     if (isValid && ((distance < 0) || (distance*distance < colDesc.m_maximumDistanceSquared)))
     {
 
         m_cachedSeparatingAxis = normalInB;
         m_cachedSeparatingDistance = distance;
-        distInfo->m_distance   = distance;
-        distInfo->m_normalBtoA = normalInB;
-        distInfo->m_pointOnB   = pointOnB;
-        distInfo->m_pointOnA   = pointOnB+normalInB*distance;
+        distInfo->m_penetrationDepth  = distance;
+        distInfo->m_normal  = normalInB;
+        distInfo->pBLocal   = pointOnB;
+        distInfo->pALocal   = pointOnB+normalInB*distance;
         return 0;
     }
     return -m_lastUsedMethod;

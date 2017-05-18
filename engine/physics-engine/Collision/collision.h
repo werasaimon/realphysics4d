@@ -25,10 +25,9 @@
 
 
 #include  "rpCollisionShapeInfo.h"
-#include  "NarrowPhase/GJK/rpGJKAlgorithm.h"
 #include  "NarrowPhase/GJK_EPA/rpComputeGjkEpaPenetration.h"
 #include  "NarrowPhase/GJK_EPA/rpGjkCollisionDescription.h"
-#include "NarrowPhase/GJK_EPA/rpGjkEpa.h"
+#include  "NarrowPhase/GJK_EPA/rpGjkEpa.h"
 #include  "rpCollisionDetection.h"
 #include  "rpCollisionWorld.h"
 

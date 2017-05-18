@@ -197,7 +197,10 @@ SIMD_INLINE bool rpGenerationContactManiflodSet::ConvertSupportPointsToContacts(
 		}
 		else
 		{
-			Vector3 Bn = Vector3::planeNormal(SupportVertB[0], SupportVertB[1],SupportVertB[2]);
+            Vector3 Bn = Vector3::planeNormal(SupportVertB[0],
+                                              SupportVertB[1],
+                                              SupportVertB[2]);
+
 			scalar bd = Bn.dot(SupportVertB[0]);
 
 			CollidePointFaceContacts(SupportVertA[0], Bn, bd);
@@ -283,13 +286,10 @@ void rpGenerationContactManiflodSet::computeContacteManiflodSet( rpContactManifo
 	free(SupportVertA);
 	free(SupportVertB);
 
-//	delete[] SupportVertA;
-//	delete[] SupportVertB;
 
 
 	if (isOutside)
 	{
-
 
         maniflodSet.update();
 		for (uint i = 0; i < mNbContacts; ++i)
@@ -315,29 +315,6 @@ void rpGenerationContactManiflodSet::computeContacteManiflodSet( rpContactManifo
 
 	}
 
-
-//	for (int i = 0; i < iNumVertsA; ++i)
-//	{
-//	    Vector3 p = SupportVertA[i];
-//
-//	    glPushMatrix();
-//	    glColor3f(1, 1, 1);
-//	     glTranslatef(p.x, p.y, p.z);
-//	     glutWireCube(0.2);
-//	    glPopMatrix();
-//	}
-//
-//
-//	for (int i = 0; i < iNumVertsB; ++i)
-//	{
-//	    Vector3 p = SupportVertB[i];
-//
-//	    glPushMatrix();
-//	     glColor3f(1, 1, 1);
-//	     glTranslatef(p.x, p.y, p.z);
-//	     glutWireCube(0.2);
-//	    glPopMatrix();
-//	}
 
 }
 

@@ -17,14 +17,14 @@ namespace real_physics
 
 
 // Constructor
-NarrowPhaseCollisionAlgorithm::NarrowPhaseCollisionAlgorithm()
+rpNarrowPhaseCollisionAlgorithm::rpNarrowPhaseCollisionAlgorithm()
 : mCurrentOverlappingPair(NULL)
 {
 
 }
 
 // Destructor
-NarrowPhaseCollisionAlgorithm::~NarrowPhaseCollisionAlgorithm()
+rpNarrowPhaseCollisionAlgorithm::~rpNarrowPhaseCollisionAlgorithm()
 {
 
 }

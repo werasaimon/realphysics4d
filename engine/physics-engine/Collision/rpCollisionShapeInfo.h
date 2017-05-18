@@ -20,63 +20,56 @@ namespace real_physics
 class OverlappingPair;
 
 
-// Class CollisionShapeInfo
+// Class rpCollisionShapeInfo
 /**
  * This structure regroups different things about a collision shape. This is
  * used to pass information about a collision shape to a collision algorithm.
  */
-struct CollisionShapeInfo
+struct rpCollisionShapeInfo
 {
 
     public:
 
-        /// Broadphase overlapping pair
-        //OverlappingPair* overlappingPair;
+    /// Broadphase overlapping pair
+    //OverlappingPair* overlappingPair;
 
-        /// Proxy shape
-        //rpProxyShape* proxyShape;
+    /// Proxy shape
+    //rpProxyShape* proxyShape;
 
-        /// Pointer to the collision shape
-        const rpCollisionShape* collisionShape;
+    /// Pointer to the collision shape
+    const rpCollisionShape* collisionShape;
 
-        /// Transform that maps from collision shape local-space to world-space
-        const Transform shapeToWorldTransform;
+    /// Transform that maps from collision shape local-space to world-space
+    const Transform shapeToWorldTransform;
 
-        /// Cached collision data of the proxy shape
-        //void** cachedCollisionData;
+    /// Cached collision data of the proxy shape
+    void** cachedCollisionData;
 
-        /// Constructor
-        CollisionShapeInfo(const rpCollisionShape* _CollisionShape,
-        		           const Transform& shapeLocalToWorldTransform,
-                           void** cachedData)
-              : collisionShape(_CollisionShape),
-                shapeToWorldTransform(shapeLocalToWorldTransform)//,
-                //cachedCollisionData(cachedData)
-        {
-
-
-        }
+    /// Constructor
+    rpCollisionShapeInfo(const rpCollisionShape* _CollisionShape,
+                         const Transform& shapeLocalToWorldTransform,
+                         void** cachedData)
+        : collisionShape(_CollisionShape),
+          shapeToWorldTransform(shapeLocalToWorldTransform) ,
+          cachedCollisionData(cachedData)
+    {
 
 
-
-//        Vector3 getLocalSupportPointWithMargin(const Vector3& direction ) const
-//        {
-//        	return  shapeToWorldTransform * collisionShape->getLocalSupportPointWithMarginn(   shapeToWorldTransform.getOrientation().getInverse() * direction );
-//        }
-//
-
-        // Return a local support point in a given direction with the object margin
-        Vector3 supportWorldTransformed(const Vector3 &direction ) const
-        {
-        	return collisionShape->getLocalSupportPointWithMarginn(direction);
-
-        }
+    }
 
 
-	const Transform& getWorldTransform() const
-	{
-		return shapeToWorldTransform;
-	}
+    // Return a local support point in a given direction with the object margin
+    Vector3 getLocalSupportPointWithMargin(const Vector3 &direction ) const
+    {
+        return collisionShape->getLocalSupportPointWithMarginn(direction);
+
+    }
+
+
+    const Transform& getWorldTransform() const
+    {
+        return shapeToWorldTransform;
+    }
 };
 
 } /* namespace real_physics */
