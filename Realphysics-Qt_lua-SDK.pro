@@ -197,7 +197,9 @@ SOURCES += main.cpp\
     examples/UnitSceneLuaInterpretationSDK.cpp \
     formrunscript.cpp \
     engine/physics-engine/Collision/NarrowPhase/Simplex/rpVoronoiSimplexSolver.cpp \
-    engine/physics-engine/Collision/NarrowPhase/rpNarrowPhaseGjkEpaAlgorithm.cpp
+    engine/physics-engine/Collision/NarrowPhase/rpNarrowPhaseGjkEpaAlgorithm.cpp \
+    engine/physics-engine/Collision/NarrowPhase/MPR/rpMPR.cpp \
+    engine/physics-engine/Collision/NarrowPhase/rpNarrowPhaseGjkMprAlgorithm.cpp
 
 HEADERS  += widget.h \
     glwidget.h \
@@ -450,7 +452,9 @@ HEADERS  += widget.h \
     engine/physics-engine/Collision/NarrowPhase/Simplex/rpVoronoiSimplexSolver.h \
     engine/physics-engine/Collision/NarrowPhase/Simplex/rpSimplexSolverInterface.h \
     engine/physics-engine/Collision/NarrowPhase/rpNarrowPhaseGjkEpaAlgorithm.h \
-    engine/engine.h
+    engine/engine.h \
+    engine/physics-engine/Collision/NarrowPhase/MPR/rpMPR.h \
+    engine/physics-engine/Collision/NarrowPhase/rpNarrowPhaseGjkMprAlgorithm.h
 
 FORMS    += widget.ui \
     formrunscript.ui
