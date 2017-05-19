@@ -18,6 +18,7 @@
 #include "../LinearMaths/rpMatrix3x3.h"
 #include "../LinearMaths/rpVector3D.h"
 #include "NarrowPhase/rpNarrowPhaseGjkEpaAlgorithm.h"
+#include "NarrowPhase/rpNarrowPhaseGjkMprAlgorithm.h"
 #include "rpCollisionShapeInfo.h"
 #include "rpProxyShape.h"
 #include "rpRaycastInfo.h"
@@ -386,7 +387,7 @@ void rpCollisionDetection::computeNarrowPhase( std::map<overlappingpairid, rpOve
 
 	        /**********************************************************************/
 
-            rpNarrowPhaseCollisionAlgorithm* narrowPhaseAlgorithm = new rpNarrowPhaseGjkEpaAlgorithm();// mCollisionMatrix[shape1Type][shape2Type];
+            rpNarrowPhaseCollisionAlgorithm* narrowPhaseAlgorithm = new rpNarrowPhaseGjkMprAlgorithm;// mCollisionMatrix[shape1Type][shape2Type];
 
 	        // If there is no collision algorithm between those two kinds of shapes
 	        if (narrowPhaseAlgorithm == NULL) continue;

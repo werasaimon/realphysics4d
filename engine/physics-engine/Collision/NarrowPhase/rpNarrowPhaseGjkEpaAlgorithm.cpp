@@ -9,6 +9,7 @@
 #include "GJK_EPA/rpGjkCollisionDescription.h"
 #include "GJK_EPA/rpComputeGjkEpaPenetration.h"
 #include "GJK_EPA/rpGjkEpa.h"
+#include "MPR/rpMPR.h"
 
 namespace real_physics
 {
@@ -28,6 +29,7 @@ bool rpNarrowPhaseGjkEpaAlgorithm::testCollision(const rpCollisionShapeInfo &sha
                                                  const rpCollisionShapeInfo &shape2Info,
                                                  OutContactInfo &outInfo)
 {
+
     return   GjkEpaCalcPenDepth(shape2Info ,
                                 shape1Info ,
                                 outInfo.m_normal,
