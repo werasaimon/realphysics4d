@@ -33,11 +33,13 @@ private slots:
 
 private:
 
+    //------------- Attribute --------------//
+
     Ui::Widget *ui;
     FormRunScript *widget;
 
-    QString mStringFilePathName;
 
+    QString mStringFilePathName;
     bool    mIsActiveButtonRunScript = false;
 };
 
