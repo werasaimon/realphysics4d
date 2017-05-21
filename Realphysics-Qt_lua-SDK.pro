@@ -196,10 +196,12 @@ SOURCES += main.cpp\
     examples/UnitSceneGeometry.cpp \
     examples/UnitSceneLuaInterpretationSDK.cpp \
     formrunscript.cpp \
-    engine/physics-engine/Collision/NarrowPhase/Simplex/rpVoronoiSimplexSolver.cpp \
     engine/physics-engine/Collision/NarrowPhase/rpNarrowPhaseGjkEpaAlgorithm.cpp \
-    engine/physics-engine/Collision/NarrowPhase/MPR/rpMPR.cpp \
-    engine/physics-engine/Collision/NarrowPhase/rpNarrowPhaseGjkMprAlgorithm.cpp
+    engine/physics-engine/Collision/NarrowPhase/GJK/Simplex.cpp \
+    engine/physics-engine/Collision/NarrowPhase/MPR/rpMPRAlgorithm.cpp \
+    engine/physics-engine/Collision/NarrowPhase/GJK/rpGJKAlgorithm.cpp \
+    engine/physics-engine/Collision/NarrowPhase/GJK_EPA/VoronoiSimplex/rpVoronoiSimplexSolver.cpp \
+    engine/physics-engine/Collision/NarrowPhase/rpNarrowPhaseMprAlgorithm.cpp
 
 HEADERS  += widget.h \
     glwidget.h \
@@ -449,12 +451,14 @@ HEADERS  += widget.h \
     examples/UnitSceneGeometry.h \
     examples/UnitSceneLuaInterpretationSDK.h \
     formrunscript.h \
-    engine/physics-engine/Collision/NarrowPhase/Simplex/rpVoronoiSimplexSolver.h \
-    engine/physics-engine/Collision/NarrowPhase/Simplex/rpSimplexSolverInterface.h \
     engine/physics-engine/Collision/NarrowPhase/rpNarrowPhaseGjkEpaAlgorithm.h \
     engine/engine.h \
-    engine/physics-engine/Collision/NarrowPhase/MPR/rpMPR.h \
-    engine/physics-engine/Collision/NarrowPhase/rpNarrowPhaseGjkMprAlgorithm.h
+    engine/physics-engine/Collision/NarrowPhase/GJK/Simplex.h \
+    engine/physics-engine/Collision/NarrowPhase/MPR/rpMPRAlgorithm.h \
+    engine/physics-engine/Collision/NarrowPhase/GJK/rpGJKAlgorithm.h \
+    engine/physics-engine/Collision/NarrowPhase/GJK_EPA/VoronoiSimplex/rpVoronoiSimplexSolver.h \
+    engine/physics-engine/Collision/NarrowPhase/GJK_EPA/VoronoiSimplex/rpSimplexSolverInterface.h \
+    engine/physics-engine/Collision/NarrowPhase/rpNarrowPhaseMprAlgorithm.h
 
 FORMS    += widget.ui \
     formrunscript.ui
