@@ -23,7 +23,7 @@ bool rpNarrowPhaseMprAlgorithm::testCollision(const rpCollisionShapeInfo &shape1
 {
 
 
-    rpMPRAlgorithm MPR;
+    const rpMPRAlgorithm MPR;
     return MPR.ComputeMprColliderPenetration( &shape1Info , &shape2Info , outInfo);
 
 

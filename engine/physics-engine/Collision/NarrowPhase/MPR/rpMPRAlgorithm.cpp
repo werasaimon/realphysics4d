@@ -8,7 +8,7 @@ namespace real_physics
 /* MPR	*/
 #define MPR_MAX_VERTICES	64
 #define MPR_MAX_ITERATIONS	255
-#define MPR_EPS		        ((scalar)0.0001)
+#define MPR_EPS		        ((scalar)0.00001)
 
 
 

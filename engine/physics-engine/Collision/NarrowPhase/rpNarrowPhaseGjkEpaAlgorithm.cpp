@@ -31,6 +31,7 @@ bool rpNarrowPhaseGjkEpaAlgorithm::testCollision(const rpCollisionShapeInfo &sha
                                                  OutContactInfo &outInfo)
 {
 
+
         return   GjkEpaCalcPenDepth(shape1Info ,
                                     shape2Info ,
                                     outInfo.m_normal,

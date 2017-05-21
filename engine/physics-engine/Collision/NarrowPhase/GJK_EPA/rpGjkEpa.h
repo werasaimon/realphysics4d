@@ -52,7 +52,7 @@ namespace real_physics
 #define EPA_ACCURACY		((scalar)0.0001)
 #define EPA_FALLBACK		(10*EPA_ACCURACY)
 #define EPA_PLANE_EPS		((scalar)0.00001)
-#define EPA_INSIDE_EPS		((scalar)0.01)
+#define EPA_INSIDE_EPS		((scalar)0.001)
 
 
 
@@ -140,8 +140,8 @@ struct	MinkowskiDiff
     const ConvexTemplate* m_convexAPtr;
     const ConvexTemplate* m_convexBPtr;
 
-    Transform				m_world1;
     Transform				m_world0;
+    Transform				m_world1;
 
     bool					m_enableMargin;
 
