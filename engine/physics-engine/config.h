@@ -85,7 +85,7 @@ const scalar DEFAULT_FRICTION_COEFFICIENT = scalar(0.3);
 const scalar DEFAULT_BOUNCINESS = scalar(0.0);
 
 /// Default rolling resistance
-const scalar DEFAULT_ROLLING_RESISTANCE = scalar(0.001);
+const scalar DEFAULT_ROLLING_RESISTANCE = scalar(0.01);
 
 
 
