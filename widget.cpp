@@ -56,6 +56,7 @@ void Widget::runScript()
 
     if( !mIsActiveButtonRunScript )
     {
+
        widget = new FormRunScript();
        widget->setWindowFlags( Qt::Dialog |
                                Qt::CustomizeWindowHint |
@@ -67,11 +68,14 @@ void Widget::runScript()
     }
     else
     {
+
        widget->close();
        delete widget;
        mIsActiveButtonRunScript = false;
        ui->pushButton->setText("run..");
     }
+
+   file.remove();
 
 }
 
