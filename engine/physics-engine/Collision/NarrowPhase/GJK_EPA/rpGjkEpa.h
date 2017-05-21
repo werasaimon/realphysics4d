@@ -16,26 +16,6 @@ namespace real_physics
 
 // Config
 
-///* GJK	*/
-//#define GJK_MAX_ITERATIONS	128
-//#define GJK_ACCURARY		((scalar)0.0001)
-//#define GJK_MIN_DISTANCE	((scalar)0.0001)
-//#define GJK_DUPLICATED_EPS	((scalar)0.0001)
-//#define GJK_SIMPLEX2_EPS	((scalar)0.0)
-//#define GJK_SIMPLEX3_EPS	((scalar)0.0)
-//#define GJK_SIMPLEX4_EPS	((scalar)0.0)
-
-///* EPA	*/
-//#define EPA_MAX_VERTICES	64
-//#define EPA_MAX_FACES		(EPA_MAX_VERTICES*2)
-//#define EPA_MAX_ITERATIONS	255
-//#define EPA_ACCURACY		((scalar)0.0001)
-//#define EPA_FALLBACK		(10*EPA_ACCURACY)
-//#define EPA_PLANE_EPS		((scalar)0.0003)
-//#define EPA_INSIDE_EPS		((scalar)0.01)
-
-
-
 /* GJK	*/
 #define GJK_MAX_ITERATIONS	128
 #define GJK_ACCURARY		((scalar)0.0001)
@@ -51,8 +31,28 @@ namespace real_physics
 #define EPA_MAX_ITERATIONS	255
 #define EPA_ACCURACY		((scalar)0.0001)
 #define EPA_FALLBACK		(10*EPA_ACCURACY)
-#define EPA_PLANE_EPS		((scalar)0.00001)
-#define EPA_INSIDE_EPS		((scalar)0.001)
+#define EPA_PLANE_EPS		((scalar)0.0003)
+#define EPA_INSIDE_EPS		((scalar)0.01)
+
+
+
+///* GJK	*/
+//#define GJK_MAX_ITERATIONS	128
+//#define GJK_ACCURARY		((scalar)0.0001)
+//#define GJK_MIN_DISTANCE	((scalar)0.0001)
+//#define GJK_DUPLICATED_EPS	((scalar)0.0001)
+//#define GJK_SIMPLEX2_EPS	((scalar)0.0)
+//#define GJK_SIMPLEX3_EPS	((scalar)0.0)
+//#define GJK_SIMPLEX4_EPS	((scalar)0.0)
+
+///* EPA	*/
+//#define EPA_MAX_VERTICES	64
+//#define EPA_MAX_FACES		(EPA_MAX_VERTICES*2)
+//#define EPA_MAX_ITERATIONS	255
+//#define EPA_ACCURACY		((scalar)0.0001)
+//#define EPA_FALLBACK		(10*EPA_ACCURACY)
+//#define EPA_PLANE_EPS		((scalar)0.00001)
+//#define EPA_INSIDE_EPS		((scalar)0.001)
 
 
 
