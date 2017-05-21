@@ -9,6 +9,7 @@
 #define SOURCE_ENGIE_COLLISION_SHAPES_RPCONVEXHULLSHAPE_H_
 
 #include "rpConvexShape.h"
+#include "../NarrowPhase/GJK/rpGJKAlgorithm.h"
 #include  "../NarrowPhase/rpNarrowPhaseGjkEpaAlgorithm.h"
 #include "../../Geometry/geometry.h"
 

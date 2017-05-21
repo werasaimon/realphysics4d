@@ -13,7 +13,7 @@
 
 #include "../../../LinearMaths/mathematics.h" // Note that Vector3 might be double precision...
 #include "../GJK_EPA/rpGjkCollisionDescription.h"
-#include "../Simplex/rpVoronoiSimplexSolver.h"
+#include "../GJK_EPA/VoronoiSimplex/rpVoronoiSimplexSolver.h"
 #include "rpGjkEpa.h"
 
 
@@ -21,12 +21,12 @@ namespace real_physics
 {
 
 #define BT_LARGE_FLOAT 1e30
-#define SIMD_EPSILON 1e-8
+#define SIMD_EPSILON 1e-6
 
 
-template<typename btConvexTemplate>
-bool GjkEpaCalcPenDepth(const btConvexTemplate &a,
-                        const btConvexTemplate &b,
+template<typename ConvexTemplate>
+bool GjkEpaCalcPenDepth(const ConvexTemplate &a,
+                        const ConvexTemplate &b,
                         Vector3 &normal,
                         Vector3 &wWitnessOnA,
                         Vector3 &wWitnessOnB,
@@ -70,12 +70,43 @@ bool GjkEpaCalcPenDepth(const btConvexTemplate &a,
 
 
 
-template <typename btConvexTemplate, typename btGjkDistanceTemplate>
-int	  ComputeGjkEpaPenetrationSimplex(const btConvexTemplate& a,
-                                      const btConvexTemplate& b,
-                                      const btGjkCollisionDescription& colDesc,
-                                            btVoronoiSimplexSolver& simplexSolver,
-                                            btGjkDistanceTemplate* distInfo)
+
+
+template<typename ConvexTemplate>
+bool EpaCalcPenDepth(const ConvexTemplate &a,
+                     const ConvexTemplate &b,
+                     Vector3 &normal,
+                     Vector3 &wWitnessOnA,
+                     Vector3 &wWitnessOnB,
+                     scalar  &wDepth)
+{
+
+    Vector3	guessVector(b.getWorldTransform().getPosition() -
+                        a.getWorldTransform().getPosition());//?? why not use the GJK input?
+
+    rpGjkEpaSolver::sResults	results;
+    if(rpGjkEpaSolver::Penetration(a,b,guessVector,results))
+    {
+        wWitnessOnA = results.witnesses[0];
+        wWitnessOnB = results.witnesses[1];
+
+        normal = results.normal;
+        wDepth = results.distance;
+
+        return true;
+    }
+
+    return false;
+
+}
+
+
+template <typename ConvexTemplate, typename GjkDistanceTemplate>
+int	  ComputeGjkEpaPenetrationSimplex(const ConvexTemplate& a,
+                                      const ConvexTemplate& b,
+                                      const rpGjkCollisionDescription& colDesc,
+                                            rpVoronoiSimplexSolver& simplexSolver,
+                                            GjkDistanceTemplate* distInfo)
 {
 
 
@@ -91,8 +122,8 @@ int	  ComputeGjkEpaPenetrationSimplex(const btConvexTemplate& a,
 
    // static_cast<const rpConvexShape*>(a.getCollisionShape());
 
-    scalar marginA = a.getCollisionShape().getMargin();
-    scalar marginB = b.getCollisionShape().getMargin();
+    scalar marginA = 0.00;//a.getCollisionShape().getMargin();
+    scalar marginB = 0.00;//b.getCollisionShape().getMargin();
 
     int m_curIter = 0;
     int gGjkMaxIter = colDesc.m_maxGjkIterations;//this is to catch invalid input, perhaps check for #NaN?
@@ -119,11 +150,11 @@ int	  ComputeGjkEpaPenetrationSimplex(const btConvexTemplate& a,
             //while (true)
         {
 
-            Vector3 seperatingAxisInA =  (localTransA.getOrientation() * -m_cachedSeparatingAxis);
-            Vector3 seperatingAxisInB =  (localTransB.getOrientation() *  m_cachedSeparatingAxis);
+            Vector3 seperatingAxisInA =  (localTransA.getOrientation().getInverse() * -m_cachedSeparatingAxis);
+            Vector3 seperatingAxisInB =  (localTransB.getOrientation().getInverse() *  m_cachedSeparatingAxis);
 
-            Vector3 pInA = a.getLocalSupportPointWithoutMarginn(seperatingAxisInA);
-            Vector3 qInB = b.getLocalSupportPointWithoutMarginn(seperatingAxisInB);
+            Vector3 pInA = a.getLocalSupportPointWithMargin(seperatingAxisInA);
+            Vector3 qInB = b.getLocalSupportPointWithMargin(seperatingAxisInB);
 
             Vector3  pWorld = localTransA * (pInA);
             Vector3  qWorld = localTransB * (qInB);
@@ -291,9 +322,8 @@ int	  ComputeGjkEpaPenetrationSimplex(const btConvexTemplate& a,
 
             m_cachedSeparatingAxis.setToZero();
 
-            bool isValid2 = btGjkEpaCalcPenDepth(a,b,
-                                                 colDesc,
-                                                 m_cachedSeparatingAxis, tmpPointOnA, tmpPointOnB);
+            float l=0;
+            bool isValid2 = GjkEpaCalcPenDepth(a,b, m_cachedSeparatingAxis, tmpPointOnA, tmpPointOnB , l);
 
             if (isValid2)
             {

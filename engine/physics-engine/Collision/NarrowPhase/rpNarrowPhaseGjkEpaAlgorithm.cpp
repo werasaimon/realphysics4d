@@ -9,7 +9,8 @@
 #include "GJK_EPA/rpGjkCollisionDescription.h"
 #include "GJK_EPA/rpComputeGjkEpaPenetration.h"
 #include "GJK_EPA/rpGjkEpa.h"
-#include "MPR/rpMPR.h"
+#include "GJK/rpGJKAlgorithm.h"
+#include "MPR/rpMPRAlgorithm.h"
 
 namespace real_physics
 {
@@ -30,12 +31,75 @@ bool rpNarrowPhaseGjkEpaAlgorithm::testCollision(const rpCollisionShapeInfo &sha
                                                  OutContactInfo &outInfo)
 {
 
-    return   GjkEpaCalcPenDepth(shape2Info ,
-                                shape1Info ,
-                                outInfo.m_normal,
-                                outInfo.pALocal,
-                                outInfo.pBLocal,
-                                outInfo.m_penetrationDepth);
+        return   GjkEpaCalcPenDepth(shape1Info ,
+                                    shape2Info ,
+                                    outInfo.m_normal,
+                                    outInfo.pALocal,
+                                    outInfo.pBLocal,
+                                    outInfo.m_penetrationDepth);
+
+
+/**
+    rpGJKAlgorithm GJK;
+    if(GJK.computeGJK( shape2Info , shape1Info , outInfo ))
+    {
+
+        Vector3	guessVector(shape1Info.getWorldTransform().getPosition() -
+                            shape2Info.getWorldTransform().getPosition());//?? why not use the GJK input?
+
+        rpGjkEpaSolver::sResults	results;
+
+        if(rpGjkEpaSolver::Penetration(shape2Info,shape1Info,guessVector,results))
+        {
+            outInfo.pALocal = results.witnesses[0];
+            outInfo.pBLocal = results.witnesses[1];
+
+            outInfo.m_normal = results.normal;
+            outInfo.m_penetrationDepth  = results.distance;
+
+            return true;
+
+        }
+    }
+
+
+    return false;
+
+/**
+    Vector3	guessVector(shape1Info.getWorldTransform().getPosition() -
+                        shape2Info.getWorldTransform().getPosition());//?? why not use the GJK input?
+
+    rpGjkEpaSolver::sResults	results;
+
+    if(rpGjkEpaSolver::Penetration(shape2Info,shape1Info,guessVector,results))
+    {
+        outInfo.pALocal = results.witnesses[0];
+        outInfo.pBLocal = results.witnesses[1];
+
+        outInfo.m_normal = results.normal;
+        outInfo.m_penetrationDepth  = results.distance;
+
+        return true;
+
+    }
+    else
+    {
+        if(rpGjkEpaSolver::Distance(shape2Info,shape1Info,guessVector,results))
+        {
+            outInfo.pALocal = results.witnesses[0];
+            outInfo.pBLocal = results.witnesses[1];
+
+            outInfo.m_normal = results.normal;
+            outInfo.m_penetrationDepth  = results.distance;
+
+            return false;
+        }     
+    }
+
+
+    return false;
+/**/
+
 
 }
 

@@ -11,6 +11,14 @@ namespace real_physics
 {
 
 
+
+namespace
+{
+
+   rpGJKAlgorithm GJKAlgorithm;
+
+}
+
 rpConvexHullShape::rpConvexHullShape( rpModelConvexHull* initHull ,
 		                              scalar margin)
 : rpConvexShape( CONVEX_HULL_MESH , margin )
@@ -59,13 +67,13 @@ Vector3 rpConvexHullShape::getLocalSupportPointWithoutMargin(const Vector3& dire
 
 bool rpConvexHullShape::testPointInside(const Vector3& localPoint, rpProxyShape* proxyShape) const
 {
-    return true;//NarrowPhaseGJKAlgorithm.testPointInside(localPoint, proxyShape);
+    return GJKAlgorithm.testPointInside(localPoint, proxyShape);
 }
 
 
 bool rpConvexHullShape::raycast(const Ray& ray, RaycastInfo& raycastInfo, rpProxyShape* proxyShape) const
 {
-    return true;//NarrowPhaseGJKAlgorithm.raycast(ray, raycastInfo, proxyShape);
+    return GJKAlgorithm.raycast(ray, raycastInfo, proxyShape);
 }
 
 

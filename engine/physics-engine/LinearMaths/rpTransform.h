@@ -213,8 +213,8 @@ namespace real_physics
 	newTransform.mPosition * interpolationFactor;
 
     rpQuaternion<T> interOrientation = rpQuaternion<T>::slerp(oldTransform.mOrientation,
-							      newTransform.mOrientation,
-							      interpolationFactor);
+                                                              newTransform.mOrientation,
+                                                              interpolationFactor);
 
     return rpTransform<T>(interPosition, interOrientation);
  }
@@ -258,10 +258,14 @@ template<class T>
 SIMD_INLINE rpTransform<T> rpTransform<T>::inverseTimes(const rpTransform<T>& t) const
 {
 
-	rpMatrix3x3<T> mOrientationMatrix = mOrientation.getMatrix();
-	rpMatrix3x3<T> Matrix = t.mOrientation.getMatrix();
-	rpVector3D<T> v = t.getPosition() - mPosition;
-    return rpTransform<T>( mOrientationMatrix * v  , mOrientationMatrix.transposeTimes(Matrix) );
+//	 rpMatrix3x3<T> mOrientationMatrix = mOrientation.getMatrix();
+//	 rpMatrix3x3<T> Matrix = t.mOrientation.getMatrix();
+//	 rpVector3D<T> v = t.getPosition() - mPosition;
+//   return rpTransform<T>( mOrientationMatrix * v  , mOrientationMatrix.transposeTimes(Matrix) );
+
+
+    rpVector3D<T> v = t.getPosition() - getPosition();
+    return rpTransform<T>( getBasis() * v , getBasis().transposeTimes(t.getBasis()));
 }
 
 template<class T>

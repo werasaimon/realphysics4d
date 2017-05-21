@@ -24,8 +24,9 @@ namespace real_physics
 #define VORONOI_DEFAULT_EQUAL_VERTEX_THRESHOLD 0.0001f
 
 
-struct btUsageBitfield{
-    btUsageBitfield()
+struct rpUsageBitfield
+{
+    rpUsageBitfield()
     {
         reset();
     }
@@ -48,14 +49,14 @@ struct btUsageBitfield{
 };
 
 
-struct	btSubSimplexClosestResult
+struct	rpSubSimplexClosestResult
 {
     Vector3	m_closestPointOnSimplex;
     //MASK for m_usedVertices
     //stores the simplex vertex-usage, using the MASK,
     // if m_usedVertices & MASK then the related vertex is used
-    btUsageBitfield	m_usedVertices;
-    scalar	    m_barycentricCoords[4];
+    rpUsageBitfield	m_usedVertices;
+    scalar	        m_barycentricCoords[4];
     bool            m_degenerate;
 
     void	reset()
@@ -87,9 +88,9 @@ struct	btSubSimplexClosestResult
 
 };
 
-/// btVoronoiSimplexSolver is an implementation of the closest point distance algorithm from a 1-4 points simplex to the origin.
+/// rpVoronoiSimplexSolver is an implementation of the closest point distance algorithm from a 1-4 points simplex to the origin.
 /// Can be used with GJK, as an alternative to Johnson distance algorithm.
- class btVoronoiSimplexSolver : public btSimplexSolverInterface
+ class rpVoronoiSimplexSolver : public rpSimplexSolverInterface
 {
   public:
 
@@ -109,25 +110,25 @@ struct	btSubSimplexClosestResult
     Vector3	m_lastW;
 
     scalar	m_equalVertexThreshold;
-    bool		m_cachedValidClosest;
+    bool	m_cachedValidClosest;
 
 
-    btSubSimplexClosestResult m_cachedBC;
+    rpSubSimplexClosestResult m_cachedBC;
 
     bool	m_needsUpdate;
 
     void	removeVertex(int index);
-    void	reduceVertices (const btUsageBitfield& usedVerts);
+    void	reduceVertices (const rpUsageBitfield& usedVerts);
     bool	updateClosestVectorAndPoints();
 
-    bool	closestPtPointTetrahedron(const Vector3& p, const Vector3& a, const Vector3& b, const Vector3& c, const Vector3& d, btSubSimplexClosestResult& finalResult);
+    bool	closestPtPointTetrahedron(const Vector3& p, const Vector3& a, const Vector3& b, const Vector3& c, const Vector3& d, rpSubSimplexClosestResult& finalResult);
     int		pointOutsideOfPlane(const Vector3& p, const Vector3& a, const Vector3& b, const Vector3& c, const Vector3& d);
-    bool	closestPtPointTriangle(const Vector3& p, const Vector3& a, const Vector3& b, const Vector3& c,btSubSimplexClosestResult& result);
+    bool	closestPtPointTriangle(const Vector3& p, const Vector3& a, const Vector3& b, const Vector3& c,rpSubSimplexClosestResult& result);
 
 public:
 
-    btVoronoiSimplexSolver()
-        :  m_equalVertexThreshold(VORONOI_DEFAULT_EQUAL_VERTEX_THRESHOLD)
+    rpVoronoiSimplexSolver()
+    :m_equalVertexThreshold(VORONOI_DEFAULT_EQUAL_VERTEX_THRESHOLD)
     {
     }
      void reset();

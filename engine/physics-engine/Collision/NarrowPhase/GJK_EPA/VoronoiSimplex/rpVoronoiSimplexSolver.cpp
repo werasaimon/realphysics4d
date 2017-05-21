@@ -23,7 +23,7 @@ namespace real_physics
 
 
 
-void	btVoronoiSimplexSolver::removeVertex(int index)
+void	rpVoronoiSimplexSolver::removeVertex(int index)
 {
 
     assert(m_numVertices>0);
@@ -33,7 +33,7 @@ void	btVoronoiSimplexSolver::removeVertex(int index)
     m_simplexPointsQ[index] = m_simplexPointsQ[m_numVertices];
 }
 
-void	btVoronoiSimplexSolver::reduceVertices (const btUsageBitfield& usedVerts)
+void	rpVoronoiSimplexSolver::reduceVertices (const rpUsageBitfield &usedVerts)
 {
     if ((numVertices() >= 4) && (!usedVerts.usedVertexD))
         removeVertex(3);
@@ -54,7 +54,7 @@ void	btVoronoiSimplexSolver::reduceVertices (const btUsageBitfield& usedVerts)
 
 
 //clear the simplex, remove all the vertices
-void btVoronoiSimplexSolver::reset()
+void rpVoronoiSimplexSolver::reset()
 {
     m_cachedValidClosest = false;
     m_numVertices = 0;
@@ -66,7 +66,7 @@ void btVoronoiSimplexSolver::reset()
 
 
     //add a vertex
-void btVoronoiSimplexSolver::addVertex(const Vector3& w, const Vector3& p, const Vector3& q)
+void rpVoronoiSimplexSolver::addVertex(const Vector3& w, const Vector3& p, const Vector3& q)
 {
     m_lastW = w;
     m_needsUpdate = true;
@@ -78,7 +78,7 @@ void btVoronoiSimplexSolver::addVertex(const Vector3& w, const Vector3& p, const
     m_numVertices++;
 }
 
-bool	btVoronoiSimplexSolver::updateClosestVectorAndPoints()
+bool	rpVoronoiSimplexSolver::updateClosestVectorAndPoints()
 {
 
     if (m_needsUpdate)
@@ -156,12 +156,12 @@ bool	btVoronoiSimplexSolver::updateClosestVectorAndPoints()
 
                 closestPtPointTriangle(p,a,b,c,m_cachedBC);
                 m_cachedP1 = m_simplexPointsP[0] * m_cachedBC.m_barycentricCoords[0] +
-                m_simplexPointsP[1] * m_cachedBC.m_barycentricCoords[1] +
-                m_simplexPointsP[2] * m_cachedBC.m_barycentricCoords[2];
+                             m_simplexPointsP[1] * m_cachedBC.m_barycentricCoords[1] +
+                             m_simplexPointsP[2] * m_cachedBC.m_barycentricCoords[2];
 
                 m_cachedP2 = m_simplexPointsQ[0] * m_cachedBC.m_barycentricCoords[0] +
-                m_simplexPointsQ[1] * m_cachedBC.m_barycentricCoords[1] +
-                m_simplexPointsQ[2] * m_cachedBC.m_barycentricCoords[2];
+                             m_simplexPointsQ[1] * m_cachedBC.m_barycentricCoords[1] +
+                             m_simplexPointsQ[2] * m_cachedBC.m_barycentricCoords[2];
 
                 m_cachedV = m_cachedP1-m_cachedP2;
 
@@ -187,18 +187,19 @@ bool	btVoronoiSimplexSolver::updateClosestVectorAndPoints()
                 {
 
                     m_cachedP1 = m_simplexPointsP[0] * m_cachedBC.m_barycentricCoords[0] +
-                        m_simplexPointsP[1] * m_cachedBC.m_barycentricCoords[1] +
-                        m_simplexPointsP[2] * m_cachedBC.m_barycentricCoords[2] +
-                        m_simplexPointsP[3] * m_cachedBC.m_barycentricCoords[3];
+                                 m_simplexPointsP[1] * m_cachedBC.m_barycentricCoords[1] +
+                                 m_simplexPointsP[2] * m_cachedBC.m_barycentricCoords[2] +
+                                 m_simplexPointsP[3] * m_cachedBC.m_barycentricCoords[3];
 
                     m_cachedP2 = m_simplexPointsQ[0] * m_cachedBC.m_barycentricCoords[0] +
-                        m_simplexPointsQ[1] * m_cachedBC.m_barycentricCoords[1] +
-                        m_simplexPointsQ[2] * m_cachedBC.m_barycentricCoords[2] +
-                        m_simplexPointsQ[3] * m_cachedBC.m_barycentricCoords[3];
+                                 m_simplexPointsQ[1] * m_cachedBC.m_barycentricCoords[1] +
+                                 m_simplexPointsQ[2] * m_cachedBC.m_barycentricCoords[2] +
+                                 m_simplexPointsQ[3] * m_cachedBC.m_barycentricCoords[3];
 
                     m_cachedV = m_cachedP1-m_cachedP2;
                     reduceVertices (m_cachedBC.m_usedVertices);
-                } else
+                }
+                else
                 {
 //					printf("sub distance got penetration\n");
 
@@ -220,9 +221,9 @@ bool	btVoronoiSimplexSolver::updateClosestVectorAndPoints()
                 break;
             }
         default:
-            {
-                m_cachedValidClosest = false;
-            }
+        {
+            m_cachedValidClosest = false;
+        }
         };
     }
 
@@ -231,7 +232,7 @@ bool	btVoronoiSimplexSolver::updateClosestVectorAndPoints()
 }
 
 //return/calculate the closest vertex
-bool btVoronoiSimplexSolver::closest(Vector3& v)
+bool rpVoronoiSimplexSolver::closest(Vector3& v)
 {
     bool succes = updateClosestVectorAndPoints();
     v = m_cachedV;
@@ -240,7 +241,7 @@ bool btVoronoiSimplexSolver::closest(Vector3& v)
 
 
 
-scalar btVoronoiSimplexSolver::maxVertex()
+scalar rpVoronoiSimplexSolver::maxVertex()
 {
     int i, numverts = numVertices();
     scalar maxV = scalar(0.);
@@ -256,7 +257,7 @@ scalar btVoronoiSimplexSolver::maxVertex()
 
 
     //return the current simplex
-int btVoronoiSimplexSolver::getSimplex(Vector3 *pBuf, Vector3 *qBuf, Vector3 *yBuf) const
+int rpVoronoiSimplexSolver::getSimplex(Vector3 *pBuf, Vector3 *qBuf, Vector3 *yBuf) const
 {
     int i;
     for (i=0;i<numVertices();i++)
@@ -271,7 +272,7 @@ int btVoronoiSimplexSolver::getSimplex(Vector3 *pBuf, Vector3 *qBuf, Vector3 *yB
 
 
 
-bool btVoronoiSimplexSolver::inSimplex(const Vector3& w)
+bool rpVoronoiSimplexSolver::inSimplex(const Vector3& w)
 {
     bool found = false;
     int i, numverts = numVertices();
@@ -298,19 +299,19 @@ bool btVoronoiSimplexSolver::inSimplex(const Vector3& w)
     return found;
 }
 
-void btVoronoiSimplexSolver::backup_closest(Vector3& v)
+void rpVoronoiSimplexSolver::backup_closest(Vector3& v)
 {
     v = m_cachedV;
 }
 
 
-bool btVoronoiSimplexSolver::emptySimplex() const
+bool rpVoronoiSimplexSolver::emptySimplex() const
 {
     return (numVertices() == 0);
 
 }
 
-void btVoronoiSimplexSolver::compute_points(Vector3& p1, Vector3& p2)
+void rpVoronoiSimplexSolver::compute_points(Vector3& p1, Vector3& p2)
 {
     updateClosestVectorAndPoints();
     p1 = m_cachedP1;
@@ -321,7 +322,7 @@ void btVoronoiSimplexSolver::compute_points(Vector3& p1, Vector3& p2)
 
 
 
-bool	btVoronoiSimplexSolver::closestPtPointTriangle(const Vector3& p, const Vector3& a, const Vector3& b, const Vector3& c,btSubSimplexClosestResult& result)
+bool	rpVoronoiSimplexSolver::closestPtPointTriangle(const Vector3& p, const Vector3& a, const Vector3& b, const Vector3& c, rpSubSimplexClosestResult& result)
 {
     result.m_usedVertices.reset();
 
@@ -421,7 +422,7 @@ bool	btVoronoiSimplexSolver::closestPtPointTriangle(const Vector3& p, const Vect
 
 
 /// Test if point p and d lie on opposite sides of plane through abc
-int btVoronoiSimplexSolver::pointOutsideOfPlane(const Vector3& p, const Vector3& a, const Vector3& b, const Vector3& c, const Vector3& d)
+int rpVoronoiSimplexSolver::pointOutsideOfPlane(const Vector3& p, const Vector3& a, const Vector3& b, const Vector3& c, const Vector3& d)
 {
     Vector3 normal = (b-a).cross(c-a);
 
@@ -448,9 +449,9 @@ if (signd * signd < (scalar(1e-8) * scalar(1e-8)))
 }
 
 
-bool	btVoronoiSimplexSolver::closestPtPointTetrahedron(const Vector3& p, const Vector3& a, const Vector3& b, const Vector3& c, const Vector3& d, btSubSimplexClosestResult& finalResult)
+bool	rpVoronoiSimplexSolver::closestPtPointTetrahedron(const Vector3& p, const Vector3& a, const Vector3& b, const Vector3& c, const Vector3& d, rpSubSimplexClosestResult &finalResult)
 {
-    btSubSimplexClosestResult tempResult;
+    rpSubSimplexClosestResult tempResult;
 
     // Start out assuming point inside all halfspaces, so closest to itself
     finalResult.m_closestPointOnSimplex = p;

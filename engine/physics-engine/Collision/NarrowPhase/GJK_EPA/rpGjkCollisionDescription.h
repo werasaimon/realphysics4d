@@ -14,7 +14,7 @@
 namespace real_physics
 {
 
-struct btGjkCollisionDescription
+struct rpGjkCollisionDescription
 {
     Vector3	    m_firstDir;
     int			m_maxGjkIterations;
@@ -22,7 +22,7 @@ struct btGjkCollisionDescription
     scalar	    m_gjkRelError2;
 
 
-    btGjkCollisionDescription()
+    rpGjkCollisionDescription()
     :m_firstDir(0,1,0),
     m_maxGjkIterations(100),
     m_maximumDistanceSquared(1e30f),
@@ -31,7 +31,7 @@ struct btGjkCollisionDescription
     }
 
 
-    virtual ~btGjkCollisionDescription()
+    virtual ~rpGjkCollisionDescription()
     {
     }
 };

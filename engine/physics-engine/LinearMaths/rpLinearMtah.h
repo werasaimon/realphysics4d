@@ -122,7 +122,7 @@ namespace real_physics
 				return x*y;
 			#endif
 			#else
-				return sqrt(y);
+                return sqrtf(y);
 			#endif
 
  	}

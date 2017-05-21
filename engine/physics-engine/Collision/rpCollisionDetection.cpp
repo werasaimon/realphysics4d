@@ -18,7 +18,8 @@
 #include "../LinearMaths/rpMatrix3x3.h"
 #include "../LinearMaths/rpVector3D.h"
 #include "NarrowPhase/rpNarrowPhaseGjkEpaAlgorithm.h"
-#include "NarrowPhase/rpNarrowPhaseGjkMprAlgorithm.h"
+#include "NarrowPhase/rpNarrowPhaseMprAlgorithm.h"
+#include "NarrowPhase/GJK/rpGJKAlgorithm.h"
 #include "rpCollisionShapeInfo.h"
 #include "rpProxyShape.h"
 #include "rpRaycastInfo.h"
@@ -41,7 +42,7 @@ bool m_bAllowIntersections = true;
 void GetInterval_CenExt( const rpProxyShape* shape , const Vector3& xAxis, float& cen, float& ext)
 {
 	float min, max;
-	shape->getIntervalLocal(xAxis, min, max);
+    shape->getIntervalWorld(xAxis, min, max);
 	ext = (max - min) * 0.5f;
 	cen = (max + min) * 0.5f;
 }
@@ -350,10 +351,6 @@ void rpCollisionDetection::computeNarrowPhase( std::map<overlappingpairid, rpOve
 	            // TODO : Remove all the contact manifold of the overlapping pair from the contact manifolds list of the two bodies involved
 
 	            // Destroy the overlapping pair
-	            //itToRemove->second->~rpOverlappingPair();
-	            //mWorld->mMemoryAllocator.release(itToRemove->second, sizeof(OverlappingPair));
-
-	            // Destroy the overlapping pair
 	            delete itToRemove->second;
 	            mOverlappingPairs.erase(itToRemove);
 
@@ -387,7 +384,7 @@ void rpCollisionDetection::computeNarrowPhase( std::map<overlappingpairid, rpOve
 
 	        /**********************************************************************/
 
-            rpNarrowPhaseCollisionAlgorithm* narrowPhaseAlgorithm = new rpNarrowPhaseGjkMprAlgorithm;// mCollisionMatrix[shape1Type][shape2Type];
+            rpNarrowPhaseCollisionAlgorithm* narrowPhaseAlgorithm = new rpNarrowPhaseMprAlgorithm;// mCollisionMatrix[shape1Type][shape2Type];
 
 	        // If there is no collision algorithm between those two kinds of shapes
 	        if (narrowPhaseAlgorithm == NULL) continue;
@@ -421,23 +418,25 @@ void rpCollisionDetection::computeNarrowPhase( std::map<overlappingpairid, rpOve
 	        	// if there really is a collision. If a collision occurs, the
 	        	// notifyContact() callback method will be called.
 	        	OutContactInfo infoContact;
-	        	bool testCollision = (narrowPhaseAlgorithm->testCollision( shape1Info , shape2Info , infoContact ));
+                bool testCollision = (narrowPhaseAlgorithm->testCollision( shape2Info , shape1Info , infoContact ));
 
 
 
-				//	        	rpRigidPhysicsBody* physBdoy1 = static_cast<rpRigidPhysicsBody*>(body1);
-				//	        	rpRigidPhysicsBody* physBdoy2 = static_cast<rpRigidPhysicsBody*>(body2);
-				//	        	const Vector3& xVel = physBdoy1->getLinearVelocity() -
-				//	        			              physBdoy2->getLinearVelocity();
-				//
-				//	        	scalar  dt = scalar(1.0/60.0);
-				//	        	scalar  tcoll;
-				//	        	Vector3 Ncoll;
-				//	        	Vector3 Axis = infoContact.m_normal;
-				//	        	bool collideSweep = (timeOfImpact(shape1, shape2 , Axis , xVel , dt , tcoll , Ncoll));
+                /**
+                rpRigidPhysicsBody* physBdoy1 = static_cast<rpRigidPhysicsBody*>(body1);
+                rpRigidPhysicsBody* physBdoy2 = static_cast<rpRigidPhysicsBody*>(body2);
+                const Vector3& xVel = physBdoy1->getLinearVelocity() -
+                                      physBdoy2->getLinearVelocity();
+
+                scalar  dt = scalar(1.0/60.0);
+                scalar  tcoll;
+                Vector3 Ncoll;
+                Vector3 Axis = infoContact.m_normal;
+                bool collideSweep = (timeOfImpact(shape1, shape2 , Axis , xVel , dt , tcoll , Ncoll));
+                /**/
 
 
-	        	if(testCollision)
+                if(testCollision)
 	        	{
 
 

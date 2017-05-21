@@ -9,7 +9,7 @@
 #define SOURCE_ENGIE_COLLISION_NARROWPHASE_RPSIMPLEXSOLVERINTERFACE_H_
 
 
-#include "../../../LinearMaths/mathematics.h"
+#include "../../../../LinearMaths/mathematics.h"
 
 namespace real_physics
 {
@@ -20,12 +20,12 @@ namespace real_physics
 /// btSimplexSolverInterface can incrementally calculate distance between origin and up to 4 vertices
 /// Used by GJK or Linear Casting. Can be implemented by the Johnson-algorithm or alternative approaches based on
 /// voronoi regions or barycentric coordinates
-class btSimplexSolverInterface
+class rpSimplexSolverInterface
 {
     public:
 
     //virtual  btSimplexSolverInterface() {}
-    virtual ~btSimplexSolverInterface() {}
+    virtual ~rpSimplexSolverInterface() {}
 
     virtual void reset() = 0;
 

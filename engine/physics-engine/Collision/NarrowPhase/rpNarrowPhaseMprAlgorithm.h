@@ -8,22 +8,22 @@ namespace real_physics
 {
 
 
-class rpNarrowPhaseGjkMprAlgorithm : public rpNarrowPhaseCollisionAlgorithm
+class rpNarrowPhaseMprAlgorithm : public rpNarrowPhaseCollisionAlgorithm
 {
 
 private:
 
     /// Private copy-constructor
-    rpNarrowPhaseGjkMprAlgorithm(const rpNarrowPhaseGjkMprAlgorithm& algorithm);
+    rpNarrowPhaseMprAlgorithm(const rpNarrowPhaseMprAlgorithm& algorithm);
 
     /// Private assignment operator
-    rpNarrowPhaseGjkMprAlgorithm& operator=(const rpNarrowPhaseGjkMprAlgorithm& algorithm);
+    rpNarrowPhaseMprAlgorithm& operator=(const rpNarrowPhaseMprAlgorithm& algorithm);
 
 
 public:
 
-    rpNarrowPhaseGjkMprAlgorithm();
-    ~rpNarrowPhaseGjkMprAlgorithm();
+     rpNarrowPhaseMprAlgorithm();
+    ~rpNarrowPhaseMprAlgorithm();
 
 
     /// Compute a contact info if the two bounding volume collide

@@ -14,10 +14,27 @@
 namespace real_physics
 {
 
-
-
-
 // Config
+
+///* GJK	*/
+//#define GJK_MAX_ITERATIONS	128
+//#define GJK_ACCURARY		((scalar)0.0001)
+//#define GJK_MIN_DISTANCE	((scalar)0.0001)
+//#define GJK_DUPLICATED_EPS	((scalar)0.0001)
+//#define GJK_SIMPLEX2_EPS	((scalar)0.0)
+//#define GJK_SIMPLEX3_EPS	((scalar)0.0)
+//#define GJK_SIMPLEX4_EPS	((scalar)0.0)
+
+///* EPA	*/
+//#define EPA_MAX_VERTICES	64
+//#define EPA_MAX_FACES		(EPA_MAX_VERTICES*2)
+//#define EPA_MAX_ITERATIONS	255
+//#define EPA_ACCURACY		((scalar)0.0001)
+//#define EPA_FALLBACK		(10*EPA_ACCURACY)
+//#define EPA_PLANE_EPS		((scalar)0.0003)
+//#define EPA_INSIDE_EPS		((scalar)0.01)
+
+
 
 /* GJK	*/
 #define GJK_MAX_ITERATIONS	128
@@ -36,6 +53,7 @@ namespace real_physics
 #define EPA_FALLBACK		(10*EPA_ACCURACY)
 #define EPA_PLANE_EPS		((scalar)0.00001)
 #define EPA_INSIDE_EPS		((scalar)0.01)
+
 
 
 
@@ -59,30 +77,30 @@ struct	rpGjkEpaSolver
     };
 
 
-    template <typename btConvexTemplate>
-    static bool Distance(const btConvexTemplate& a,
-                         const btConvexTemplate& b,
+    template <typename ConvexTemplate>
+    static bool Distance(const ConvexTemplate& a,
+                         const ConvexTemplate& b,
                          const Vector3& guess, rpGjkEpaSolver::sResults& results);
 
 
 
-    template <typename btConvexTemplate>
-    static bool  Penetration(const btConvexTemplate& a,
-                             const btConvexTemplate& b,
+    template <typename ConvexTemplate>
+    static bool  Penetration(const ConvexTemplate& a,
+                             const ConvexTemplate& b,
                              const Vector3& guess, rpGjkEpaSolver::sResults& results);
 
 
-    template <typename btConvexTemplate , typename btDistanceInfoTemplate>
-    static int	  btComputeGjkDistance(const btConvexTemplate& a,
-                                       const btConvexTemplate& b,
-                                       const btGjkCollisionDescription& colDesc,
-                                             btDistanceInfoTemplate& distInfo);
+    template <typename ConvexTemplate , typename DistanceInfoTemplate>
+    static int	 ComputeGjkDistance(const ConvexTemplate& a,
+                                    const ConvexTemplate& b,
+                                    const rpGjkCollisionDescription& colDesc,
+                                          DistanceInfoTemplate& distInfo);
 
 
 
-    template <typename btConvexTemplate>
-    static bool SignedDistance(const btConvexTemplate& a,
-                               const btConvexTemplate& b,
+    template <typename  ConvexTemplate>
+    static bool SignedDistance(const ConvexTemplate& a,
+                               const ConvexTemplate& b,
                                const Vector3& guess, rpGjkEpaSolver::sResults& results);
 
 };
@@ -116,20 +134,20 @@ typedef unsigned char	U1;
 
 
 // MinkowskiDiff
-template <typename btConvexTemplate>
+template <typename ConvexTemplate>
 struct	MinkowskiDiff
 {
-    const btConvexTemplate* m_convexAPtr;
-    const btConvexTemplate* m_convexBPtr;
+    const ConvexTemplate* m_convexAPtr;
+    const ConvexTemplate* m_convexBPtr;
 
-    Transform				m_toshape1;
-    Transform				m_toshape0;
+    Transform				m_world1;
+    Transform				m_world0;
 
     bool					m_enableMargin;
 
 
-    MinkowskiDiff(const btConvexTemplate& a,
-                  const btConvexTemplate& b)
+    MinkowskiDiff(const ConvexTemplate& a,
+                  const ConvexTemplate& b)
     :m_convexAPtr(&a),
      m_convexBPtr(&b)
     {
@@ -137,44 +155,15 @@ struct	MinkowskiDiff
     }
 
 
-    //--------------------------------------------------------------------------------//
-
-    SIMD_INLINE Vector3 supportTransformed0(const Vector3 &direction ) const
+    SIMD_INLINE Vector3		Support0( const Vector3& dir ) const
     {
-        Vector3 result =  m_toshape0 * m_convexAPtr->getLocalSupportPointWithMargin(m_toshape0.getOrientation().getInverse() * direction);
-        return result;
+        return m_world0 * m_convexAPtr->getLocalSupportPointWithMargin(m_world0.getOrientation().getInverse() * dir );
     }
 
-
-    SIMD_INLINE Vector3 supportTransformed1(const Vector3 &direction ) const
+    SIMD_INLINE Vector3		Support1( const Vector3& dir ) const
     {
-        Vector3 result = m_toshape1 * m_convexBPtr->getLocalSupportPointWithMargin(m_toshape1.getOrientation().getInverse() * direction);
-        return result;
-    }
 
-    //--------------------------------------------------------------------------------//
-
-
-
-
-
-    void EnableMargin(bool enable)
-    {
-        m_enableMargin = enable;
-    }
-
-    SIMD_INLINE Vector3		Support0(const Vector3& d) const
-    {
-          //Vector3 result = m_convexAPtr->getLocalSupportPointWithMarginn(d);
-        Vector3 result = supportTransformed0(d);
-        return result;
-    }
-
-    SIMD_INLINE Vector3		Support1(const Vector3& d) const
-    {
-        //Vector3 result = m_toshape0*m_convexBPtr->getLocalSupportPointWithMarginn( (m_toshape1 * d) );
-        Vector3 result =  supportTransformed1(d);
-        return result;
+       return  m_world1 * m_convexBPtr->getLocalSupportPointWithMargin(m_world1.getOrientation().getInverse() * dir );
     }
 
 
@@ -201,8 +190,6 @@ struct	MinkowskiDiff
 };
 
 
-
-
 enum	eGjkStatus
 {
     eGjkValid,
@@ -212,8 +199,11 @@ enum	eGjkStatus
 
 
 
+
+
+
 // GJK
-template <typename btConvexTemplate>
+template <typename ConvexTemplate>
 struct	GJK
 {
     /* Types		*/
@@ -232,7 +222,8 @@ struct	GJK
     };
 
     /* Fields		*/
-    MinkowskiDiff<btConvexTemplate>			m_shape;
+
+    MinkowskiDiff<ConvexTemplate>			m_shape;
     Vector3		    m_ray;
     scalar		    m_distance;
     sSimplex		m_simplices[2];
@@ -245,7 +236,7 @@ struct	GJK
     eGjkStatus      m_status;
     /* Methods		*/
 
-    GJK(const btConvexTemplate& a, const btConvexTemplate& b)
+    GJK(const ConvexTemplate& a, const ConvexTemplate& b)
     :m_shape(a,b)
     {
         Initialize();
@@ -267,7 +258,7 @@ struct	GJK
 
 
 
-    eGjkStatus			Evaluate(const MinkowskiDiff<btConvexTemplate>& shapearg,const Vector3& guess)
+    eGjkStatus			Evaluate(const MinkowskiDiff<ConvexTemplate>& shapearg,const Vector3& guess)
     {
         U			iterations=0;
         scalar	    sqdist=0;
@@ -636,7 +627,7 @@ enum	eEpaStatus
 
 
 // EPA
-template <typename btConvexTemplate>
+template <typename ConvexTemplate>
 struct	EPA
 {
     /* Types		*/
@@ -645,7 +636,7 @@ struct	EPA
     {
         Vector3	n;
         scalar	d;
-        typename GJK<btConvexTemplate>::sSV*		c[3];
+        typename GJK<ConvexTemplate>::sSV*		c[3];
         sFace*		f[3];
         sFace*		l[2];
         U1			e[3];
@@ -673,15 +664,15 @@ struct	EPA
 
 
     /* Fields		*/
-    eEpaStatus		m_status;
-    typename GJK<btConvexTemplate>::sSimplex	m_result;
-    Vector3		m_normal;
-    scalar		m_depth;
-    typename GJK<btConvexTemplate>::sSV				m_sv_store[EPA_MAX_VERTICES];
-    sFace			m_fc_store[EPA_MAX_FACES];
-    U				m_nextsv;
-    sList			m_hull;
-    sList			m_stock;
+    eEpaStatus		                        m_status;
+    typename GJK<ConvexTemplate>::sSimplex	m_result;
+    Vector3		                            m_normal;
+    scalar		                            m_depth;
+    typename GJK<ConvexTemplate>::sSV	    m_sv_store[EPA_MAX_VERTICES];
+    sFace			                        m_fc_store[EPA_MAX_FACES];
+    U			         	                m_nextsv;
+    sList			                        m_hull;
+    sList			                        m_stock;
     /* Methods		*/
     EPA()
     {
@@ -725,9 +716,9 @@ struct	EPA
 
 
 
-    eEpaStatus	Evaluate(GJK<btConvexTemplate>& gjk,const Vector3& guess)
+    eEpaStatus	Evaluate(GJK<ConvexTemplate>& gjk,const Vector3& guess)
     {
-        typename GJK<btConvexTemplate>::sSimplex&	simplex=*gjk.m_simplex;
+        typename GJK<ConvexTemplate>::sSimplex&	simplex=*gjk.m_simplex;
         if((simplex.rank>1)&&gjk.EncloseOrigin())
         {
 
@@ -742,8 +733,8 @@ struct	EPA
             m_nextsv	=	0;
             /* Orient simplex		*/
             if(gjk.det(	simplex.c[0]->w-simplex.c[3]->w,
-                    simplex.c[1]->w-simplex.c[3]->w,
-                    simplex.c[2]->w-simplex.c[3]->w)<0)
+                        simplex.c[1]->w-simplex.c[3]->w,
+                        simplex.c[2]->w-simplex.c[3]->w)<0)
             {
                 Swap(simplex.c[0],simplex.c[1]);
                 Swap(simplex.p[0],simplex.p[1]);
@@ -771,7 +762,7 @@ struct	EPA
                     if(m_nextsv<EPA_MAX_VERTICES)
                     {
                         sHorizon		horizon;
-                        typename GJK<btConvexTemplate>::sSV*			w=&m_sv_store[m_nextsv++];
+                        typename GJK<ConvexTemplate>::sSV*			w=&m_sv_store[m_nextsv++];
                         bool			valid=true;
                         best->pass	=	(U1)(++pass);
                         gjk.getsupport(best->n,*w);
@@ -830,7 +821,7 @@ struct	EPA
 
 
 
-    bool getedgedist(sFace* face, typename GJK<btConvexTemplate>::sSV* a, typename GJK<btConvexTemplate>::sSV* b, scalar& dist)
+    bool getedgedist(sFace* face, typename GJK<ConvexTemplate>::sSV* a, typename GJK<ConvexTemplate>::sSV* b, scalar& dist)
     {
         const Vector3 ba = b->w - a->w;
         const Vector3 n_ab = (ba).cross(face->n); // Outward facing edge normal direction, on triangle plane
@@ -866,7 +857,7 @@ struct	EPA
 
         return false;
     }
-    sFace*	newface(typename GJK<btConvexTemplate>::sSV* a,typename GJK<btConvexTemplate>::sSV* b,typename GJK<btConvexTemplate>::sSV* c,bool forced)
+    sFace*	newface(typename GJK<ConvexTemplate>::sSV* a,typename GJK<ConvexTemplate>::sSV* b,typename GJK<ConvexTemplate>::sSV* c,bool forced)
     {
         if(m_stock.root)
         {
@@ -911,7 +902,9 @@ struct	EPA
         m_status = m_stock.root ? eEpaOutOfVertices : eEpaOutOfFaces;
         return 0;
     }
-    sFace*				findbest()
+
+
+    sFace*	findbest()
     {
         sFace*		minf=m_hull.root;
         scalar	mind=minf->d*minf->d;
@@ -926,7 +919,9 @@ struct	EPA
         }
         return(minf);
     }
-    bool				expand(U pass,typename GJK<btConvexTemplate>::sSV* w,sFace* f,U e,sHorizon& horizon)
+
+
+    bool expand(U pass,typename GJK<ConvexTemplate>::sSV* w,sFace* f,U e,sHorizon& horizon)
     {
         static const U	i1m3[]={1,2,0};
         static const U	i2m3[]={2,0,1};
@@ -963,11 +958,12 @@ struct	EPA
 
 };
 
-template <typename btConvexTemplate>
-static void	Initialize(	const btConvexTemplate& a,
-                        const btConvexTemplate& b,
+
+template <typename ConvexTemplate>
+static void	Initialize(	const ConvexTemplate& a,
+                        const ConvexTemplate& b,
                         rpGjkEpaSolver::sResults& results,
-                        MinkowskiDiff<btConvexTemplate>& shape)
+                        MinkowskiDiff<ConvexTemplate>& shape)
 {
     /* Results		*/
     results.witnesses[0]	=
@@ -975,8 +971,8 @@ static void	Initialize(	const btConvexTemplate& a,
     results.status			=	rpGjkEpaSolver::sResults::Separated;
     /* Shape		*/
 
-    shape.m_toshape1		=	b.getWorldTransform();//.getBasis().transposeTimes(a.getWorldTransform().getBasis());
-    shape.m_toshape0		=	a.getWorldTransform();//.inverseTimes(b.getWorldTransform());
+    shape.m_world1		=	b.getWorldTransform();//.getBasis().transposeTimes(a.getWorldTransform().getBasis());
+    shape.m_world0		=	a.getWorldTransform();//.inverseTimes(b.getWorldTransform());
 
 }
 
@@ -984,17 +980,15 @@ static void	Initialize(	const btConvexTemplate& a,
 }
 
 //----------------------- Api -----------------------------//
-
-
-template<typename btConvexTemplate>
-bool rpGjkEpaSolver::Distance(const btConvexTemplate &a,
-                               const btConvexTemplate &b,
-                               const Vector3 &guess, rpGjkEpaSolver::sResults &results)
+template<typename ConvexTemplate>
+bool rpGjkEpaSolver::Distance(const ConvexTemplate &a,
+                              const ConvexTemplate &b,
+                              const Vector3 &guess, rpGjkEpaSolver::sResults &results)
 {
 
-    MinkowskiDiff<btConvexTemplate>			shape(a,b);
+    MinkowskiDiff<ConvexTemplate>     shape(a,b);
     Initialize(a,b,results,shape);
-    GJK<btConvexTemplate>				gjk(a,b);
+    GJK<ConvexTemplate>			      gjk(a,b);
     eGjkStatus	gjk_status=gjk.Evaluate(shape,guess);
     if(gjk_status==eGjkValid)
     {
@@ -1023,21 +1017,21 @@ bool rpGjkEpaSolver::Distance(const btConvexTemplate &a,
 }
 
 
-template<typename btConvexTemplate>
-bool rpGjkEpaSolver::Penetration(const btConvexTemplate &a,
-                                  const btConvexTemplate &b,
-                                  const Vector3 &guess, rpGjkEpaSolver::sResults &results)
+template<typename ConvexTemplate>
+bool rpGjkEpaSolver::Penetration(const ConvexTemplate &a,
+                                 const ConvexTemplate &b,
+                                 const Vector3 &guess, rpGjkEpaSolver::sResults &results)
 {
 
-    MinkowskiDiff<btConvexTemplate>			shape(a,b);
+    MinkowskiDiff<ConvexTemplate>	shape(a,b);
     Initialize(a,b,results,shape);
-    GJK<btConvexTemplate>				gjk(a,b);
+    GJK<ConvexTemplate>				gjk(a,b);
     eGjkStatus	gjk_status=gjk.Evaluate(shape,-guess);
     switch(gjk_status)
     {
         case	eGjkInside:
         {
-            EPA<btConvexTemplate>				epa;
+            EPA<ConvexTemplate>				epa;
             eEpaStatus	epa_status=epa.Evaluate(gjk,-guess);
             if(epa_status!=eEpaFailed)
             {
@@ -1065,11 +1059,11 @@ bool rpGjkEpaSolver::Penetration(const btConvexTemplate &a,
     return(false);
 }
 
-template<typename btConvexTemplate, typename btDistanceInfoTemplate>
-int rpGjkEpaSolver::btComputeGjkDistance(const btConvexTemplate &a,
-                                         const btConvexTemplate &b,
-                                         const btGjkCollisionDescription &colDesc,
-                                               btDistanceInfoTemplate &distInfo)
+template<typename ConvexTemplate, typename DistanceInfoTemplate>
+int rpGjkEpaSolver::ComputeGjkDistance(const ConvexTemplate &a,
+                                       const ConvexTemplate &b,
+                                       const rpGjkCollisionDescription &colDesc,
+                                             DistanceInfoTemplate &distInfo)
 {
 
     rpGjkEpaSolver::sResults results;
@@ -1091,10 +1085,10 @@ int rpGjkEpaSolver::btComputeGjkDistance(const btConvexTemplate &a,
 }
 
 
-template<typename btConvexTemplate>
-bool rpGjkEpaSolver::SignedDistance(const btConvexTemplate &a,
-                                     const btConvexTemplate &b,
-                                     const Vector3 &guess, rpGjkEpaSolver::sResults &results)
+template<typename ConvexTemplate>
+bool rpGjkEpaSolver::SignedDistance(const ConvexTemplate &a,
+                                    const ConvexTemplate &b,
+                                    const Vector3 &guess, rpGjkEpaSolver::sResults &results)
 {
 
     if(!Distance(a,b,guess,results))

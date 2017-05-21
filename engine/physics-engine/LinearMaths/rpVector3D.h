@@ -223,15 +223,15 @@ namespace real_physics
 
     friend rpVector3D<T> operator/(const rpVector3D<T>& vector, T number)
     {
-      assert(number > MACHINE_EPSILON);
+      //assert(number > MACHINE_EPSILON);
       return rpVector3D<T>(vector.x / number, vector.y / number, vector.z / number);
     }
 
     friend rpVector3D<T> operator/(const rpVector3D<T>& vector1, const rpVector3D<T>& vector2)
     {
-      assert(vector2.x > MACHINE_EPSILON);
-      assert(vector2.y > MACHINE_EPSILON);
-      assert(vector2.z > MACHINE_EPSILON);
+      //assert(vector2.x > MACHINE_EPSILON);
+      //assert(vector2.y > MACHINE_EPSILON);
+      //assert(vector2.z > MACHINE_EPSILON);
       return rpVector3D<T>(vector1.x / vector2.x, vector1.y / vector2.y, vector1.z / vector2.z);
     }
 
