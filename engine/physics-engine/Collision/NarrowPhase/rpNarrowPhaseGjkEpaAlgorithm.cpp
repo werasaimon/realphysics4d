@@ -41,32 +41,6 @@ bool rpNarrowPhaseGjkEpaAlgorithm::testCollision(const rpCollisionShapeInfo &sha
 
 
 /**
-    rpGJKAlgorithm GJK;
-    if(GJK.computeGJK( shape2Info , shape1Info , outInfo ))
-    {
-
-        Vector3	guessVector(shape1Info.getWorldTransform().getPosition() -
-                            shape2Info.getWorldTransform().getPosition());//?? why not use the GJK input?
-
-        rpGjkEpaSolver::sResults	results;
-
-        if(rpGjkEpaSolver::Penetration(shape2Info,shape1Info,guessVector,results))
-        {
-            outInfo.pALocal = results.witnesses[0];
-            outInfo.pBLocal = results.witnesses[1];
-
-            outInfo.m_normal = results.normal;
-            outInfo.m_penetrationDepth  = results.distance;
-
-            return true;
-
-        }
-    }
-
-
-    return false;
-
-/**
     Vector3	guessVector(shape1Info.getWorldTransform().getPosition() -
                         shape2Info.getWorldTransform().getPosition());//?? why not use the GJK input?
 

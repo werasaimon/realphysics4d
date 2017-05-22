@@ -14,9 +14,7 @@ namespace real_physics
 
 namespace
 {
-
    rpGJKAlgorithm GJKAlgorithm;
-
 }
 
 rpConvexHullShape::rpConvexHullShape( rpModelConvexHull* initHull ,

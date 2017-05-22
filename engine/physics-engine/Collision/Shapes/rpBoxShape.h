@@ -15,6 +15,8 @@ namespace real_physics
 
 
 
+
+
 // Class BoxShape
 /**
  * This class represents a 3D box shape. Those axis are unit length.
@@ -147,6 +149,9 @@ namespace real_physics
 				localPoint.y < mExtent[1] && localPoint.y > -mExtent[1] &&
 				localPoint.z < mExtent[2] && localPoint.z > -mExtent[2]);
 	}
+
+
+
 
 
 } /* namespace real_physics */

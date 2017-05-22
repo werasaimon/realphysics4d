@@ -18,7 +18,8 @@ const scalar rpSequentialImpulseObjectSolver::BETA_SPLIT_IMPULSE = scalar(0.2);
 const scalar rpSequentialImpulseObjectSolver::SLOP= scalar(0.01);
 
 
-const scalar OFFSET_SLOP = scalar(0.09);
+const scalar OFFSET_SLOP = scalar(0.033);
+
 
 
 rpSequentialImpulseObjectSolver::rpSequentialImpulseObjectSolver( rpRigidPhysicsBody* body1 ,
@@ -925,6 +926,7 @@ SIMD_INLINE void rpSequentialImpulseObjectSolver::solvePositionConstraint()
 
 
 
+        /**/
         if (contactManifold->rollingResistanceFactor > 0)
         {
 
@@ -945,6 +947,7 @@ SIMD_INLINE void rpSequentialImpulseObjectSolver::solvePositionConstraint()
 
 
         }
+        /**/
 
 	}
 

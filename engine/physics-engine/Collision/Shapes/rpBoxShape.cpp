@@ -25,8 +25,8 @@
 namespace real_physics
 {
 
-
-
+#define MAX_PETURBERATION_ITERATIONS	    4
+#define EPS_PETURBERATION_ANGLES_COFFICIENT	0.08
 
  // Constructor
  /**
@@ -43,8 +43,8 @@ namespace real_physics
          assert(extent.y > scalar(0.0) && extent.y > OBJECT_MARGIN);
          assert(extent.z > scalar(0.0) && extent.z > OBJECT_MARGIN);
 
-         mNbMaxPeturberationIteration = (4); // maximum iteration  for Axis Peturberation
-         mEpsilonPeturberation = (0.08f);// epsilon for Peturberation
+         mNbMaxPeturberationIteration = MAX_PETURBERATION_ITERATIONS; // maximum iteration  for Axis Peturberation
+         mEpsilonPeturberation =  EPS_PETURBERATION_ANGLES_COFFICIENT;// epsilon for Peturberation
      }
 
 
@@ -166,6 +166,8 @@ bool rpBoxShape::raycast(const Ray& ray, RaycastInfo& raycastInfo, rpProxyShape*
 }
 
 
+#undef MAX_PETURBERATION_ITERATIONS
+#undef EPS_PETURBERATION_ANGLES_COFFICIENT
 
 
 } /* namespace real_physics */
