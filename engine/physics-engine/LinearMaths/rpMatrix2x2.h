@@ -229,7 +229,7 @@ template<class T>
 SIMD_INLINE rpMatrix2x2<T>& real_physics::rpMatrix2x2<T>::getColumn(int i) const
 {
 	assert(i>= 0 && i<2);
-	return Vector2(mRows[0][i], mRows[1][i]);
+    return rpVector2D<T>(mRows[0][i], mRows[1][i]);
 }
 
 template<class T>
