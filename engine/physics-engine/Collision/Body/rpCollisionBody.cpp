@@ -15,7 +15,6 @@
 #include "../../Geometry/QuickHull/Structs/Ray.hpp"
 #include "rpBody.h"
 
-
 namespace real_physics
 {
 
@@ -28,7 +27,7 @@ namespace real_physics
  */
 rpCollisionBody::rpCollisionBody(const Transform& transform, rpCollisionDetection* collideWorld , bodyindex id)
               : rpBody(id), mType(DYNAMIC), mTransform(transform), mProxyCollisionShapes(NULL),
-                mNbCollisionShapes(0) , mCollisionDetection(collideWorld)//, mContactManifoldsList(NULL), mWorld(world)
+                mNbCollisionShapes(0) , mCollisionDetection(collideWorld) , mContactManifoldsList(NULL) //, mWorld(world)
 {
 
 }
@@ -36,11 +35,12 @@ rpCollisionBody::rpCollisionBody(const Transform& transform, rpCollisionDetectio
 // Destructor
 rpCollisionBody::~rpCollisionBody()
 {
-    //assert(mContactManifoldsList == NULL);
-
+    assert(mContactManifoldsList == NULL);
     // Remove all the proxy collision shapes of the body
     removeAllCollisionShapes();
 }
+
+
 
 
 
@@ -91,6 +91,8 @@ rpProxyShape* rpCollisionBody::addCollisionShape(rpCollisionShape* collisionShap
     return proxyShape;
 }
 
+
+
 // Remove a collision shape from the body
 /// To remove a collision shape, you need to specify the pointer to the proxy
 /// shape that has been returned when you have added the collision shape to the
@@ -108,7 +110,7 @@ void rpCollisionBody::removeCollisionShapee(const rpProxyShape* proxyShape)
 	{
 		mProxyCollisionShapes = current->mNext;
 
-		if (mIsActive || true )
+        if (mIsActive)
 		{
 		   mCollisionDetection->removeProxyCollisionShape(current);
 		}
@@ -148,6 +150,8 @@ void rpCollisionBody::removeCollisionShapee(const rpProxyShape* proxyShape)
 	}
 }
 
+
+
 // Remove all the collision shapes
 void rpCollisionBody::removeAllCollisionShapes()
 {
@@ -161,7 +165,7 @@ void rpCollisionBody::removeAllCollisionShapes()
 	        // Remove the proxy collision shape
 	        rpProxyShape* nextElement = current->mNext;
 
-	        if (mIsActive||true)
+            if (mIsActive)
 	        {
 	            mCollisionDetection->removeProxyCollisionShape(current);
 	        }
@@ -179,23 +183,25 @@ void rpCollisionBody::removeAllCollisionShapes()
 	    mProxyCollisionShapes = NULL;
 }
 
+
 // Reset the contact manifold lists
-//void CollisionBody::resetContactManifoldsList()
-//{
-//
-////    // Delete the linked list of contact manifolds of that body
-////    ContactManifoldListElement* currentElement = mContactManifoldsList;
-////    while (currentElement != NULL) {
-////        ContactManifoldListElement* nextElement = currentElement->next;
-////
-////        // Delete the current element
-////        currentElement->~ContactManifoldListElement();
-////        mWorld.mMemoryAllocator.release(currentElement, sizeof(ContactManifoldListElement));
-////
-////        currentElement = nextElement;
-////    }
-////    mContactManifoldsList = NULL;
-//}
+void rpCollisionBody::resetContactManifoldsList()
+{
+    // Delete the linked list of contact manifolds of that body
+    rpContactManifoldListElement* currentElement = mContactManifoldsList;
+    while (currentElement != NULL)
+    {
+        rpContactManifoldListElement* nextElement = currentElement->next;
+
+        // Delete the current element
+        delete currentElement;
+
+        currentElement = nextElement;
+    }
+    mContactManifoldsList = NULL;
+}
+
+
 
 // Update the broad-phase state for this body (because it has moved for instance)
 void rpCollisionBody::updateBroadPhaseState() const
@@ -207,6 +213,8 @@ void rpCollisionBody::updateBroadPhaseState() const
         updateProxyShapeInBroadPhase(shape);
     }
 }
+
+
 
 // Update the broad-phase state of a proxy collision shape of the body
 void rpCollisionBody::updateProxyShapeInBroadPhase(rpProxyShape* proxyShape, bool forceReinsert) const
@@ -221,6 +229,7 @@ void rpCollisionBody::updateProxyShapeInBroadPhase(rpProxyShape* proxyShape, boo
 	mCollisionDetection->updateProxyCollisionShape(proxyShape, aabb, Vector3(0, 0, 0), forceReinsert);
 
 }
+
 
 
 // Ask the broad-phase to test again the collision shapes of the body for collision
@@ -275,7 +284,7 @@ void rpCollisionBody::setIsActive(bool isActive)
         }
 
         // Reset the contact manifold list of the body
-        //resetContactManifoldsList();
+        resetContactManifoldsList();
     }
 }
 
@@ -283,24 +292,23 @@ void rpCollisionBody::setIsActive(bool isActive)
 
 //// Reset the mIsAlreadyInIsland variable of the body and contact manifolds.
 ///// This method also returns the number of contact manifolds of the body.
-//int CollisionBody::resetIsAlreadyInIslandAndCountManifolds()
-//{
-//
-////    mIsAlreadyInIsland = false;
-////
-////    int nbManifolds = 0;
-////
-////    // Reset the mIsAlreadyInIsland variable of the contact manifolds for
-////    // this body
-////    ContactManifoldListElement* currentElement = mContactManifoldsList;
-////    while (currentElement != NULL) {
-////        currentElement->contactManifold->mIsAlreadyInIsland = false;
-////        currentElement = currentElement->next;
-////        nbManifolds++;
-////    }
-////
-////    return nbManifolds;
-//}
+int rpCollisionBody::resetIsAlreadyInIslandAndCountManifolds()
+{
+
+    mIsAlreadyInIsland = false;
+
+    // Reset the mIsAlreadyInIsland variable of the contact manifolds for
+    // this body
+    int nbManifolds = 0;
+    rpContactManifoldListElement* currentElement = mContactManifoldsList;
+    while (currentElement != NULL)
+    {
+        currentElement->contactManifold->mIsAlreadyInIsland = false;
+        currentElement = currentElement->next;
+        nbManifolds++;
+    }
+    return nbManifolds;
+}
 
 
 
@@ -323,6 +331,8 @@ bool rpCollisionBody::testPointInside(const Vector3& worldPoint) const
 
     return false;
 }
+
+
 
 // Raycast method with feedback information
 /// The method returns the closest hit among all the collision shapes of the body
@@ -354,10 +364,6 @@ bool rpCollisionBody::raycast(const Ray& ray, RaycastInfo& raycastInfo)
 
     return isHit;
 }
-
-
-
-
 
 
 

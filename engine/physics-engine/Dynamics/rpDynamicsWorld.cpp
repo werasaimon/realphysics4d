@@ -7,8 +7,7 @@
 
 #include <assert.h>
 #include "../Dynamics/rpDynamicsWorld.h"
-
-
+#include "../Dynamics/Joint/rpJoint.h"
 
 
 
@@ -24,7 +23,7 @@ rpDynamicsWorld::rpDynamicsWorld(const Vector3& gravity)
   mNbPositionSolverIterations(DEFAULT_POSITION_SOLVER_NB_ITERATIONS),
   mTimer( scalar(1.0) )
 {
-
+    resetContactManifoldListsOfBodies();
 }
 
 
@@ -39,9 +38,9 @@ rpDynamicsWorld::~rpDynamicsWorld()
 void rpDynamicsWorld::destroy()
 {
 
-
     // Stop timer
     mTimer.stop();
+
 
     // Destroy all the joints that have not been removed
     for (auto itJoints = mPhysicsJoints.begin(); itJoints != mPhysicsJoints.end();)
@@ -49,8 +48,8 @@ void rpDynamicsWorld::destroy()
         std::set<rpJoint*>::iterator itToRemove = itJoints;
         ++itJoints;
         destroyJoint(*itToRemove);
-
     }
+
 
 
     // Destroy all the rigid bodies that have not been removed
@@ -60,6 +59,7 @@ void rpDynamicsWorld::destroy()
         ++itRigidBodies;
         destroyBody(*itToRemove);
     }
+
 
 
     // Destroy all pair collisions that have not been removed
@@ -77,18 +77,19 @@ void rpDynamicsWorld::destroy()
     // Destroy all pair collisions that have not been removed
     if(!mCollisionContactOverlappingPairs.empty())
     {
-    	for( auto pair : mCollisionContactOverlappingPairs )
-    	{
-    		delete pair.second;
-    	}
+        for( auto pair : mCollisionContactOverlappingPairs )
+        {
+            delete pair.second;
+        }
 
-    	mCollisionContactOverlappingPairs.clear();
+        mCollisionContactOverlappingPairs.clear();
     }
 
     assert(mPhysicsJoints.size() == 0);
     assert(mPhysicsBodies.size() == 0);
     assert(mContactSolvers.empty());
     assert(mCollisionContactOverlappingPairs.empty());
+
 
 }
 
@@ -103,20 +104,7 @@ void rpDynamicsWorld::update(scalar timeStep)
 
      while( mTimer.isPossibleToTakeStep() )
      {
-
-             /****************************/
-             integrateGravity(timeStep);
-
-             /****************************/
-             updateBodiesState(timeStep);
-
-             /****************************/
-             CollidePhase();
-             DynamicPhase(timeStep);
-
-             /****************************/
-             integrateBodiesVelocities(timeStep);
-
+         updateFixedTime(timeStep);
 
          // next step simulation
          mTimer.nextStep();
@@ -126,6 +114,10 @@ void rpDynamicsWorld::update(scalar timeStep)
 
 void rpDynamicsWorld::updateFixedTime(scalar timeStep)
 {
+
+    // Reset all the contact manifolds lists of each body
+    resetContactManifoldListsOfBodies();
+
     /****************************/
     integrateGravity(timeStep);
 
@@ -152,7 +144,7 @@ void rpDynamicsWorld::CollidePhase()
 
 
 	/// delete overlapping pairs collision
-	if(!mCollisionContactOverlappingPairs.empty() || true)
+    if(!mCollisionContactOverlappingPairs.empty())
 	{
 		for( auto pair : mCollisionContactOverlappingPairs )
 		{
@@ -397,33 +389,38 @@ rpRigidPhysicsBody* rpDynamicsWorld::createRigidBody(const Transform& transform)
 void rpDynamicsWorld::destroyBody(rpPhysicsBody* rigidBody)
 {
 
-		    // Remove all the collision shapes of the body
-		    rigidBody->removeAllCollisionShapes();
+    // Remove all the collision shapes of the body
+    rigidBody->removeAllCollisionShapes();
+
+    // Add the body ID to the list of free IDs
+    mFreeBodiesIDs.push_back(rigidBody->getID());
 
 
-		    // Add the body ID to the list of free IDs
-		    mFreeBodiesIDs.push_back(rigidBody->getID());
+
+    /**
+    // Destroy all the joints in which the rigid body to be destroyed is involved
+    rpJointListElement* element;
+    for (element = rigidBody->mJointsList; element != NULL; element = element->next )
+    {
+        //destroyJoint(element->joint);
+        //element = NULL;
+    }
+    rigidBody->mJointsList = NULL;
+    /**/
 
 
-		//    // Destroy all the joints in which the rigid body to be destroyed is involved
-		//    JointListElement* element;
-		//    for (element = rigidBody->mJointsList; element != NULL; element = element->next) {
-		//        destroyJoint(element->joint);
-		//    }
-		//
-		//    // Reset the contact manifold list of the body
-		//    rigidBody->resetContactManifoldsList();
+    // Reset the contact manifold list of the body
+    rigidBody->resetContactManifoldsList();
 
 
-		    // Call the destructor of the rigid body
-            rigidBody->~rpPhysicsBody();
+    // Remove the rigid body from the list of rigid bodies
+    mBodies.erase(rigidBody);
+    mPhysicsBodies.erase(rigidBody);
 
-		    // Remove the rigid body from the list of rigid bodies
-		    mBodies.erase(rigidBody);
-		    mPhysicsBodies.erase(rigidBody);
 
-		    // Free the object from the memory allocator
-		    delete rigidBody;
+    // Call the destructor of the rigid body
+    // Free the object from the memory allocator
+    delete rigidBody;
 
 }
 
@@ -480,7 +477,7 @@ rpJoint* rpDynamicsWorld::createJoint(const rpJointInfo& jointInfo)
 		  }
 
 		default:
-			cout << "is not method class" <<endl;
+            cout << "is not init joint info " <<endl;
 			break;
 	}
 
@@ -498,7 +495,7 @@ rpJoint* rpDynamicsWorld::createJoint(const rpJointInfo& jointInfo)
 
 
 	    // Add the joint into the joint list of the bodies involved in the joint
-	    //addJointToBody(newJoint);
+          addJointToBody(newJoint);
 
 	    // Return the pointer to the created joint
 	    return newJoint;
@@ -524,14 +521,28 @@ void rpDynamicsWorld::destroyJoint(rpJoint* joint)
 	mPhysicsJoints.erase(joint);
 
 	// Remove the joint from the joint list of the bodies involved in the joint
-	//joint->mBody1->removeJointFromJointsList(mMemoryAllocator, joint);
-	//joint->mBody2->removeJointFromJointsList(mMemoryAllocator, joint);
+    joint->mBody1->removeJointFromJointsList( joint );
+    joint->mBody2->removeJointFromJointsList( joint );
 
 	size_t nbBytes = joint->getSizeInBytes();
 
 	// Call the destructor of the joint
 	delete joint;
 
+
+}
+
+void rpDynamicsWorld::addJointToBody(rpJoint *joint)
+{
+    assert(joint != NULL);
+
+    // Add the joint at the beginning of the linked list of joints of the first body
+    rpJointListElement* jointListElement1 = new rpJointListElement(joint , joint->mBody1->mJointsList);
+    joint->mBody1->mJointsList = jointListElement1;
+
+    // Add the joint at the beginning of the linked list of joints of the second body
+    rpJointListElement* jointListElement2 = new rpJointListElement(joint , joint->mBody2->mJointsList);
+    joint->mBody2->mJointsList = jointListElement2;
 
 }
 

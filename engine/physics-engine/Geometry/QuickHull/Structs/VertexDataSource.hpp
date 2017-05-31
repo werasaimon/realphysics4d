@@ -36,7 +36,7 @@ namespace real_physics
 
 			}
 
-			VertexDataSource() : m_ptr(nullptr), m_count(0)
+            VertexDataSource() : m_ptr(nullptr), m_count(0)
 			{
 
 			}

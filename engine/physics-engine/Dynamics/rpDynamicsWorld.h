@@ -35,8 +35,6 @@ namespace real_physics
 {
 
 
-
-
 //struct pairKey
 //{
 //    pairKey( rpProxyShape* b1,
@@ -174,6 +172,9 @@ class rpDynamicsWorld : public rpCollisionWorld
 	 /// Destroy a joint
 	void destroyJoint(rpJoint* joint);
 
+
+    /// Add the joint to the list of joints of the two bodies involved in the joint
+    void addJointToBody(rpJoint* joint);
 
 	//***************************************************//
 

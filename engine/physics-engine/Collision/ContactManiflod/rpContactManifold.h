@@ -30,7 +30,7 @@ class rpContactManifold;
 /**
  * This structure represents a single element of a linked list of contact manifolds
  */
-struct ContactManifoldListElement
+struct rpContactManifoldListElement
 {
 
     public:
@@ -41,14 +41,14 @@ struct ContactManifoldListElement
         rpContactManifold* contactManifold;
 
         /// Next element of the list
-        ContactManifoldListElement* next;
+        rpContactManifoldListElement* next;
 
         // -------------------- Methods -------------------- //
 
         /// Constructor
-        ContactManifoldListElement(rpContactManifold* initContactManifold,
-                                   ContactManifoldListElement* initNext)
-                                  :contactManifold(initContactManifold), next(initNext) {
+        rpContactManifoldListElement(rpContactManifold* initContactManifold, rpContactManifoldListElement* initNext)
+        :contactManifold(initContactManifold), next(initNext)
+        {
 
         }
 };

@@ -94,6 +94,12 @@ class rpCollisionDetection
         /// Compute the narrow-phase collision detection
 	    void computeNarrowPhase(std::map<overlappingpairid, rpOverlappingPair*>& ContactOverlappingPairs );
 
+        /// Add a contact manifold to the linked list of contact manifolds of the two bodies
+        /// involed in the corresponding contact.
+        void addContactManifoldToBody(rpOverlappingPair* pair);
+
+        /// Add all the contact manifold of colliding pairs to their bodies
+        void addAllContactManifoldsToBodies(std::map<overlappingpairid, rpOverlappingPair *> &ContactOverlappingPairs);
 
 
 	    void broadPhaseNotifyOverlappingPair( rpProxyShape* shape1 ,

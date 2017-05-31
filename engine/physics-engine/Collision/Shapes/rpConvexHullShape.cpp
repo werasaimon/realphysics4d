@@ -17,13 +17,9 @@ namespace
    rpGJKAlgorithm GJKAlgorithm;
 }
 
-rpConvexHullShape::rpConvexHullShape( rpModelConvexHull* initHull ,
-		                              scalar margin)
-: rpConvexShape( CONVEX_HULL_MESH , margin )
+rpConvexHullShape::rpConvexHullShape( rpModelConvexHull* initHull , scalar margin)
+: rpConvexShape( CONVEX_HULL_MESH , margin ) , mInitHull(initHull)
 {
-	mQuickHull  = &initHull->mQuickHull;
-	mConvexHull = &initHull->mConvexHull;
-
 	mNbMaxPeturberationIteration = 10;
     mEpsilonPeturberation = 0.055;
 }
@@ -33,11 +29,11 @@ rpConvexHullShape::rpConvexHullShape( rpModelConvexHull* initHull ,
 rpConvexHullShape::~rpConvexHullShape()
 {
 
-//   if(mQuickHull != NULL)
-//   {
-//	   delete mQuickHull;
-//	   mQuickHull=NULL;
-//   }
+    if( mInitHull != NULL )
+    {
+       delete mInitHull;
+       mInitHull = NULL;
+    }
 
 }
 
@@ -45,11 +41,11 @@ rpConvexHullShape::~rpConvexHullShape()
 Vector3 rpConvexHullShape::getLocalSupportPointWithoutMargin(const Vector3& direction , void** cachedCollisionData) const
 {
 	uint index = 0;
-	scalar max = (mConvexHull->getVertexBuffer()[0].dot(direction));
+    scalar max = (mInitHull->mConvexHull.getVertexBuffer()[0].dot(direction));
 
-	for (uint i = 1; i < mConvexHull->getVertexBuffer().size(); i++)
+    for (uint i = 1; i < mInitHull->mConvexHull.getVertexBuffer().size(); i++)
 	{
-		scalar d = (mConvexHull->getVertexBuffer()[i].dot(direction));
+        scalar d = (mInitHull->mConvexHull.getVertexBuffer()[i].dot(direction));
 		if (d > max)
 		{
 			max = d;
@@ -57,7 +53,7 @@ Vector3 rpConvexHullShape::getLocalSupportPointWithoutMargin(const Vector3& dire
 		}
 	}
 
-	return mConvexHull->getVertexBuffer()[index];
+    return mInitHull->mConvexHull.getVertexBuffer()[index];
 }
 
 

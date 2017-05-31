@@ -25,13 +25,12 @@ namespace real_physics
 namespace real_physics
 {
 
-
-
 // Class declarations
-struct ContactManifoldListElement;
+struct rpContactManifoldListElement;
 class  rpProxyShape;
 class  rpCollisionWorld;
 class  rpCollisionDetection;
+
 
 /// Enumeration for the type of a body
 /// STATIC : A static body has infinite mass, zero velocity but the position can be
@@ -55,12 +54,10 @@ class rpCollisionBody : public rpBody
     protected:
 
 
-
-        // -------------------- Attributes -------------------- //
+        //-------------------- Attributes --------------------//
 
         /// Type of body (static, kinematic or dynamic)
         BodyType mType;
-
 
 
         /// World relativity body
@@ -79,10 +76,9 @@ class rpCollisionBody : public rpBody
         rpCollisionDetection  *mCollisionDetection;
 
 
+        /// First element of the linked list of contact manifolds involving this body
+        rpContactManifoldListElement* mContactManifoldsList = NULL;
 
-//        /// First element of the linked list of contact manifolds involving this body
-//        ContactManifoldListElement* mContactManifoldsList;
-//
 //        /// Reference to the world the body belongs to
 //        CollisionWorld& mWorld;
 
@@ -95,7 +91,7 @@ class rpCollisionBody : public rpBody
         rpCollisionBody& operator=(const rpCollisionBody& body);
 
         /// Reset the contact manifold lists
-       // void resetContactManifoldsList();
+        void resetContactManifoldsList();
 
         /// Remove all the collision shapes
         void removeAllCollisionShapes();
@@ -117,10 +113,11 @@ class rpCollisionBody : public rpBody
     public:
 
 
-		//        void updateDisplacementRelativity( const Vector3& displecementVelocity )
-		//        {
-		//        	  mRelativityMotion.updateDisplacementBoost(displecementVelocity);
-		//        }
+        /// Tensor covariant component velocity metrices
+        void updateDisplacementRelativityVelocity( const Vector3& displecementVelocity )
+        {
+            mRelativityMotion.updateDisplacementBoost(displecementVelocity);
+        }
 
 
         // -------------------- Methods -------------------- //
@@ -154,7 +151,7 @@ class rpCollisionBody : public rpBody
         virtual void removeCollisionShapee(const rpProxyShape* proxyShape);
 
         /// Return the first element of the linked list of contact manifolds involving this body
-       // const ContactManifoldListElement* getContactManifoldsList() const;
+        const rpContactManifoldListElement* getContactManifoldsList() const;
 
         /// Return true if a point is inside the collision body
         bool testPointInside(const Vector3& worldPoint) const;
@@ -186,8 +183,8 @@ class rpCollisionBody : public rpBody
         /// Return the relativity body world space
 		LorentzContraction getRelativityMotion() const;
 
-        // -------------------- Friendship -------------------- //
 
+        //-------------------- Friendship --------------------//
         friend class rpCollisionWorld;
         friend class rpDynamicsWorld;
         friend class rpCollisionDetection;
@@ -232,8 +229,6 @@ SIMD_INLINE void rpCollisionBody::setType(BodyType type)
     }
 }
 
-
-
 // Return the current position and orientation
 /**
  * @return The current transformation of the body that transforms the local-space
@@ -244,10 +239,6 @@ SIMD_INLINE const Transform& rpCollisionBody::getTransform() const
     return mTransform;
 }
 
-
-
-
-
 // Set the current position and orientation
 /**
  * @param transform The transformation of the body that transforms the local-space
@@ -255,10 +246,8 @@ SIMD_INLINE const Transform& rpCollisionBody::getTransform() const
  */
 SIMD_INLINE void rpCollisionBody::setTransform(const Transform& transform)
 {
-
     // Update the transform of the body
 	mTransform = transform;
-
 
     // Update the broad-phase state of the body
     updateBroadPhaseState();
@@ -269,10 +258,10 @@ SIMD_INLINE void rpCollisionBody::setTransform(const Transform& transform)
  * @return A pointer to the first element of the linked-list with the contact
  *         manifolds of this body
  */
-//SIMD_INLINE const ContactManifoldListElement* CollisionBody::getContactManifoldsList() const
-//{
-//    return mContactManifoldsList;
-//}
+SIMD_INLINE const rpContactManifoldListElement* rpCollisionBody::getContactManifoldsList() const
+{
+    return mContactManifoldsList;
+}
 
 // Return the linked list of proxy shapes of that body
 /**

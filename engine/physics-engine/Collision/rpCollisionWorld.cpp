@@ -107,9 +107,23 @@ bodyindex rpCollisionWorld::computeNextAvailableBodyID()
 }
 
 
+// Reset all the contact manifolds linked list of each body
+void rpCollisionWorld::resetContactManifoldListsOfBodies()
+{
+    // For each rigid body of the world
+    for (auto it = mBodies.begin(); it != mBodies.end(); ++it)
+    {
+        // Reset the contact manifold list of the body
+        (*it)->resetContactManifoldsList();
+    }
+}
 
+
+// Update collision tohet all bodies
 void rpCollisionWorld::UpdateCollision()
 {
+
+    resetContactManifoldListsOfBodies();
 
 	/**/
 	for( auto itBodies = mBodies.begin(); itBodies != mBodies.end(); ++itBodies )

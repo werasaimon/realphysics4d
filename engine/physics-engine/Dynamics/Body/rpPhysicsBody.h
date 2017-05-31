@@ -8,20 +8,41 @@
 #ifndef SOURCE_ENGIE_DYNAMICS_BODY_RPPHYSICSBODY_H_
 #define SOURCE_ENGIE_DYNAMICS_BODY_RPPHYSICSBODY_H_
 
+
 #include "../../Dynamics/Body/rpPhysicsObject.h"
 
 namespace real_physics
 {
 
+//// Class declarations
+struct rpJointListElement;
+class  rpJoint;
+
 
 enum PhysicsBodyType { RIGID_BODY ,  VELERT_BODY };
+
+
+
 
 class rpPhysicsBody: public rpPhysicsObject
 {
 
    protected:
 
-	PhysicsBodyType mTypePhysics;
+       /// Type structure of the body
+       PhysicsBodyType mTypePhysics;
+
+
+       /// First element of the linked list of joints involving this body
+       rpJointListElement*               mJointsList;
+
+
+       /// Private copy-constructor
+       rpPhysicsBody(const rpPhysicsBody& body);
+
+       /// Private assignment operator
+       rpPhysicsBody& operator=(const rpPhysicsBody& body);
+
 
    public:
 
@@ -45,6 +66,10 @@ class rpPhysicsBody: public rpPhysicsObject
     virtual void applyImpulseAngular(const Vector3&  impuls ) {}
     virtual void applyImpulseLinear(const Vector3&  impuls ) {}
 
+    /// remove of the list joints
+    virtual void removeJointFromJointsList( const rpJoint* joint);
+
+
 
    protected:
 
@@ -53,6 +78,11 @@ class rpPhysicsBody: public rpPhysicsObject
     virtual void applySplitImpulse(const Vector3& impuls, const Vector3& point ) {}
     virtual void applySplitImpulseAngular(const Vector3&  impuls ) {}
     virtual void applySplitImpulseLinear(const Vector3&  impuls ) {}
+
+   //--------------------------- frindship -----------------------------//
+
+    friend class rpRigidPhysicsBody;
+    friend class rpDynamicsWorld;
 
 };
 

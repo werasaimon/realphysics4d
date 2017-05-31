@@ -30,8 +30,12 @@ class rpPhysicsObject : public rpCollisionBody
 		Transform        mWorldTransform;
 		//uint             mIndexID;
 
-		//uint               mNbTempShapeCollisions;
-		//rpObjectArray< rpCollisionShape* > mTempShapeCollisions;
+
+        /// Private copy-constructor
+        rpPhysicsObject(const rpPhysicsObject& body);
+
+        /// Private assignment operator
+        rpPhysicsObject& operator=(const rpPhysicsObject& body);
 
     public:
 

@@ -366,6 +366,9 @@ void rpCollisionDetection::computeNarrowPhase( std::map<overlappingpairid, rpOve
 	        rpCollisionBody* const body1 = shape1->getBody();
 	        rpCollisionBody* const body2 = shape2->getBody();
 
+            // Update the contact cache of the overlapping pair
+            //pair->update();
+
 //	        uint IdIndexCollid1 = body1->mIdCollidIndex;
 //	        uint IdIndexCollid2 = body2->mIdCollidIndex;
 
@@ -467,9 +470,67 @@ void rpCollisionDetection::computeNarrowPhase( std::map<overlappingpairid, rpOve
 
 	    }
 
+
+        // Add all the contact manifolds (between colliding bodies) to the bodies
+        addAllContactManifoldsToBodies(ContactOverlappingPairs);
+
 }
 
 
+
+void rpCollisionDetection::addAllContactManifoldsToBodies( std::map<overlappingpairid, rpOverlappingPair*> &ContactOverlappingPairs )
+{
+    for (auto it = ContactOverlappingPairs.begin(); it != ContactOverlappingPairs.end(); ++it)
+    {
+          // Add all the contact manifolds of the pair into the list of contact manifolds
+          // of the two bodies involved in the contact
+          addContactManifoldToBody(it->second);
+    }
+
+}
+
+void rpCollisionDetection::addContactManifoldToBody(rpOverlappingPair *pair)
+{
+
+    assert(pair != NULL);
+
+    rpCollisionBody* body1 = pair->getShape1()->getBody();
+    rpCollisionBody* body2 = pair->getShape2()->getBody();
+    const rpContactManifoldSet& manifoldSet = pair->getContactManifoldSet();
+
+    // For each contact manifold in the set of manifolds in the pair
+    for (int i=0; i<manifoldSet.getNbContactManifolds(); i++)
+    {
+
+        rpContactManifold* contactManifold = manifoldSet.getContactManifold(i);
+
+        assert(contactManifold->getNbContactPoints() > 0);
+
+        // Add the contact manifold at the beginning of the linked
+        // list of contact manifolds of the first body
+
+        //           void* allocatedMemory1 = mWorld->mMemoryAllocator.allocate(sizeof(ContactManifoldListElement));
+        //           ContactManifoldListElement* listElement1 = new (allocatedMemory1)
+        //                                                         ContactManifoldListElement(contactManifold,
+        //                                                                            body1->mContactManifoldsList);
+
+        rpContactManifoldListElement* listElement1 = new rpContactManifoldListElement( contactManifold , body1->mContactManifoldsList );
+        body1->mContactManifoldsList = listElement1;
+
+
+        // Add the contact manifold at the beginning of the linked
+        // list of the contact manifolds of the second body
+
+        //           void* allocatedMemory2 = mWorld->mMemoryAllocator.allocate(sizeof(ContactManifoldListElement));
+        //           ContactManifoldListElement* listElement2 = new (allocatedMemory2)
+        //                                                         ContactManifoldListElement(contactManifold,
+        //                                                                            body2->mContactManifoldsList);
+
+        rpContactManifoldListElement* listElement2 = new rpContactManifoldListElement( contactManifold , body2->mContactManifoldsList );
+        body2->mContactManifoldsList = listElement2;
+    }
+
+}
 
 void rpCollisionDetection::broadPhaseNotifyOverlappingPair( rpProxyShape* shape1 ,
 		                                                    rpProxyShape* shape2 )

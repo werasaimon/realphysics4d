@@ -48,10 +48,12 @@ struct rpJointListElement
 
         /// Constructor
         rpJointListElement(rpJoint* initJoint, rpJointListElement* initNext)
-                        :joint(initJoint), next(initNext)
+         :joint(initJoint), next(initNext)
         {
 
         }
+
+
 };
 
 
