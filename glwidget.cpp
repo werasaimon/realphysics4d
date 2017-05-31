@@ -113,10 +113,10 @@ void GLWidget::initializeGL()
 
 
     //mSceneOpenGL = new UnitSceneDemo();
-    //mSceneOpenGL = new UnitSceneGeometry();
+    mSceneOpenGL = new UnitSceneGeometry();
 
 
-    mSceneOpenGL = new UnitSceneLuaInterpretationSDK();
+    //mSceneOpenGL = new UnitSceneLuaInterpretationSDK;
     mSceneOpenGL->initialization();
 
     // Use QBasicTimer because its faster than QTimer
@@ -204,7 +204,6 @@ void GLWidget::mouseReleaseEvent(QMouseEvent *e)
 {
     mSceneOpenGL->mouseReleasePress( e->pos().x() , e->pos().y() , e->button() );
 }
-
 
 
 void GLWidget::closeEvent(QCloseEvent *event)
