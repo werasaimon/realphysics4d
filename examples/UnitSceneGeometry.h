@@ -26,12 +26,18 @@ class UnitSceneGeometry : public UnitScene
         float width;
         float height;
 
+
+        DynamicsWorld *world;
+
         //--------------- array --------------//
 
         /// Array mesh-geometry
-        std::vector<Mesh*> mMeshes;
+        std::vector<Mesh*>     mMeshes;
 
 
+
+
+        void initCamera();
         void initGeometry();
 
    public:

@@ -1,6 +1,9 @@
 #include "UnitSceneGeometry.h"
 #include <QFile>
 
+
+#include "engine/engine.h"
+
 namespace
 {
 
@@ -23,6 +26,9 @@ namespace
     float oldX = 0;
     float oldY = 0;
 
+
+    bool _bb_ = true;
+
 }
 
 //---------------------------------------//
@@ -34,8 +40,10 @@ UnitSceneGeometry::UnitSceneGeometry()
 
 
 
-void UnitSceneGeometry::initGeometry()
+void UnitSceneGeometry::initCamera()
 {
+    _bb_ = true;
+
     width  = 600;
     height = 400;
 
@@ -49,57 +57,60 @@ void UnitSceneGeometry::initGeometry()
     mEye    =  Vector3(0,0,-40);
     mCenter =  Vector3(0,0,0);
     mUp     =  Vector3(0,1,0);
+}
+
+void UnitSceneGeometry::initGeometry()
+{
+
+    world = new DynamicsWorld( Vector3::Y * -30.0 );
 
 
-    //---------------------------- loading texture --------------------------------//
-    //    // Load cube.png image
-    //    QOpenGLTexture *texture = new QOpenGLTexture(QImage(":/Files/cube.jpg").mirrored());
+    //***********************************************//
 
-    //    // Set nearest filtering mode for texture minification
-    //    texture->setMinificationFilter(QOpenGLTexture::Nearest);
-
-    //    // Set bilinear filtering mode for texture magnification
-    //    texture->setMagnificationFilter(QOpenGLTexture::Linear);
-
-    //    // Wrap texture coordinates by repeating
-    //    // f.ex. texture coordinate (1.1, 1.2) is same as (0.1, 0.2)
-    //    texture->setWrapMode(QOpenGLTexture::Repeat);
+    Mesh *model0 = new MeshBox( Vector3(250,4,250) );
+    model0->translateWorld( Vector3::Y * -10.0);
+    model0->setColorToAllVertices(Color(1,1,1,1));
+    mMeshes.push_back(model0);
 
 
-    //     Texture2D   texture2D(texture->textureId());
-    //-----------------------------------------------------------------------------//
+    UltimatePhysicsBody *body0 = world->createRigidBody( model0->getTransformMatrix() );
 
-
-
-     /**/
-    //     /// Add mesh-model in array meshes
-    //     const char fileName2[] = "plane.3DS";
-    //     QFile mFile2(fileName2);
-    //     CopyFileResources( mFile2 , ":/Files/plane.3DS" );
+    model0->setToIdentity();
+    body0->addCollisionGeometry_ConvexHull( model0 , model0->getTransformMatrix() , 20 );
+    body0->setType(real_physics::BodyType::STATIC);
 
 
 
-     for( int i =0 ; i < 10; ++i )
-     {
 
-         Mesh *meshModel = new MeshBox( Vector3(4,4,4) );
+    UltimatePhysicsBody *bodies[10];
+    for( int i = 0; i < 10; ++i)
+    {
 
-         Vector3 position =   Vector3::Y * i * 12.0 + Vector3::X * 1 * 2.5;
-         //position += Vector3::Z * -0.0;
-         //position += Vector3::X * -0.0;
+        //************************************************//
+        Mesh *model1 = new MeshBox( Vector3(5,4,5) );
+        model1->translateWorld( Vector3::Y * 5.0 * i /*+ Vector3::X * 2.0 * sin(i)*/ );
+        model1->setColorToAllVertices(Color(1,0,0,1));
+        mMeshes.push_back(model1);
 
-         //meshModel->setToIdentity();
-         meshModel->translateWorld( position );
-        // meshModel->setTexture(texture2D);
-         meshModel->setColorToAllVertices(Color(1,0,0,1));
+        UltimatePhysicsBody *body1 = world->createRigidBody( model1->getTransformMatrix() );
+        model1->setToIdentity();
+        body1->addCollisionGeometry_ConvexHull( model1 , model1->getTransformMatrix() , 15 );
+        body1->setType(real_physics::BodyType::DYNAMIC);
 
-         mMeshes.push_back(meshModel);
-     }
+        bodies[i] = body1;
 
-     /**/
+    }
 
 
-     //mFile2.remove();
+    for( int i = 1; i < 10; ++i )
+    {
+        const real_physics::Vector3 v1 = bodies[i-1]->getPhysicsBody()->getTransform().getPosition();
+        const real_physics::Vector3 v2 = bodies[i-0]->getPhysicsBody()->getTransform().getPosition();
+        const real_physics::Vector3 anchor = (v1 + v2) * 0.5;
+        real_physics::rpBallAndSocketJointInfo infoJoint( bodies[i-1]->getPhysicsBody() , bodies[i-0]->getPhysicsBody() , anchor );
+        UltimateJoint *joint = world->createJoint(infoJoint);
+    }
+
 
 }
 
@@ -108,6 +119,7 @@ void UnitSceneGeometry::initGeometry()
 
 bool UnitSceneGeometry::initialization()
 {
+    initCamera();
     initGeometry();
 }
 
@@ -144,10 +156,18 @@ void UnitSceneGeometry::render(float FrameTime)
 
 
 
+
 }
 
 void UnitSceneGeometry::update()
 {
+      if(!_bb_) return;
+
+
+      if( world != NULL )
+      {
+          world->update( (1.0/60.0) );
+      }
 
 }
 
@@ -243,9 +263,35 @@ void UnitSceneGeometry::mouseWheel(float delta)
 void UnitSceneGeometry::keyboard(int key)
 {
 
+
+
+    if( key == Qt::Key_G )
+    {
+        cout<< " G " <<endl;
+        _bb_ = true;
+        initGeometry();
+
+    }
+
+    if( key == Qt::Key_F )
+    {
+        cout<< " F " <<endl;
+        _bb_ = false;
+
+        delete world;
+
+        for( int i = 0; i < mMeshes.size(); ++i )
+        {
+            delete  mMeshes[i];
+        }
+        mMeshes.clear();
+
+    }
+
 }
 
 void UnitSceneGeometry::destroy()
 {
-
+ //   _bb_ = false;
+ //   delete world;
 }
