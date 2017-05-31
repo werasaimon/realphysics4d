@@ -8,10 +8,6 @@ MeshPlane::MeshPlane(float width, float height)
 	initialization( width , height );
 }
 
-MeshPlane::~MeshPlane()
-{
-	// TODO Auto-generated destructor stub
-}
 
 
 /* namespace utility_engine */

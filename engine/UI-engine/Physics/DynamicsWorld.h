@@ -25,9 +25,9 @@ namespace utility_engine
 
             //------------------------ Attribute ------------------------//
             /// Dynamics physics world
-            real_physics::rpDynamicsWorld mDynamicsWorld;
-
-
+            real_physics::rpDynamicsWorld    *mDynamicsWorld;
+            std::set<UltimatePhysicsBody*>    mBodies;
+            std::set<UltimateJoint*>          mJoints;
 
 
             //---------------------- Constructor ------------------------//
@@ -41,7 +41,10 @@ namespace utility_engine
 
        public:
 
+
             DynamicsWorld( const Vector3& gravity );
+
+            DynamicsWorld( real_physics::rpDynamicsWorld* world );
 
             /// Destructor
            ~DynamicsWorld();
@@ -61,7 +64,7 @@ namespace utility_engine
             UltimateJoint* createJoint(const real_physics::rpJointInfo &jointInfo);
 
             /// Destroy a constraint-joints
-            void destroyJoint( real_physics::rpJoint* joint);
+            void destroyJoint(UltimateJoint *joint);
 
             /// Update real-time physics simulate
             void update( float timeStep );
@@ -73,6 +76,8 @@ namespace utility_engine
             void destroy();
 
 
+            //------------------- value -------------------//
+            real_physics::rpDynamicsWorld *getDynamicsWorld() const;
     };
 
 

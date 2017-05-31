@@ -26,8 +26,6 @@ class MeshTriangle: public Mesh
 	         MeshTriangle(const Vector3& a ,
 			              const Vector3& b ,
 						  const Vector3& c);
-	virtual ~MeshTriangle();
-
 
 
   private:

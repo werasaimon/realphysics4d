@@ -15,11 +15,11 @@ UltimatePhysicsBody::UltimatePhysicsBody( real_physics::rpPhysicsBody *_PhysicsB
 
 UltimatePhysicsBody::~UltimatePhysicsBody()
 {
-    //  if(mPhysicsBody != NULL)
-    //  {
-    //      delete mPhysicsBody;
-    //      mPhysicsBody = NULL;
-    //  }
+//    if(mPhysicsBody != NULL)
+//    {
+//        delete mPhysicsBody;
+//        mPhysicsBody = NULL;
+//    }
 
     mGroupMesh.destroy();
 }

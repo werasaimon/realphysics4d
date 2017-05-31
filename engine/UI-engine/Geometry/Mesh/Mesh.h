@@ -68,7 +68,7 @@ class Mesh : public Object3D
 
 
         // Geimetry of the render OpenGL on shader
-        GLUtilityGeometry    *mOpenGLUtilGeometry;
+        GLUtilityGeometry    *mOpenGLUtilGeometry = NULL;
 
 
     public:
@@ -157,7 +157,7 @@ class Mesh : public Object3D
         Mesh(Meshype type);
 
         // Destructor
-        virtual ~Mesh();
+       ~Mesh();
 
 
 

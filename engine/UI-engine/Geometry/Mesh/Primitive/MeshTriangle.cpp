@@ -20,14 +20,6 @@ MeshTriangle::MeshTriangle(const Vector3& a,
 }
 
 
-MeshTriangle::~MeshTriangle()
-{
-}
-
-
-
-
-
 
 } /* namespace utility_engine */
 

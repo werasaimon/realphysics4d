@@ -38,8 +38,7 @@ class MeshBox: public Mesh
 {
   public:
 
-             MeshBox( const Vector3 halfSize );
-	virtual ~MeshBox();
+      MeshBox( const Vector3 halfSize );
 
 
    const Vector3 halfSize() const;

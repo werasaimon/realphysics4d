@@ -37,7 +37,6 @@ namespace utility_engine
 				 MeshPlane( float width =2 ,
 						    float height=2 );
 
-		virtual ~MeshPlane();
 
 		// -------------------- Methods -------------------- //
 

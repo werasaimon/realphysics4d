@@ -48,7 +48,7 @@ void Mesh::DrawOpenGL(QOpenGLShaderProgram *program)
 
     for(auto it = mTextures.begin(); it != mTextures.end(); ++it)
     {
-       it->second.unbind();
+        it->second.unbind();
     }
 }
 /**/
@@ -58,18 +58,21 @@ void Mesh::DrawOpenGL(QOpenGLShaderProgram *program)
 // Destroy the mesh
 void Mesh::destroy()
 {
-
+    /// - clear all elements - ///
     mVertices.clear();
+    mUVs.clear();
     mNormals.clear();
     mTangents.clear();    
 
     mColors.clear();
-
-    mUVs.clear();
     mTextures.clear();
 
     mIndices.clear();
     mIndicess.clear();
+
+    /// -  delete OpenGL geometry - ///
+    delete mOpenGLUtilGeometry;
+    mOpenGLUtilGeometry = NULL;
 }
 
 // Compute the normals of the mesh

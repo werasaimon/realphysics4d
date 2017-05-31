@@ -18,10 +18,7 @@ namespace utility_engine
     this->initilisationGL();
 }
 
-MeshBox::~MeshBox()
-{
-    // TODO Auto-generated destructor stub
-}
+
 
 const Vector3 MeshBox::halfSize() const
 {

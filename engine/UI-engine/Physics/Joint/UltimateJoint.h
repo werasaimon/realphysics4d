@@ -190,6 +190,10 @@ namespace utility_engine
          /// Constructor joint
          UltimateJoint(real_physics::rpJoint *_joint);
 
+         ~UltimateJoint()
+         {
+             //delete mJoint;
+         }
 
          /// Return joint
          real_physics::rpJoint *getJoint() const;
