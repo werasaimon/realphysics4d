@@ -167,6 +167,7 @@ void LoadLibaryLuaUIEngine::LoadLibary()
     //-----------------------------  UI-Engine : Physics ------------------------------------//
 
      importToScope(  luabind::class_<utility_engine::DynamicsWorld>("dynamics_world")
+                           //.def(luabind::constructor<real_physics::rpDynamicsWorld*>())
                            .def(luabind::constructor<const utility_engine::Vector3&>())
                            .def( "RigidBody"        , &utility_engine::DynamicsWorld::createRigidBody )
                            .def( "Joint"            , &utility_engine::DynamicsWorld::createJoint )
