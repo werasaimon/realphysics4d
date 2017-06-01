@@ -10,10 +10,34 @@
 
 
 // Libraries
-#include "../opengl-utility/opengl-utility.h"
-#include <GL/glut.h>
+#include <GL/glew.h>
+#include <GL/freeglut.h>
+#include <string>
 
-using namespace opengl_utility;
+#include "../engine/UI-engine/Camera/camera.h"
+#include "../engine/UI-engine/maths/Vector2.h"
+
+using namespace utility_engine;
+
+class _camera_value
+{
+
+public:
+	_camera_value(void)
+    : mEyePosition(Vector3::NULL_V) ,
+	  mLookCenter(-Vector3::Z) ,
+	  mUp(Vector3::Y)
+	{
+
+	}
+
+	Vector3 mEyePosition;
+	Vector3 mLookCenter;
+	Vector3 mUp;
+};
+
+
+static _camera_value cameraValue;
 
 class Viewer
   {
@@ -31,7 +55,10 @@ class Viewer
       //----------------- function ----------------------------//
 
               void initilisation();
-              void update();
+
+
+              void beginLookCameara();
+
 
               // Called when the windows is reshaped
               void reshape(int width, int height);
@@ -53,8 +80,7 @@ class Viewer
       int getWidth() const;
       int getHeight() const;
 
-      CCameraEya getCamera() const;
-
+      Camera& getCamera();
 
       // Enable/Disable the multi-sampling for anti-aliasing
      inline void activateMultiSampling(bool isActive) const;
@@ -66,7 +92,8 @@ class Viewer
    	        	    const Vector2& windowsSize, const Vector2& windowsPosition,
    				    bool isMultisamplingActive);
 
-       CCameraEya camera;
+       Camera       mCamera;
+
 
        int mWidth;
        int mHeight;

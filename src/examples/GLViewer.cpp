@@ -6,13 +6,16 @@
  */
 
 #include "GLViewer.h"
-
+#include <assert.h>
 #include <iostream>
 
 using namespace std;
-using namespace opengl_utility;
+using namespace utility_engine;
 
 //---------------------------------------------------------------------------//
+
+
+Matrix4 mRotatetMatrix;
 
 Viewer::Viewer():
 mLastMouseAngleX(0),
@@ -92,16 +95,23 @@ void Viewer::initilisation()
     // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
     const uint zNear = 3.0, zFar = 512, fov = 45.0;
 
-    camera.initProjectionMatrix( fov , aspect , zNear , zFar );
+    mCamera.setToIdentity();
+    mCamera.ProjectionMatrix( fov , aspect , zNear , zFar );
+   // camera.translateWorld( Vector3(1.75f, 25.75f, 40.0f) );
 
 
-    camera.OnMouseMove(0,0);
-    camera.setPosition( Vector3(1.75f, 25.75f, 40.0f) );
+    cameraValue = _camera_value();
 }
 
-void Viewer::update()
+
+
+void Viewer::beginLookCameara()
 {
-    camera.update();
+	Vector3 eye = cameraValue.mEyePosition;
+	Vector3 cen = cameraValue.mLookCenter;
+	Vector3 up  = cameraValue.mUp;
+
+	mCamera.LookAt(eye , cen , up);
 }
 
 
@@ -110,15 +120,25 @@ void Viewer::reshape(int width, int height)
     this->mWidth  = width;
     this->mHeight = height;
 
-    camera.setDimensions(width, height);
-    glViewport(0, 0, width, height);
+    float w = width;
+    float h = height;
 
+    uint aspect = uint(w) / uint(h ? h : 1);
+    // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
+    const uint zNear = 3.0, zFar = 512, fov = 45.0;
+
+    mCamera.setToIdentity();
+    mCamera.ProjectionMatrix( fov , aspect , zNear , zFar );
+   // camera.translateWorld( Vector3(1.75f, 25.75f, 40.0f) );
+
+    glViewport(0, 0, width, height);
     glutPostRedisplay();
 }
 
 void Viewer::zoom(int xMouse, int yMouse)
 {
 }
+
 
 void Viewer::motion(int _x, int _y )
 {
@@ -129,9 +149,16 @@ void Viewer::motion(int _x, int _y )
     float MouseSpeedX = (mouse_x - mOldMousePosX) * 0.01;
     float MouseSpeedY = (mouse_y - mOldMousePosY) * 0.01;
 
-    camera.OnMouseMove( mLastMouseAngleX += MouseSpeedX,
-                        mLastMouseAngleY += MouseSpeedY);
+//    camera.OnMouseMove( mLastMouseAngleX += MouseSpeedX,
+//                        mLastMouseAngleY += MouseSpeedY);
 
+
+    mRotatetMatrix.setToIdentity();
+    mRotatetMatrix = mRotatetMatrix * Matrix4::rotationMatrix(Vector3::Y, mLastMouseAngleX += MouseSpeedX );
+    mRotatetMatrix = mRotatetMatrix * Matrix4::rotationMatrix(Vector3::X, mLastMouseAngleY += MouseSpeedY );
+
+
+	cameraValue.mLookCenter = cameraValue.mEyePosition + mRotatetMatrix.getTranspose() * -Vector3::Z * 40.0;
 
     mOldMousePosX = mouse_x;
     mOldMousePosY = mouse_y;
@@ -156,20 +183,30 @@ void Viewer::mouseButtonEvent(int button, int state, int x, int y)
 
 void Viewer::keyboard(unsigned char key, int x, int y)
 {
-
-	Matrix4 rot =camera.getRotatetMatrix().getTranspose();
 	float speed = 0.5;
     switch (key)
     {
 
-		case 'w': case'W': camera.setPosition( camera.getPosition() - rot * Vector3::Z * speed );  break;
-		case 's': case'S': camera.setPosition( camera.getPosition() + rot * Vector3::Z * speed );  break;
-		case 'a': case'A': camera.setPosition( camera.getPosition() - rot * Vector3::X * speed );  break;
-		case 'd': case'D': camera.setPosition( camera.getPosition() + rot * Vector3::X * speed );  break;
+		case 'w': case'W': cameraValue.mEyePosition += (mRotatetMatrix.getTranspose() *  (-Vector3::Z * speed));  break;
+		case 's': case'S': cameraValue.mEyePosition += (mRotatetMatrix.getTranspose() *  ( Vector3::Z * speed));  break;
+		case 'a': case'A':
+		{
+			cameraValue.mLookCenter  += (mRotatetMatrix.getTranspose() *  (-Vector3::X * speed));
+			cameraValue.mEyePosition += (mRotatetMatrix.getTranspose() *  (-Vector3::X * speed));
+			break;
+		}
+		case 'd': case'D':
+		{
+			cameraValue.mLookCenter  += (mRotatetMatrix.getTranspose() *  ( Vector3::X * speed));
+			cameraValue.mEyePosition += (mRotatetMatrix.getTranspose() *  ( Vector3::X * speed));
+			break;
+		}
 
 
         default:   break;
     }
+
+
 }
 
 void Viewer::special(unsigned int key, int x, int y)
@@ -191,26 +228,26 @@ int Viewer::getWidth() const
 
 Matrix4 Viewer::getViewMatrix() const
 {
-    return camera.getViewMatrix();
+    return mCamera.getViewMatrix();
 }
 
 Matrix4 Viewer::getProjectionMatrix() const
 {
-    return camera.getProjectionMatrix();
+    return mCamera.getProjectionMatrix();
 }
 
 
 
-CCameraEya Viewer::getCamera() const
+Camera &Viewer::getCamera()
 {
-    return camera;
+    return mCamera;
 }
 
 
 
 inline void Viewer::activateMultiSampling(bool isActive) const
 {
-	 (isActive) ? glEnable(GL_MULTISAMPLE) : glDisable(GL_MULTISAMPLE);
+	// (isActive) ? glEnable(GL_MULTISAMPLE) : glDisable(GL_MULTISAMPLE);
 }
 
 
