@@ -137,15 +137,6 @@ SOURCES += main.cpp\
     engine/physics-engine/LinearMaths/rpVector2D.cpp \
     engine/physics-engine/LinearMaths/rpVector3D.cpp \
     engine/physics-engine/Memory/rpAlignedallocator.cpp \
-    engine/UI-engine/Geometry/Camera/camera.cpp \
-    engine/UI-engine/Geometry/Camera/CCameraEya.cpp \
-    engine/UI-engine/Geometry/Mesh/Loaders/MeshReadFile3DS.cpp \
-    engine/UI-engine/Geometry/Mesh/Primitive/MeshBox.cpp \
-    engine/UI-engine/Geometry/Mesh/Primitive/MeshPlane.cpp \
-    engine/UI-engine/Geometry/Mesh/Primitive/MeshTriangle.cpp \
-    engine/UI-engine/Geometry/Mesh/GLUtilityGeometry.cpp \
-    engine/UI-engine/Geometry/Mesh/Mesh.cpp \
-    engine/UI-engine/Geometry/Object/Object3D.cpp \
     engine/UI-engine/Light/Light.cpp \
     engine/UI-engine/maths/glmath.cpp \
     engine/UI-engine/maths/Matrix4.cpp \
@@ -201,7 +192,16 @@ SOURCES += main.cpp\
     engine/physics-engine/Collision/NarrowPhase/MPR/rpMPRAlgorithm.cpp \
     engine/physics-engine/Collision/NarrowPhase/GJK/rpGJKAlgorithm.cpp \
     engine/physics-engine/Collision/NarrowPhase/GJK_EPA/VoronoiSimplex/rpVoronoiSimplexSolver.cpp \
-    engine/physics-engine/Collision/NarrowPhase/rpNarrowPhaseMprAlgorithm.cpp
+    engine/physics-engine/Collision/NarrowPhase/rpNarrowPhaseMprAlgorithm.cpp \
+    engine/UI-engine/Camera/camera.cpp \
+    engine/UI-engine/Camera/CCameraEya.cpp \
+    engine/UI-engine/Mesh/Loaders/MeshReadFile3DS.cpp \
+    engine/UI-engine/Mesh/Primitive/MeshBox.cpp \
+    engine/UI-engine/Mesh/Primitive/MeshPlane.cpp \
+    engine/UI-engine/Mesh/Primitive/MeshTriangle.cpp \
+    engine/UI-engine/Mesh/GLUtilityGeometry.cpp \
+    engine/UI-engine/Mesh/Mesh.cpp \
+    engine/UI-engine/Object/Object3D.cpp
 
 HEADERS  += widget.h \
     glwidget.h \
@@ -419,15 +419,6 @@ HEADERS  += widget.h \
     engine/physics-engine/physics.h \
     engine/physics-engine/realphysics.h \
     engine/physics-engine/scalar.h \
-    engine/UI-engine/Geometry/Camera/camera.h \
-    engine/UI-engine/Geometry/Camera/CCameraEya.h \
-    engine/UI-engine/Geometry/Mesh/Loaders/MeshReadFile3DS.h \
-    engine/UI-engine/Geometry/Mesh/Primitive/MeshBox.h \
-    engine/UI-engine/Geometry/Mesh/Primitive/MeshPlane.h \
-    engine/UI-engine/Geometry/Mesh/Primitive/MeshTriangle.h \
-    engine/UI-engine/Geometry/Mesh/GLUtilityGeometry.h \
-    engine/UI-engine/Geometry/Mesh/Mesh.h \
-    engine/UI-engine/Geometry/Object/Object3D.h \
     engine/UI-engine/Light/Light.h \
     engine/UI-engine/maths/Color.h \
     engine/UI-engine/maths/definitions.h \
@@ -458,7 +449,16 @@ HEADERS  += widget.h \
     engine/physics-engine/Collision/NarrowPhase/GJK/rpGJKAlgorithm.h \
     engine/physics-engine/Collision/NarrowPhase/GJK_EPA/VoronoiSimplex/rpVoronoiSimplexSolver.h \
     engine/physics-engine/Collision/NarrowPhase/GJK_EPA/VoronoiSimplex/rpSimplexSolverInterface.h \
-    engine/physics-engine/Collision/NarrowPhase/rpNarrowPhaseMprAlgorithm.h
+    engine/physics-engine/Collision/NarrowPhase/rpNarrowPhaseMprAlgorithm.h \
+    engine/UI-engine/Camera/camera.h \
+    engine/UI-engine/Camera/CCameraEya.h \
+    engine/UI-engine/Mesh/Loaders/MeshReadFile3DS.h \
+    engine/UI-engine/Mesh/Primitive/MeshBox.h \
+    engine/UI-engine/Mesh/Primitive/MeshPlane.h \
+    engine/UI-engine/Mesh/Primitive/MeshTriangle.h \
+    engine/UI-engine/Mesh/GLUtilityGeometry.h \
+    engine/UI-engine/Mesh/Mesh.h \
+    engine/UI-engine/Object/Object3D.h
 
 FORMS    += widget.ui \
     formrunscript.ui
