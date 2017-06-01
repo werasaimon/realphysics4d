@@ -1,12 +1,27 @@
+/*
+ * main.cpp
+ *
+ *  Created on: 1 июн. 2017 г.
+ *      Author: werqa
+ */
+
+//#include <stdio.h>
+//#include <stdlib.h>
+//
+//int main(void)
+//{
+//	puts("!!!Hello World!!!");
+//	return EXIT_SUCCESS;
+//}
 
 #include <iostream>
 
 #include "examples/GLViewer.h"
 #include "examples/UnitScene.h"
-#include "examples/UnitSceneDynamics.h"
+#include "examples/UnitSceneDemo.h"
 
 using namespace std;
-using namespace opengl_utility;
+using namespace utility_engine;
 
 
 int Width  = 600;
@@ -26,8 +41,6 @@ Viewer          *viewer;
 
 
 
-
-
 // Declarations
 void simulate();
 void display();
@@ -44,15 +57,15 @@ int main(int argc, char** argv)
 {
 
 
-	/**/
+
 		// Initialize GLUT
 		viewer = new Viewer();
-		viewer->init( argc , argv , "Test" , opengl_utility::Vector2(Width,Height) , opengl_utility::Vector2(0,0) , false );
+		viewer->init( argc , argv , "Test" , Vector2(Width,Height) , Vector2(0,0) , false );
 		viewer->initilisation();
 
 
-
-		Scene = new  UnitSceneDynamics( viewer );
+		/**/
+		Scene = new  UnitSceneDemo( viewer );
 
 		// Create the scene
 		if(!Scene->Init())
@@ -139,7 +152,7 @@ void mouseMotion(int x, int y)
 // Display the scene
 void display()
 {
-	viewer->update();
+
 	Scene->Render(timeStep);
 
     glutSwapBuffers();
