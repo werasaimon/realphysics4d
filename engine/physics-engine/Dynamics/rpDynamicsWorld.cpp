@@ -396,17 +396,17 @@ void rpDynamicsWorld::destroyBody(rpPhysicsBody* rigidBody)
     mFreeBodiesIDs.push_back(rigidBody->getID());
 
 
-
-    /**
     // Destroy all the joints in which the rigid body to be destroyed is involved
     rpJointListElement* element;
-    for (element = rigidBody->mJointsList; element != NULL; element = element->next )
+    if(rigidBody->mJointsList != NULL )
     {
-        //destroyJoint(element->joint);
-        //element = NULL;
+      for (element = rigidBody->mJointsList; element != NULL; element = element->next )
+      {
+           destroyJoint(element->joint);
+           element = NULL;
+      }
     }
     rigidBody->mJointsList = NULL;
-    /**/
 
 
     // Reset the contact manifold list of the body
