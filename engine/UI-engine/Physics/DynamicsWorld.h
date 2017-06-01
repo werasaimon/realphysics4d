@@ -7,7 +7,7 @@
 #include "../maths/Vector3.h"
 #include "../maths/Matrix4.h"
 
-#include "../Geometry/Mesh/Mesh.h"
+#include "../Mesh/Mesh.h"
 
 #include "Body/UltimatePhysicsBody.h"
 #include "Joint/UltimateJoint.h"

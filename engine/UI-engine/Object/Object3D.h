@@ -10,8 +10,8 @@
 
 
 // Libraries
-#include "../../maths/Vector3.h"
-#include "../../maths/Matrix4.h"
+#include "../maths/Vector3.h"
+#include "../maths/Matrix4.h"
 
 
 namespace utility_engine

@@ -10,8 +10,8 @@
 
 #include <vector>
 
-#include "../../../maths/Vector2.h"
-#include "../../../maths/Vector3.h"
+#include "../../maths/Vector2.h"
+#include "../../maths/Vector3.h"
 #include "../Mesh.h"
 
 

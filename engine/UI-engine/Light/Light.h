@@ -6,7 +6,7 @@
 
 //#include "Engie/Math3Dvec/Maths.h"
 #include "../maths/Color.h"
-#include "../Geometry/Object/Object3D.h"
+#include "../Object/Object3D.h"
 #include "../Texture/Texture2D.h"
 
 

@@ -18,13 +18,13 @@
 
 
 
-#include "Geometry/Camera/camera.h"
+#include "Camera/camera.h"
 
-#include "Geometry/Mesh/Mesh.h"
-#include "Geometry/Mesh/Primitive/MeshPlane.h"
-#include "Geometry/Mesh/Primitive/MeshTriangle.h"
-#include "Geometry/Mesh/Primitive/MeshBox.h"
-#include "Geometry/Mesh/Loaders/MeshReadFile3DS.h"
+#include "Mesh/Mesh.h"
+#include "Mesh/Primitive/MeshPlane.h"
+#include "Mesh/Primitive/MeshTriangle.h"
+#include "Mesh/Primitive/MeshBox.h"
+#include "Mesh/Loaders/MeshReadFile3DS.h"
 
 #include "maths/Color.h"
 #include "maths/Vector2.h"

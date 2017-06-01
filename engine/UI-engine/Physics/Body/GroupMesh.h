@@ -1,7 +1,7 @@
 #ifndef GROUPMESH_H
 #define GROUPMESH_H
 
-#include "../../Geometry/Mesh/Mesh.h"
+#include "../../Mesh/Mesh.h"
 #include "Convert.h"
 
 namespace utility_engine

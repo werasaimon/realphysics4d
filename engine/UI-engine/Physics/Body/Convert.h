@@ -2,7 +2,7 @@
 #define CONVERT_H
 
 
-#include "../../Geometry/Mesh/Mesh.h"
+#include "../../Mesh/Mesh.h"
 #include "../../../physics-engine/physics.h"
 
 namespace utility_engine

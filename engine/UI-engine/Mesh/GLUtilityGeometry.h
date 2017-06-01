@@ -8,9 +8,9 @@
 
 #include <QOpenGLTexture>
 
-#include "../../Geometry/Object/Object3D.h"
-#include "../../maths/Vector2.h"
-#include "../../maths/Vector3.h"
+#include "../Object/Object3D.h"
+#include "../maths/Vector2.h"
+#include "../maths/Vector3.h"
 
 
 namespace utility_engine

@@ -5,12 +5,12 @@
 #include <string>
 #include <vector>
 #include <map>
-#include "../../maths/definitions.h"
-#include "../../maths/Vector2.h"
-#include "../../maths/Vector3.h"
-#include "../../maths/Color.h"
-#include "../../Texture/Texture2D.h"
-#include "../../Geometry/Object/Object3D.h"
+#include "../maths/definitions.h"
+#include "../maths/Vector2.h"
+#include "../maths/Vector3.h"
+#include "../maths/Color.h"
+#include "../Texture/Texture2D.h"
+#include "../Object/Object3D.h"
 
 #include "GLUtilityGeometry.h"
 
