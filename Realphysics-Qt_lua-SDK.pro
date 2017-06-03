@@ -199,9 +199,10 @@ SOURCES += main.cpp\
     engine/UI-engine/Mesh/Primitive/MeshBox.cpp \
     engine/UI-engine/Mesh/Primitive/MeshPlane.cpp \
     engine/UI-engine/Mesh/Primitive/MeshTriangle.cpp \
-    engine/UI-engine/Mesh/GLUtilityGeometry.cpp \
     engine/UI-engine/Mesh/Mesh.cpp \
-    engine/UI-engine/Object/Object3D.cpp
+    engine/UI-engine/Object/Object3D.cpp \
+    engine/UI-engine/Open_GL_/UtilityOpenGL.cpp \
+    engine/UI-engine/Open_GL_/GLUtilityGeometry.cpp
 
 HEADERS  += widget.h \
     glwidget.h \
@@ -456,9 +457,10 @@ HEADERS  += widget.h \
     engine/UI-engine/Mesh/Primitive/MeshBox.h \
     engine/UI-engine/Mesh/Primitive/MeshPlane.h \
     engine/UI-engine/Mesh/Primitive/MeshTriangle.h \
-    engine/UI-engine/Mesh/GLUtilityGeometry.h \
     engine/UI-engine/Mesh/Mesh.h \
-    engine/UI-engine/Object/Object3D.h
+    engine/UI-engine/Object/Object3D.h \
+    engine/UI-engine/Open_GL_/UtilityOpenGL.h \
+    engine/UI-engine/Open_GL_/GLUtilityGeometry.h
 
 FORMS    += widget.ui \
     formrunscript.ui
