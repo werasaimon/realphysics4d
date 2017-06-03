@@ -1,5 +1,7 @@
 // Libraries
 #include "Mesh.h"
+#include "../Open_GL_/UtilityOpenGL.h"
+
 
 // Namespaces
 using namespace std;
@@ -20,40 +22,22 @@ Mesh::~Mesh()
 }
 
 
-//---------------- initilisation OpenGL ------------------------//
+
 
 /**/
-void Mesh::initilisationGL()
+
+void Mesh::DrawShader(QOpenGLShaderProgram *program)
 {
-    mOpenGLUtilGeometry = new GLUtilityGeometry( mVertices.data() , mVertices.size() ,
-                                                 mUVs.data()      , mUVs.size() ,
-                                                 mNormals.data()  , mNormals.size(),
-                                                 mIndicess.data()  ,mIndicess.size());
+    UtilityOpenGL::DrawMesh( this , program );
 }
 
-
-void Mesh::DrawOpenGL(QOpenGLShaderProgram *program)
+void Mesh::Draw()
 {
-    assert(mOpenGLUtilGeometry);
-
-    int level = 0;
-    for(auto it = mTextures.begin(); it != mTextures.end(); ++it)
-    {
-        it->second.bind();
-        it->second.setLayer(++level);
-    }
-
-    mOpenGLUtilGeometry->drawGeometry(program);
-
-
-    for(auto it = mTextures.begin(); it != mTextures.end(); ++it)
-    {
-        it->second.unbind();
-    }
+    UtilityOpenGL::DrawMesh( this );
 }
+
 /**/
 
-//--------------------------------------------------------------//
 
 // Destroy the mesh
 void Mesh::destroy()
@@ -70,9 +54,6 @@ void Mesh::destroy()
     mIndices.clear();
     mIndicess.clear();
 
-    /// -  delete OpenGL geometry - ///
-    delete mOpenGLUtilGeometry;
-    mOpenGLUtilGeometry = NULL;
 }
 
 // Compute the normals of the mesh
@@ -158,9 +139,9 @@ void Mesh::calculateTangents()
             float factor = 1.0f / cp;
             Vector3 tangent = (edge1 * -edge2UV.y + edge2 * edge1UV.y) * factor;
             tangent.normalize();
-            mTangents[v1] = tangent;
-            mTangents[v2] = tangent;
-            mTangents[v3] = tangent;
+            mTangents[v1] += tangent;
+            mTangents[v2] += tangent;
+            mTangents[v3] += tangent;
         }
     }
 }

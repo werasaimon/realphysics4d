@@ -129,6 +129,18 @@ namespace utility_engine
                 mIndicess.push_back(indices[i]);
             }
 
+            for (uint i = 0; i < (sizeof(indices)/sizeof(uint)); i+=3)
+            {
+                uint a = indices[i + 0];
+                uint b = indices[i + 1];
+                uint c = indices[i + 2];
+                std::vector<uint> indx;
+                indx.push_back(a);
+                indx.push_back(b);
+                indx.push_back(c);
+                mIndices.push_back(indx);
+            }
+
 		}
 
 };

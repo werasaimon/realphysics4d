@@ -16,6 +16,8 @@
 namespace utility_engine
 {
 
+    class Mesh;
+
     class GLUtilityGeometry
     {
       public:
@@ -24,6 +26,8 @@ namespace utility_engine
                             const Vector2  *coordTex  , unsigned int sizeTexCoors,
                             const Vector3  *normals   , unsigned int sizeNormals,
                             const uint     *indicess  , unsigned int sizeIndexes );
+
+         GLUtilityGeometry(const Mesh *mesh );
 
         ~GLUtilityGeometry();
 

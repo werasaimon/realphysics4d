@@ -22,7 +22,7 @@ void MeshReadFile3DS::initilisation(const char *fileName)
                     this->mIndicess ,
                     this->mIndices  ,
                     this->mColors ));
-     initilisationGL();
+
 }
 
 

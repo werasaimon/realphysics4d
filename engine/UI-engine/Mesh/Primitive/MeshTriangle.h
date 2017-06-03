@@ -35,28 +35,35 @@ class MeshTriangle: public Mesh
 					    const Vector3& c)
 	{
 
-		mVertices.push_back(a);
-		mVertices.push_back(b);
-		mVertices.push_back(c);
+        mVertices.push_back(a);
+        mVertices.push_back(b);
+        mVertices.push_back(c);
 
 
-		Vector3 normal_face = ((b-a).cross(c-a)).normalize();
+        Vector3 normal_face = ((b-a).cross(c-a)).normalize();
 
-		mNormals.push_back(normal_face);
-		mNormals.push_back(normal_face);
-		mNormals.push_back(normal_face);
+        mNormals.push_back(normal_face);
+        mNormals.push_back(normal_face);
+        mNormals.push_back(normal_face);
 
-		mUVs.push_back(Vector2(1,0));
-		mUVs.push_back(Vector2(1,1));
-		mUVs.push_back(Vector2(0,1));
+        mUVs.push_back(Vector2(1,0));
+        mUVs.push_back(Vector2(1,1));
+        mUVs.push_back(Vector2(0,1));
 
-		mIndicess.push_back(0);
-		mIndicess.push_back(1);
-		mIndicess.push_back(2);
+        mIndicess.push_back(0);
+        mIndicess.push_back(1);
+        mIndicess.push_back(2);
 
         mColors.push_back( Color(1,1,1,1) );
         mColors.push_back( Color(1,1,1,1) );
         mColors.push_back( Color(1,1,1,1) );
+
+
+        std::vector<uint> indx;
+        indx.push_back(0);
+        indx.push_back(1);
+        indx.push_back(2);
+        mIndices.push_back(indx);
 
 		return true;
 	}

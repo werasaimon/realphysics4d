@@ -43,12 +43,12 @@ namespace utility_engine
 
 
 
-       static bool Load3DSFile(const char *fileName,   std::vector<Vector3>  &vertices ,
-                                                       std::vector<Vector3>  &normals  ,
-                                                       std::vector<Vector2>  &vtxUV    ,
-                                                       std::vector<uint>     &indicess ,
+       static bool Load3DSFile(const char *fileName,   std::vector<Vector3>            &vertices ,
+                                                       std::vector<Vector3>            &normals  ,
+                                                       std::vector<Vector2>            &vtxUV    ,
+                                                       std::vector<uint>               &indicess ,
                                                        std::vector<std::vector<uint> > &indices  ,
-                                                       std::vector<Color>    &Colors ,
+                                                       std::vector<Color>              &Colors   ,
                                                        bool invertTransform = true );
 
        static unsigned int FindChunk(std::ifstream & ifs, unsigned short  id, bool isParent = true );

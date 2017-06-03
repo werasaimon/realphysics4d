@@ -1,4 +1,5 @@
 #include "GLUtilityGeometry.h"
+#include "../Mesh/Mesh.h"
 
 
 using namespace utility_engine;
@@ -24,6 +25,27 @@ GLUtilityGeometry::GLUtilityGeometry(const Vector3 *verticess, unsigned int size
                   coordTex  , sizeTexCoors ,
                   normals   , sizeNormals  ,
                   indicess  , sizeIndexes );
+}
+
+GLUtilityGeometry::GLUtilityGeometry(const Mesh *mesh)
+ :indexBuf(QOpenGLBuffer::IndexBuffer)
+{
+    // initializeOpenGLFunctions();
+
+    // Generate 2 VBOs
+    arrayBufTexUV.create();
+    arrayBufVertex.create();
+    arrayBufNormal.create();
+    indexBuf.create();
+
+
+    // Initializes geometry and transfers it to VBOs
+    initGeometry(  mesh->getVertices().data() , mesh->getVertices().size() ,
+                   mesh->getUVs().data()      , mesh->getUVs().size() ,
+                   mesh->getNormals().data()  , mesh->getNormals().size() ,
+                   mesh->getIndicess().data() , mesh->getIndicess().size() );
+
+
 }
 
 GLUtilityGeometry::~GLUtilityGeometry()

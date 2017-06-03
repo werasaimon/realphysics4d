@@ -12,8 +12,8 @@
 #include "../Texture/Texture2D.h"
 #include "../Object/Object3D.h"
 
-#include "GLUtilityGeometry.h"
 
+#include <QOpenGLShaderProgram>
 
 namespace utility_engine
 {
@@ -30,13 +30,14 @@ enum Meshype
   PRIMITIVE_MESH_TRIANGLE
 };
 
+
 // Class Mesh
 // This class represents a 3D triangular mesh
 // object that can be loaded from an OBJ file for instance.
 class Mesh : public Object3D
 {
 
-	friend class MeshReaderFile3DS;
+
 
     protected:
 
@@ -46,7 +47,7 @@ class Mesh : public Object3D
 
         // A triplet of vertex indices for each triangle
 	    std::vector<std::vector<uint> > mIndices;
-	    std::vector<uint>               mIndicess;
+        std::vector<uint>               mIndicess;
 
         // Vertices coordinates (local space)
         std::vector<Vector3> mVertices;
@@ -67,97 +68,26 @@ class Mesh : public Object3D
         std::map<uint, Texture2D> mTextures;
 
 
-        // Geimetry of the render OpenGL on shader
-        GLUtilityGeometry    *mOpenGLUtilGeometry = NULL;
 
 
     public:
 
 
-       /**/
-        //initilisation buffer VBO OpenGL !!!
-        void initilisationGL();
-
+        /*---- OpenGL ----*/
         //draw render buffer openGL VBO OpenGL
-        void DrawOpenGL( QOpenGLShaderProgram *program );
-       /**/
-
-
-
-        /**/
-
-#ifdef __ANDROID__
-#elif defined(WIN32) || defined(__linux__)
-
-        void Draw()
-        {
-
-            //------------------ sempler textures --------------------//
-            int level = 0;
-            for(auto it = mTextures.begin(); it != mTextures.end(); ++it)
-            {
-                it->second.bind();
-                it->second.setLayer(++level);
-            }
-
-            //------------------ render geometry ---------------------//
-            glPushMatrix();
-            glColor3f(1,1,1);
-            glMultMatrixf(mTransformMatrix.getTranspose().dataBlock());
-            for (int i = 0; i < mIndicess.size(); i+=3)
-            {
-                uint index_a = mIndicess[i+0];
-                uint index_b = mIndicess[i+1];
-                uint index_c = mIndicess[i+2];
-
-                Vector3 a = mVertices[index_a];
-                Vector3 b = mVertices[index_b];
-                Vector3 c = mVertices[index_c];
-
-                Vector2 UVa = mUVs[index_a];
-                Vector2 UVb = mUVs[index_b];
-                Vector2 UVc = mUVs[index_c];
-
-                Color   color_a = mColors[index_a];
-                Color   color_b = mColors[index_b];
-                Color   color_c = mColors[index_c];
-
-                Vector3 face_a = mNormals[index_a];
-                Vector3 face_b = mNormals[index_b];
-                Vector3 face_c = mNormals[index_c];
-
-
-
-                glBegin(GL_TRIANGLES);
-                glVertex3f(a.x , a.y , a.z); glTexCoord2f(UVa.x, UVa.y); glNormal3f( face_a.x , face_a.y , face_a.z ); glColor4f(color_a.r , color_a.g , color_a.b , color_a.a);
-                glVertex3f(b.x , b.y , b.z); glTexCoord2f(UVb.x, UVb.y); glNormal3f( face_b.x , face_b.y , face_b.z ); glColor4f(color_b.r , color_b.g , color_b.b , color_b.a);
-                glVertex3f(c.x , c.y , c.z); glTexCoord2f(UVc.x, UVc.y); glNormal3f( face_c.x , face_c.y , face_c.z ); glColor4f(color_c.r , color_c.g , color_c.b , color_c.a);
-                glEnd();
-
-            }
-            glPopMatrix();
-
-
-            //------------- realase sempler textures ------------------//
-            for(auto it = mTextures.begin(); it != mTextures.end(); ++it)
-            {
-                it->second.unbind();
-            }
-
-        }
-
-#endif
-
+        void DrawShader( QOpenGLShaderProgram *program );
+        void Draw();
         /**/
 
 
-        // -------------------- Methods -------------------- //
+        //-------------------- Methods --------------------//
 
         // Constructor
         Mesh(Meshype type);
 
         // Destructor
        ~Mesh();
+
 
 
 
@@ -183,11 +113,27 @@ class Mesh : public Object3D
         // Return the number of triangles
         uint getNbFaces(uint part = 0) const;
 
+
+
         // Return the number of vertices
         uint getNbVertices() const;
 
+        // Return the number of vertices UV coords
+        uint getNbUVsVertices() const;
+
+        // Return the number of normals
+        uint getNbNormals() const;
+
+        // Return the number of tangents
+        uint getNbTangents() const;
+
         // Return the number of parts in the mesh
         uint getNbParts() const;
+
+        // Return the number of indiciess
+        uint getNbIndicess() const;
+
+
 
         // Return a reference to the vertices
         const std::vector<Vector3>& getVertices() const;
@@ -243,6 +189,8 @@ class Mesh : public Object3D
         // Return the vertex index of the ith (i=0,1,2) vertex of a given face
         uint getVertexIndexInFace(uint faceIndex, uint i, uint part = 0) const;
 
+
+
         // Return true if the mesh has normals
         bool hasNormals() const;
 
@@ -263,6 +211,8 @@ class Mesh : public Object3D
         // part of the mesh
         bool hasTexture() const;
 
+
+
         // Return a pointer to the vertices data
         void* getVerticesPointer();
 
@@ -281,11 +231,19 @@ class Mesh : public Object3D
         // Return a pointer to the vertex indicies data
         void* getIndicesPointer(uint part = 0);
 
+        // Return a pointer to the vertex indiciess data
+        void* getIndicessPointer();
+
+
+
         // Return a reference to a texture of the mesh
         Texture2D &getTexture(uint part = 0);
 
         // Set a texture to a part of the mesh
         void setTexture(Texture2D &texture, uint part = 0);
+
+
+
 
         // Return a index to the vertex indicies data
         const std::vector<std::vector<uint> > getIndices() const { return mIndices; }
@@ -294,6 +252,12 @@ class Mesh : public Object3D
 	    const std::vector<uint>& getIndicess() const { return mIndicess; }
 
 
+
+        //---------------- friendship ----------------------//
+
+        friend class MeshReaderFile3DS;
+        friend class GLUtilityGeometry;
+        friend class UtilityOpenGL;
 
 
 };
@@ -304,16 +268,43 @@ inline uint Mesh::getNbFaces(uint part) const
     return mIndices[part].size() / 3;
 }
 
+
 // Return the number of vertices
 inline uint Mesh::getNbVertices() const
 {
     return mVertices.size();
 }
 
+
+// Return the number of vertices UV coords
+inline uint Mesh::getNbUVsVertices() const
+{
+    return mUVs.size();
+}
+
+// Return the number of normals
+inline uint Mesh::getNbNormals() const
+{
+    return mNormals.size();
+}
+
+// Return the number of tangents
+inline uint Mesh::getNbTangents() const
+{
+    return mTangents.size();
+}
+
 // Return the number of parts in the mesh
 inline uint Mesh::getNbParts() const
 {
     return mIndices.size();
+}
+
+
+// Return the number of indicess
+inline uint Mesh::getNbIndicess() const
+{
+    return mIndicess.size();
 }
 
 // Return a reference to the vertices
@@ -526,6 +517,13 @@ inline void* Mesh::getUVTextureCoordinatesPointer()
 inline void* Mesh::getIndicesPointer(uint part)
 {
     return &(mIndices[part])[0];
+}
+
+
+// Return a pointer to the vertex indiciess data
+inline void* Mesh::getIndicessPointer()
+{
+    return &(mIndices[0]);
 }
 
 // Return a reference to a texture of the mesh

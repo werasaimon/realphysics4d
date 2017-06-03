@@ -15,7 +15,6 @@ namespace utility_engine
   mHalfSize(halfSize)
 {
     this->initialization(halfSize);
-    this->initilisationGL();
 }
 
 
