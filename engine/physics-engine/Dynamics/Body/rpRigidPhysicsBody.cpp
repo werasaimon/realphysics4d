@@ -115,7 +115,7 @@ SIMD_INLINE void rpRigidPhysicsBody::Integrate(scalar _dt)
         mFourTorque4 = MinkowskiVector4(  mExternalTorque / (LIGHT_MAX_VELOCITY_C * gammaInvert) , E);
 
 
-	    mLinearVelocity  +=  mExternalForce  * _dt;
+        mLinearVelocity  +=  mExternalForce  * _dt;
 	    mAngularVelocity +=  mExternalTorque * _dt;
 
 
@@ -124,11 +124,11 @@ SIMD_INLINE void rpRigidPhysicsBody::Integrate(scalar _dt)
 
 	    /*********************************************
 	     *          Damping  velocity
-	     ********************************************/
+         ********************************************/
 	    if( mLinearVelocity.length2() < MINIMUM_FOR_DAPING )
 	    {
 
-	    	if( mLinearVelocity.length() > mLinearDamping )
+            if( mLinearVelocity.length() > mLinearDamping )
 	    	{
 	    		mLinearVelocity -= ( mLinearVelocity.getUnit() * mLinearDamping);
 	    	}
@@ -143,7 +143,7 @@ SIMD_INLINE void rpRigidPhysicsBody::Integrate(scalar _dt)
 	    if( mAngularVelocity.length2()  < MINIMUM_FOR_DAPING )
 	    {
 
-	    	if( mAngularVelocity.length() > mAngularDamping )
+            if( mAngularVelocity.length() > mAngularDamping )
 	    	{
 	    		mAngularVelocity -= ( mAngularVelocity.getUnit() * mAngularDamping);
 	    	}
@@ -152,7 +152,7 @@ SIMD_INLINE void rpRigidPhysicsBody::Integrate(scalar _dt)
 	    		mAngularVelocity  = Vector3::ZERO;
 	    	}
 
-	    }
+        }
 
 
 

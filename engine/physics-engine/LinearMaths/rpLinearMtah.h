@@ -23,7 +23,7 @@
 namespace real_physics
 {
 
-	#define SIMD_INLINE  inline
+    #define SIMD_INLINE  inline
 
 	#define ATTRIBUTE_ALIGNED16(a)  __declspec(align(16)) a
 	#define ATTRIBUTE_ALIGNED64(a)  __declspec(align(64)) a

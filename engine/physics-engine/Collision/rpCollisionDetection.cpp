@@ -369,9 +369,6 @@ void rpCollisionDetection::computeNarrowPhase( std::map<overlappingpairid, rpOve
             // Update the contact cache of the overlapping pair
             //pair->update();
 
-//	        uint IdIndexCollid1 = body1->mIdCollidIndex;
-//	        uint IdIndexCollid2 = body2->mIdCollidIndex;
-
 	        // Check that at least one body is awake and not static
 	        bool isBody1Active = !body1->isSleeping() && body1->getType() != STATIC;
 	        bool isBody2Active = !body2->isSleeping() && body2->getType() != STATIC;
