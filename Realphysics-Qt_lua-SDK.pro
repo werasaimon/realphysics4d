@@ -444,7 +444,6 @@ HEADERS  += widget.h \
     examples/UnitSceneLuaInterpretationSDK.h \
     formrunscript.h \
     engine/physics-engine/Collision/NarrowPhase/rpNarrowPhaseGjkEpaAlgorithm.h \
-    engine/engine.h \
     engine/physics-engine/Collision/NarrowPhase/GJK/Simplex.h \
     engine/physics-engine/Collision/NarrowPhase/MPR/rpMPRAlgorithm.h \
     engine/physics-engine/Collision/NarrowPhase/GJK/rpGJKAlgorithm.h \
@@ -460,7 +459,8 @@ HEADERS  += widget.h \
     engine/UI-engine/Mesh/Mesh.h \
     engine/UI-engine/Object/Object3D.h \
     engine/UI-engine/Open_GL_/UtilityOpenGL.h \
-    engine/UI-engine/Open_GL_/GLUtilityGeometry.h
+    engine/UI-engine/Open_GL_/GLUtilityGeometry.h \
+    engine/engine.h
 
 FORMS    += widget.ui \
     formrunscript.ui
