@@ -6,6 +6,8 @@
 #include "engine/lua-interpreter/lualibary.h"
 #include "engine/UI-engine/engine.h"
 
+#include "engine/UI-engine/Open_GL_/UtilityOpenGL.h"
+
 #include <QFile>
 
 

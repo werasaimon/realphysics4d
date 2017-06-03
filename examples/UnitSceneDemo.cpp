@@ -1,5 +1,6 @@
 #include "UnitSceneDemo.h"
 
+#include <QOpenGLTexture>
 
 
 UnitSceneDemo::UnitSceneDemo()
@@ -13,13 +14,13 @@ bool UnitSceneDemo::initShader()
 
     /************************* Init-Shaders ******************************/
     // Compile vertex shader
-    if (!mProgramShader.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/vshader2.glsl"))
+    if (!mProgramShader.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/data/shaders/vshader2.glsl"))
     {
         return false;
     }
 
     // Compile fragment shader
-    if (!mProgramShader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/fshader2.glsl"))
+    if (!mProgramShader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/data/shaders/fshader2.glsl"))
     {
         return false;
     }
@@ -68,7 +69,7 @@ bool UnitSceneDemo::initGeometry()
 
     //---------------------------- loading texture --------------------------------//
     // Load cube.png image
-    QOpenGLTexture *texture = new QOpenGLTexture(QImage(":/Files/cube.jpg").mirrored());
+    QOpenGLTexture *texture = new QOpenGLTexture(QImage(":/data/Files/cube.jpg").mirrored());
 
     // Set nearest filtering mode for texture minification
     texture->setMinificationFilter(QOpenGLTexture::Nearest);
@@ -90,7 +91,7 @@ bool UnitSceneDemo::initGeometry()
      /// Add mesh-model in array meshes
      const char fileName2[] = "plane.3DS";
      QFile mFile2(fileName2);
-     if(!CopyFileFromToResources( mFile2 , ":/Files/plane.3DS" )) return false;
+     if(!CopyFileFromToResources( mFile2 , ":/data/Files/plane.3DS" )) return false;
 
      for( int i =0 ; i < 15; ++i )
      {
@@ -215,7 +216,7 @@ void UnitSceneDemo::render(float FrameTime)
    for(unsigned int i=0; i < mMeshes.size(); ++i)
    {
         mProgramShader.UniformValue( "ModelMatrix" , mMeshes[i]->getTransformMatrix() );
-        mMeshes[i]->DrawOpenGL(&mProgramShader);
+        mMeshes[i]->DrawShader(&mProgramShader);
    }
 
 
