@@ -132,7 +132,7 @@ void LoadLibaryLuaUIEngine::LoadLibary()
     /// Mesh model
     importToScope(  luabind::class_<utility_engine::Mesh , luabind::bases< utility_engine::Object3D>>("mesh")
                           .def("draw"     , &utility_engine::Mesh::Draw)
-                          .def("draw"     , &utility_engine::Mesh::DrawOpenGL)
+                          .def("draw"     , &utility_engine::Mesh::DrawShader)
                           .def("texture"  , &utility_engine::Mesh::setTexture)
                           .def("vColor"   , &utility_engine::Mesh::setColor)
                           .def("vColor"   , &utility_engine::Mesh::setColorToAllVertices));
