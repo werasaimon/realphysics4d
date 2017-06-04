@@ -317,7 +317,7 @@ SIMD_INLINE void rpRigidPhysicsBody::setType(BodyType type)
 	UpdateMatrices();
 
 	// Remove all the contacts with this body
-	//resetContactManifoldsList();
+    resetContactManifoldsList();
 
 	// Ask the broad-phase to test again the collision shapes of the body for collision
 	// detection (as if the body has moved)
