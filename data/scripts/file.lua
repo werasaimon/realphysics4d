@@ -1,11 +1,11 @@
-puase=false;
+puase=true;
 
 local p = {};
 local m = {};
 local n = 40;
 
-local eye        =  vector3(0,0,100)
-local center     =  vector3(0,0,-60)
+local eye        =  vector3(0,0,40)
+local center     =  vector3(0,0,-20)
 local up         =  vector3(0,1,0)
 
 local cam    = camera();
@@ -18,8 +18,8 @@ local physWorld = dynamics_world( vector3(0,-30,0) )
 --****** initilization ********--
 function setup( scene )
 
-    shader:addSourceFile( shaderProgram.vertex    , "shaders/vshader2.glsl"  )
-    shader:addSourceFile( shaderProgram.fragment  , "shaders/fshader2.glsl"  )
+    shader:addSourceFile( shaderProgram.vertex    , ":/data/shaders/vshader2.glsl"  )
+    shader:addSourceFile( shaderProgram.fragment  , ":/data/shaders/fshader2.glsl"  )
     shader:link()
 
     scene.width  = 600;
@@ -33,7 +33,7 @@ function setup( scene )
     cam:project( fov , aspect , zNear , zFar );
 
 
-    texture = GL.loadTexture("Files/box.bmp")
+    texture = GL.loadTexture(":/data/Files/box.bmp")
 
     for i=0,n do
 
@@ -42,10 +42,10 @@ function setup( scene )
              type = ultimate_physics.static;
          end;
 
-        m[i] = mesh_3ds("Files/plane.3DS");
+        m[i] = mesh_box( vector3(3,3,3) );
         m[i]:identity();
         m[i]:texture(texture,0);
-        m[i]:translate( vector3( math.sin(i) * 2.1, -10 + 20*(i),-60) );
+        m[i]:translate( vector3( math.sin(i) * 2.1, -10 + 5*(i), 10) );
 
         p[i] = physWorld:RigidBody( m[i]:getMatrix() )
         p[i]:type( type )
@@ -55,6 +55,7 @@ function setup( scene )
 
     end;
 
+puase=true;
 
 end;
 
@@ -96,12 +97,12 @@ end;
 --******* update *********--
 function update( scene )
  
-    if pause then
+   -- if pause then
           physWorld:update( 1.0/60.0 )
           for i=0,n do
           p[i]:update()
           end;
-    end;
+    --end;
  
 end
 
