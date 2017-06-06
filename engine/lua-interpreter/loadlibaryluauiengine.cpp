@@ -131,7 +131,10 @@ void LoadLibaryLuaUIEngine::LoadLibary()
 
     /// Mesh model
     importToScope(  luabind::class_<utility_engine::Mesh , luabind::bases< utility_engine::Object3D>>("mesh")
-                          .def("draw"     , &utility_engine::Mesh::Draw)
+                            #ifdef __ANDROID__
+                            #elif defined(WIN32) || defined(__linux__)
+                                .def("draw"     , &utility_engine::Mesh::Draw)
+                            #endif
                           .def("draw"     , &utility_engine::Mesh::DrawShader)
                           .def("texture"  , &utility_engine::Mesh::setTexture)
                           .def("vColor"   , &utility_engine::Mesh::setColor)

@@ -5,9 +5,13 @@
 
 #include "engine/UI-engine/engine.h"
 
+
+#ifdef __ANDROID__
+#elif defined(WIN32) || defined(__linux__)
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glext.h>
+#endif
 
 class UtilOpenGL
 {
@@ -22,6 +26,8 @@ class UtilOpenGL
         }
 
 
+#ifdef __ANDROID__
+#elif defined(WIN32) || defined(__linux__)
         static void glProject_( const engine::Matrix4 &M )
         {
             glMatrixMode(GL_PROJECTION);
@@ -34,7 +40,7 @@ class UtilOpenGL
             glMatrixMode(GL_MODELVIEW);
             glLoadMatrixf(M.getTranspose().dataBlock());
         }
-
+#endif
 
         static void glLoadIdentity_( engine::Matrix4 &M )
         {
