@@ -12,9 +12,9 @@
 #include <unordered_map>
 #include <fstream>
 #include <memory>
-#include "../../Geometry/QuickHull/Structs/Mesh.hpp"
-#include "../../Geometry/QuickHull/Structs/Vector3.hpp"
-#include "../../Geometry/QuickHull/Structs/VertexDataSource.hpp"
+#include "engine/physics-engine/Geometry/QuickHull/Structs/Mesh.hpp"
+#include "engine/physics-engine/Geometry/QuickHull/Structs/Vector3.hpp"
+#include "engine/physics-engine/Geometry/QuickHull/Structs/VertexDataSource.hpp"
 
 
 

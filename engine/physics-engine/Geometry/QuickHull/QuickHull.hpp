@@ -12,13 +12,15 @@
 #include <array>
 #include <limits>
 
-#include "../../Geometry/QuickHull/ConvexHull.hpp"
-#include "../../Geometry/QuickHull/HalfEdgeMesh.hpp"
-#include "../../Geometry/QuickHull/MathUtils.hpp"
-#include "../../Geometry/QuickHull/Structs/Mesh.hpp"
-#include "../../Geometry/QuickHull/Structs/Plane.hpp"
-#include "../../Geometry/QuickHull/Structs/Pool.hpp"
-#include "../../Geometry/QuickHull/Structs/Vector3.hpp"
+#include "engine/physics-engine/Geometry/QuickHull/ConvexHull.hpp"
+#include "engine/physics-engine/Geometry/QuickHull/HalfEdgeMesh.hpp"
+#include "engine/physics-engine/Geometry/QuickHull/MathUtils.hpp"
+#include "engine/physics-engine/Geometry/QuickHull/Structs/Mesh.hpp"
+#include "engine/physics-engine/Geometry/QuickHull/Structs/Plane.hpp"
+#include "engine/physics-engine/Geometry/QuickHull/Structs/Pool.hpp"
+#include "engine/physics-engine/Geometry/QuickHull/Structs/Vector3.hpp"
+
+
 
 
 /*
