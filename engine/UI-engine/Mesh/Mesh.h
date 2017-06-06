@@ -76,7 +76,11 @@ class Mesh : public Object3D
         /*---- OpenGL ----*/
         //draw render buffer openGL VBO OpenGL
         void DrawShader( QOpenGLShaderProgram *program );
+
+#ifdef __ANDROID__
+#elif defined(WIN32) || defined(__linux__)
         void Draw();
+#endif
         /**/
 
 

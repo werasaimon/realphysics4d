@@ -31,10 +31,13 @@ void Mesh::DrawShader(QOpenGLShaderProgram *program)
     UtilityOpenGL::DrawMesh( this , program );
 }
 
+#ifdef __ANDROID__
+#elif defined(WIN32) || defined(__linux__)
 void Mesh::Draw()
 {
     UtilityOpenGL::DrawMesh( this );
 }
+#endif
 
 /**/
 
