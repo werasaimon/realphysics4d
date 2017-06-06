@@ -58,12 +58,13 @@ void Widget::runScript()
     {
 
        widget = new FormRunScript();
-//       widget->setWindowFlags( Qt::Dialog |
-//                               Qt::CustomizeWindowHint |
-//                               Qt::WindowTitleHint |
-//                               Qt::WindowMinMaxButtonsHint );
+       widget->setWindowFlags( Qt::Dialog |
+                               Qt::CustomizeWindowHint |
+                               Qt::WindowTitleHint |
+                               Qt::WindowMinMaxButtonsHint |
+                               Qt::WindowStaysOnTopHint );
 
-       widget->setWindowFlags(Qt::WindowStaysOnTopHint);
+
        widget->show();
        widget->activateWindow();
        mIsActiveButtonRunScript = true;
