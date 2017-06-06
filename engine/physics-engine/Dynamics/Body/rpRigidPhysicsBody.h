@@ -26,6 +26,8 @@ class rpRigidPhysicsBody: public rpPhysicsBody
 	private:
 
 
+        scalar mStepTime;
+
 		// -------------------- Attributes -------------------- //
 
 		/// Material properties of the rigid body
@@ -170,6 +172,9 @@ class rpRigidPhysicsBody: public rpPhysicsBody
         void changeToFrameOfReference( rpRigidPhysicsBody *rigidBody );
 
 
+        /// Remove a collision shape from the body
+        void removeCollisionShape(const rpProxyShape* proxyShape );
+
 
 		/// Recompute the center of mass, total mass and inertia tensor of the body using all
 		/// the collision shapes attached to the body.
@@ -186,6 +191,11 @@ class rpRigidPhysicsBody: public rpPhysicsBody
 
 		/// Apply integrate velocity of gravity
 	    void applyGravity( const Vector3& gravity );
+
+        /*******************************************************/
+
+        /// Update the broad-phase state for this body (because it has moved for instance)
+        void updateBroadPhaseState() const;
 
 		/*******************************************************/
 

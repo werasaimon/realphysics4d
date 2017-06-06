@@ -99,8 +99,9 @@ class rpCollisionBody : public rpBody
         /// Update the broad-phase state for this body (because it has moved for instance)
         virtual void updateBroadPhaseState() const;
 
+
         /// Update the broad-phase state of a proxy collision shape of the body
-        void updateProxyShapeInBroadPhase(rpProxyShape* proxyShape, bool forceReinsert = false) const;
+        void updateProxyShapeInBroadPhase(rpProxyShape* proxyShape, const Vector3& displacement , bool forceReinsert = false) const;
 
 
         /// Ask the broad-phase to test again the collision shapes of the body for collision

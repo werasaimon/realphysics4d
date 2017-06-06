@@ -100,14 +100,16 @@ void rpDynamicsWorld::update(scalar timeStep)
 
      mTimer.setTimeStep(timeStep);
      mTimer.start();
+
+
      mTimer.update();
 
      while( mTimer.isPossibleToTakeStep() )
      {
          updateFixedTime(timeStep);
 
-         // next step simulation
-         mTimer.nextStep();
+        //         // next step simulation
+        //         mTimer.nextStep();
      }
 
 }
@@ -122,14 +124,22 @@ void rpDynamicsWorld::updateFixedTime(scalar timeStep)
     integrateGravity(timeStep);
 
     /****************************/
+    //Collision broad phase
     updateBodiesState(timeStep);
-
-    /****************************/
     CollidePhase();
+
+    // Update the timer
+    mTimer.nextStep();
+
+    // Dynamica phase
     DynamicPhase(timeStep);
 
     /****************************/
+    // Integrate the position and orientation of each body
     integrateBodiesVelocities(timeStep);
+
+    // Sleeping bodies
+    //updateSleepingBodies(timeStep);
 
 }
 
@@ -267,78 +277,81 @@ void rpDynamicsWorld::updateBodiesState(scalar timeStep)
 
 	for( auto it = mPhysicsBodies.begin(); it != mPhysicsBodies.end(); ++it )
 	{
-		(*it)->updateBroadPhaseState();
-		(*it)->updateTransformWithCenterOfMass();
+        (*it)->updateBroadPhaseState();
+        (*it)->updateTransformWithCenterOfMass();
 	}
 }
 
 
+/**
+///// A body with angular velocity smaller than the sleep angular velocity (in rad/s)
+///// might enter sleeping mode
+//const scalar DEFAULT_SLEEP_ANGULAR_VELOCITY = scalar(3.0 * (PI / 180.0));
+//const scalar DEFAULT_SLEEP_LINEAR_VELOCITY  = scalar(0.02);
+
 //// Put bodies to sleep if needed.
 ///// For each island, if all the bodies have been almost still for a long enough period of
 ///// time, we put all the bodies of the island to sleep.
-//void rpDynamicsWorld::updateSleepingBodies(scalar timeStep)
-//{
-//
-//	const scalar sleepLinearVelocitySquare  = DEFAULT_SLEEP_LINEAR_VELOCITY * DEFAULT_SLEEP_LINEAR_VELOCITY;//mSleepLinearVelocity * mSleepLinearVelocity;
-//    const scalar sleepAngularVelocitySquare = DEFAULT_SLEEP_ANGULAR_VELOCITY * DEFAULT_SLEEP_ANGULAR_VELOCITY;//mSleepAngularVelocity * mSleepAngularVelocity;
-//    const scalar mTimeBeforeSleep           = 0.3;//DEFAULT_TIME_BEFORE_SLEEP;
-//          scalar minSleepTime               = 1;// DECIMAL_LARGEST;
-//
-//
-//
-//          scalar min=0;
-//    for( int i = 0; i < mPhysicBodies.size(); ++i )
-//	{
-//
-//    	rpRigidPhysicsBody *bodies = static_cast<rpRigidPhysicsBody*>(mPhysicBodies[i]);
-//    	// Skip static bodies
-//        if (bodies->getType() == STATIC) continue;
-//
-//        // If the body is velocity is large enough to stay awake
-//        if (bodies->getLinearVelocity().lengthSquare() > sleepLinearVelocitySquare   ||
-//        	bodies->getAngularVelocity().lengthSquare() > sleepAngularVelocitySquare ||
-//		   !bodies->isAllowedToSleep())
-//        {
-//
-//        	// Reset the sleep time of the body
-//        	bodies->mSleepTime = scalar(0.0);
-//        	minSleepTime = scalar(0.0);
-//        }
-//        else
-//        {  // If the body velocity is bellow the sleeping velocity threshold
-//
-//
-//        	// Increase the sleep time
-//        	bodies->mSleepTime += timeStep;
-//
-//
-//        	if (bodies->mSleepTime < minSleepTime && bodies->mSleepTime != scalar(0))
-//        	{
-//        		minSleepTime = bodies->mSleepTime;
-//        		min = bodies->mSleepTime;
-//
-//        	}
-//        }
-//
-//	}
-//
-//    //cout << "min sleep:  " <<  min <<endl;
-//
-//    // If the velocity of all the bodies of the island is under the
-//    // sleeping velocity threshold for a period of time larger than
-//    // the time required to become a sleeping body
-//    if (min >= mTimeBeforeSleep)
-//    {
-//    	cout << "sleep:  " << min <<endl;
-//    	// Put all the bodies of the island to sleep
-//    	for( int i = 0; i < mPhysicBodies.size(); ++i )
-//    	{
-//    		mPhysicBodies[i]->setIsSleeping(true);
-//    	}
-//    }
-//
-//}
+void rpDynamicsWorld::updateSleepingBodies(scalar timeStep)
+{
 
+        //    const scalar sleepLinearVelocitySquare  = (DEFAULT_SLEEP_LINEAR_VELOCITY * DEFAULT_SLEEP_LINEAR_VELOCITY) / 1.0;
+        //    const scalar sleepAngularVelocitySquare = (DEFAULT_SLEEP_ANGULAR_VELOCITY * DEFAULT_SLEEP_ANGULAR_VELOCITY) / 1.0;
+        //    const scalar mTimeBeforeSleep           = 0.3;//DEFAULT_TIME_BEFORE_SLEEP;
+        //          scalar minSleepTime               = 1;// DECIMAL_LARGEST;
+
+
+        //    for( auto it = mPhysicsBodies.begin(); it != mPhysicsBodies.end(); ++it )
+        //    {
+
+        //        rpRigidPhysicsBody *bodies = static_cast<rpRigidPhysicsBody*>(*it) ;
+        //        // Skip static bodies
+        //        if (bodies->getType() == STATIC) continue;
+
+        //        // If the body is velocity is large enough to stay awake
+        //        if (bodies->getLinearVelocity().lengthSquare()  >  sleepLinearVelocitySquare   ||
+        //            bodies->getAngularVelocity().lengthSquare() > sleepAngularVelocitySquare )
+        //        {
+
+        //            // Reset the sleep time of the body
+        //            bodies->mSleepTime = scalar(0.0);
+        //            minSleepTime = scalar(0.0);
+
+        //            bodies->setIsSleeping(false);
+        //        }
+        //        else
+        //        {  // If the body velocity is bellow the sleeping velocity threshold
+
+
+        //            // Increase the sleep time
+        //            bodies->mSleepTime += timeStep;
+
+
+        //            if (bodies->mSleepTime > 0.75 )
+        //            {
+        //                bodies->setIsSleeping(true);
+        //            }
+        //        }
+
+        //    }
+
+        //    //cout << "min sleep:  " <<  min <<endl;
+
+        //    // If the velocity of all the bodies of the island is under the
+        //    // sleeping velocity threshold for a period of time larger than
+        //    // the time required to become a sleeping body
+        //    if (min >= mTimeBeforeSleep)
+        //    {
+        //    	cout << "sleep:  " << min <<endl;
+        //    	// Put all the bodies of the island to sleep
+        //    	for( int i = 0; i < mPhysicBodies.size(); ++i )
+        //    	{
+        //    		mPhysicBodies[i]->setIsSleeping(true);
+        //    	}
+        //    }
+
+}
+/**/
 
 
 void rpDynamicsWorld::addChekCollisionPair( overlappingpairid keyPair, rpContactManifold* maniflod )

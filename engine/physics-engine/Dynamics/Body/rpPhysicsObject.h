@@ -52,7 +52,7 @@ class rpPhysicsObject : public rpCollisionBody
 
 
         /// Update the broad-phase state for this body (because it has moved for instance)
-        virtual void updateBroadPhaseState() const;
+        virtual void updateBroadPhaseStatee( const Vector3& _displacement = Vector3::ZERO ) const;
 
 
         /// Recompute the center of mass, total mass and inertia tensor of the body using all

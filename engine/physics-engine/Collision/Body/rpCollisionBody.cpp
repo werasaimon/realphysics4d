@@ -210,14 +210,14 @@ void rpCollisionBody::updateBroadPhaseState() const
     for (rpProxyShape* shape = mProxyCollisionShapes; shape != NULL; shape = shape->mNext)
     {
         // Update the proxy
-        updateProxyShapeInBroadPhase(shape);
+        updateProxyShapeInBroadPhase(shape , Vector3::ZERO);
     }
 }
 
 
 
 // Update the broad-phase state of a proxy collision shape of the body
-void rpCollisionBody::updateProxyShapeInBroadPhase(rpProxyShape* proxyShape, bool forceReinsert) const
+void rpCollisionBody::updateProxyShapeInBroadPhase(rpProxyShape* proxyShape, const Vector3& displacement, bool forceReinsert) const
 {
 
 	// Recompute the world-space AABB of the collision shape
@@ -226,7 +226,7 @@ void rpCollisionBody::updateProxyShapeInBroadPhase(rpProxyShape* proxyShape, boo
 
 
 	// Update the broad-phase state for the proxy collision shape
-	mCollisionDetection->updateProxyCollisionShape(proxyShape, aabb, Vector3(0, 0, 0), forceReinsert);
+    mCollisionDetection->updateProxyCollisionShape(proxyShape, aabb , displacement , forceReinsert);
 
 }
 

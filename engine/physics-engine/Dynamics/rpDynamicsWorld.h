@@ -102,7 +102,7 @@ class rpDynamicsWorld : public rpCollisionWorld
 
 
 	std::set<rpJoint*>       mPhysicsJoints;
-	std::set<rpPhysicsBody*> mPhysicsBodies;
+    std::set<rpPhysicsBody*> mPhysicsBodies;
 
 
 	// array map contacts solver

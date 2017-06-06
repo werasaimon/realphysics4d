@@ -52,7 +52,8 @@ rpRigidPhysicsBody::rpRigidPhysicsBody(const Transform& transform, rpCollisionDe
  mAngularFourVelocity4(0,0,0,0),
  mFourForce4(0,0,0,0),
  mFourTorque4(0,0,0,0),
- mFourPosition4(transform.getPosition(),0)
+ mFourPosition4(transform.getPosition(),0) ,
+ mStepTime(0.0)
 {
 	/// body To type
 	mTypePhysics = PhysicsBodyType::RIGID_BODY;
@@ -75,6 +76,7 @@ rpRigidPhysicsBody::rpRigidPhysicsBody(const Transform& transform, rpCollisionDe
 ///********************************************************/
 SIMD_INLINE void rpRigidPhysicsBody::Integrate(scalar _dt)
 {
+        mStepTime = _dt;
 
 		if ( mInitMass == 0.0f || _dt == 0.0f)
 		{
@@ -159,7 +161,7 @@ SIMD_INLINE void rpRigidPhysicsBody::Integrate(scalar _dt)
 
 
 	    /**********************************************
-	     *         Integrate  velocity
+         *         Integrate lorentz evolution
          **********************************************/
 
         /// Time invert interval local-frame
@@ -235,7 +237,6 @@ void rpRigidPhysicsBody::changeToFrameOfReference( rpRigidPhysicsBody *rigidBody
 	MinkowskiVector4 UAngular = mAngularFourVelocity4;
 
 
-
 	/**/
 	ULinear.setVector3( (ULinear.getVector3() - ((VL/LIGHT_MAX_VELOCITY_C) * ULinear.t)) / gammaInvert  );
 	ULinear.t = (ULinear.t - (VL/LIGHT_MAX_VELOCITY_C).dot(R)) / gammaInvert ;
@@ -266,13 +267,35 @@ void rpRigidPhysicsBody::changeToFrameOfReference( rpRigidPhysicsBody *rigidBody
 }
 
 
+/// To remove a collision shape, you need to specify the pointer to the proxy
+/// shape that has been returned when you have added the collision shape to the
+/// body
+/**
+ * @param proxyShape The pointer of the proxy shape you want to remove
+ */
+void rpRigidPhysicsBody::removeCollisionShape(const rpProxyShape *proxyShape)
+{
+    // Remove the collision shape
+    rpCollisionBody::removeCollisionShapee(proxyShape);
+
+    // Recompute the total mass, center of mass and inertia tensor
+    recomputeMassInformation();
+}
+
+
 SIMD_INLINE void real_physics::rpRigidPhysicsBody::applyGravity(const Vector3& gravity)
 {
 	if( mMassInverse > 0 && !mIsSleeping && getType() == BodyType::DYNAMIC)
 	{
 		applyImpulseLinear(gravity * mInitMass);
-	}
+    }
 }
+
+void rpRigidPhysicsBody::updateBroadPhaseState() const
+{
+    rpPhysicsObject::updateBroadPhaseStatee( mStepTime * mLinearVelocity );
+}
+
 
 
 
@@ -321,11 +344,13 @@ SIMD_INLINE void rpRigidPhysicsBody::setType(BodyType type)
 
 	// Ask the broad-phase to test again the collision shapes of the body for collision
 	// detection (as if the body has moved)
-	//askForBroadPhaseCollisionCheck();
+    askForBroadPhaseCollisionCheck();
 
 	// Reset the force and torque on the body
 	mExternalForce.setToZero();
 	mExternalTorque.setToZero();
+
+
 
 }
 
@@ -333,11 +358,14 @@ SIMD_INLINE void rpRigidPhysicsBody::setIsSleeping(bool isSleeping)
 {
 	if (isSleeping)
 	{
+        // Stop motion
 		mLinearVelocity.setToZero();
 		mAngularVelocity.setToZero();
 		mExternalForce.setToZero();
 		mExternalTorque.setToZero();
 	}
+
+    rpBody::setIsSleeping(isSleeping);
 }
 
 
@@ -424,8 +452,6 @@ SIMD_INLINE void rpRigidPhysicsBody::UpdateMatrices()
 {
 	mInertiaTensorWorldInverse = mTransform.getBasis() * mInertiaTensorLocalInverse *
 			                     mTransform.getBasis().getTranspose();
-
-	//mInertiaTensorWorldInverse *= mMassInverse;
 
 	mCenterOfMassWorld = mTransform * mCenterOfMassLocal;
 }

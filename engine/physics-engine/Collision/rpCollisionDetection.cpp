@@ -505,24 +505,12 @@ void rpCollisionDetection::addContactManifoldToBody(rpOverlappingPair *pair)
 
         // Add the contact manifold at the beginning of the linked
         // list of contact manifolds of the first body
-
-        //           void* allocatedMemory1 = mWorld->mMemoryAllocator.allocate(sizeof(ContactManifoldListElement));
-        //           ContactManifoldListElement* listElement1 = new (allocatedMemory1)
-        //                                                         ContactManifoldListElement(contactManifold,
-        //                                                                            body1->mContactManifoldsList);
-
         rpContactManifoldListElement* listElement1 = new rpContactManifoldListElement( contactManifold , body1->mContactManifoldsList );
         body1->mContactManifoldsList = listElement1;
 
 
         // Add the contact manifold at the beginning of the linked
         // list of the contact manifolds of the second body
-
-        //           void* allocatedMemory2 = mWorld->mMemoryAllocator.allocate(sizeof(ContactManifoldListElement));
-        //           ContactManifoldListElement* listElement2 = new (allocatedMemory2)
-        //                                                         ContactManifoldListElement(contactManifold,
-        //                                                                            body2->mContactManifoldsList);
-
         rpContactManifoldListElement* listElement2 = new rpContactManifoldListElement( contactManifold , body2->mContactManifoldsList );
         body2->mContactManifoldsList = listElement2;
     }
@@ -620,7 +608,7 @@ void rpCollisionDetection::removeProxyCollisionShape(rpProxyShape* proxyShape)
 
 
 void rpCollisionDetection::updateProxyCollisionShape(rpProxyShape* shape, const rpAABB& aabb,
-		                                             const Vector3& displacement, bool forceReinsert)
+                                                     const Vector3& displacement, bool forceReinsert)
 {
 	  mBroadPhaseAlgorithm.updateProxyCollisionShape(shape, aabb, displacement);
 
