@@ -16,15 +16,23 @@ TEMPLATE = app
 #QMAKE_CXXFLAGS += -m32
 QMAKE_CXXFLAGS += -std=c++11
 
-#Android
-android: {
-  LIBS +=  -lGLESv1_CM -lGLESv2
-}
+
 
 #Linux
 linux: {
-  LIBS += -lGL -lGLU #-lGLEW
+
+#Android
+ android: {
+  LIBS +=  -lGLESv1_CM -lGLESv2
 }
+
+#Linux default
+ !android: {
+   LIBS += -lGL -lGLU #-lGLEW
+}
+
+}
+
 
 #Windows
 win32: {
@@ -471,6 +479,6 @@ RESOURCES += \
     scripts.qrc
 
 
-CONFIG += mobility
-MOBILITY =
+#CONFIG += mobility
+#MOBILITY =
 
