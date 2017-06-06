@@ -1,13 +1,5 @@
-/*
- * engine.h
- *
- *  Created on: 2 апр. 2017 г.
- *      Author: wera
- */
-
 #ifndef SRC_ELEMENTS_ENGINE_ENGINE_H_
 #define SRC_ELEMENTS_ENGINE_ENGINE_H_
-
 
 // Libraries
 #include "Shader/Shader.h"
