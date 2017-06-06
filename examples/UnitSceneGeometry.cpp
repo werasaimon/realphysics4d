@@ -82,8 +82,9 @@ void UnitSceneGeometry::initGeometry()
 
 
 
-    UltimatePhysicsBody *bodies[10];
-    for( int i = 0; i < 10; ++i)
+    const int NbSize = 50;
+    UltimatePhysicsBody *bodies[NbSize];
+    for( int i = 0; i < NbSize; ++i)
     {
 
         //************************************************//
@@ -102,7 +103,7 @@ void UnitSceneGeometry::initGeometry()
     }
 
 
-    for( int i = 1; i < 10; ++i )
+    for( int i = 1; i < NbSize; ++i )
     {
         const real_physics::Vector3 v1 = bodies[i-1]->getPhysicsBody()->getTransform().getPosition();
         const real_physics::Vector3 v2 = bodies[i-0]->getPhysicsBody()->getTransform().getPosition();
@@ -138,20 +139,20 @@ void UnitSceneGeometry::render(float FrameTime)
      //glLoadIdentity();
 
 
-     glMatrixMode(GL_PROJECTION);
-     glLoadMatrixf(mCamera.getProjectionMatrix().getTranspose().dataBlock());
+//     glMatrixMode(GL_PROJECTION);
+//     glLoadMatrixf(mCamera.getProjectionMatrix().getTranspose().dataBlock());
 
-     glMatrixMode(GL_MODELVIEW);
-     glLoadMatrixf(mCamera.getViewMatrix().getTranspose().dataBlock());
+//     glMatrixMode(GL_MODELVIEW);
+//     glLoadMatrixf(mCamera.getViewMatrix().getTranspose().dataBlock());
 
 
-     ///------------ draw ---------------///
+//     ///------------ draw ---------------///
 
-     for(unsigned int i=0; i < mMeshes.size(); ++i)
-     {
-            mMeshes[i]->Draw();
-         // mMeshes[i]->DrawOpenGL(&mProgramShader);
-     }
+//     for(unsigned int i=0; i < mMeshes.size(); ++i)
+//     {
+//            mMeshes[i]->Draw();
+//         // mMeshes[i]->DrawOpenGL(&mProgramShader);
+//     }
 
 
 

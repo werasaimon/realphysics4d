@@ -163,8 +163,8 @@ bool UnitSceneLuaInterpretationSDK::initialization()
 void UnitSceneLuaInterpretationSDK::render(float FrameTime)
 {
 
-    //    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //    glLoadIdentity();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 
 
     //    glFrontFace(GL_CCW);
