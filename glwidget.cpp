@@ -113,10 +113,10 @@ void GLWidget::initializeGL()
 
 
     //mSceneOpenGL = new UnitSceneDemo();
-    mSceneOpenGL = new UnitSceneGeometry();
+    //mSceneOpenGL = new UnitSceneGeometry();
 
 
-    //mSceneOpenGL = new UnitSceneLuaInterpretationSDK;
+    mSceneOpenGL = new UnitSceneLuaInterpretationSDK;
     mSceneOpenGL->initialization();
 
     // Use QBasicTimer because its faster than QTimer

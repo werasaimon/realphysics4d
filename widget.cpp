@@ -52,17 +52,20 @@ void Widget::runScript()
 
 
     // this->hide();
-   // this->close();
+    //this->close();
 
     if( !mIsActiveButtonRunScript )
     {
 
        widget = new FormRunScript();
-       widget->setWindowFlags( Qt::Dialog |
-                               Qt::CustomizeWindowHint |
-                               Qt::WindowTitleHint |
-                               Qt::WindowMinMaxButtonsHint );
+//       widget->setWindowFlags( Qt::Dialog |
+//                               Qt::CustomizeWindowHint |
+//                               Qt::WindowTitleHint |
+//                               Qt::WindowMinMaxButtonsHint );
+
+       widget->setWindowFlags(Qt::WindowStaysOnTopHint);
        widget->show();
+       widget->activateWindow();
        mIsActiveButtonRunScript = true;
        ui->pushButton->setText("stop");
     }
