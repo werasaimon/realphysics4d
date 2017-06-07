@@ -89,7 +89,11 @@ class rpDynamicsWorld : public rpCollisionWorld
 
 	// -------------------- Attributes -------------------- //
 
+    /// Update time step correctly interval
     rpTimer mTimer;
+
+    /// True if the spleeping technique for inactive bodies is enabled
+    bool mIsSleepingEnabled;
 
 	/// Number of iterations for the velocity solver of the Sequential Impulses technique
 	uint mNbVelocitySolverIterations;
@@ -133,8 +137,6 @@ class rpDynamicsWorld : public rpCollisionWorld
 
 	/// Update the postion/orientation of the bodies
 	void updateBodiesState(  scalar timeStep );
-
-
 
 	 /// Put bodies to sleep if needed.
 	void updateSleepingBodies(scalar timeStep);

@@ -66,10 +66,13 @@ class rpPhysicsBody: public rpPhysicsObject
     virtual void applyImpulseAngular(const Vector3&  impuls ) {}
     virtual void applyImpulseLinear(const Vector3&  impuls ) {}
 
+    //**********************************************//
+
     /// remove of the list joints
     virtual void removeJointFromJointsList( const rpJoint* joint);
 
 
+    //**********************************************//
 
    protected:
 

@@ -63,6 +63,10 @@ class rpPhysicsObject : public rpCollisionBody
         virtual void updateTransformWithCenterOfMass() {}
 
 
+        /// update sleeping
+        virtual void updateSleeping( scalar timeStep ) {}
+
+
         // set transform world oritation position
         void setWorldTransform(const Transform& worldTransform)
         {

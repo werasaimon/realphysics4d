@@ -38,7 +38,7 @@ class rpRigidPhysicsBody: public rpPhysicsBody
 		scalar mInitMass;
 
 
-        /// Energy on the to body
+        /// Total energy on the to body
         scalar mTotalEnergy;
 
 
@@ -198,6 +198,10 @@ class rpRigidPhysicsBody: public rpPhysicsBody
         void updateBroadPhaseState() const;
 
 		/*******************************************************/
+
+        /// Sleeping of body
+        void updateSleeping( scalar timeStep );
+
 
 
 	    /// Material get to Body

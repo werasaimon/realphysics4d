@@ -291,11 +291,52 @@ SIMD_INLINE void real_physics::rpRigidPhysicsBody::applyGravity(const Vector3& g
     }
 }
 
-void rpRigidPhysicsBody::updateBroadPhaseState() const
+
+
+SIMD_INLINE void rpRigidPhysicsBody::updateBroadPhaseState() const
 {
     rpPhysicsObject::updateBroadPhaseStatee( mStepTime * mLinearVelocity );
 }
 
+
+
+
+SIMD_INLINE void rpRigidPhysicsBody::updateSleeping(scalar timeStep)
+{
+
+    const scalar sleepLinearVelocitySquare  = (DEFAULT_SLEEP_LINEAR_VELOCITY * DEFAULT_SLEEP_LINEAR_VELOCITY);
+    const scalar sleepAngularVelocitySquare = (DEFAULT_SLEEP_ANGULAR_VELOCITY * DEFAULT_SLEEP_ANGULAR_VELOCITY);
+    const scalar sleepAngularSplitSquare    = (DEFAULT_SLEEP_SPLIT  * DEFAULT_SLEEP_SPLIT);
+
+
+    // Skip static bodies
+    if (this->getType() == STATIC) return;
+
+    // If the body is velocity is large enough to stay awake
+    if (this->mLinearVelocity.lengthSquare()       >  sleepLinearVelocitySquare   ||
+        this->mAngularVelocity.lengthSquare()      >  sleepAngularVelocitySquare  ||
+        this->mSplitLinearVelocity.lengthSquare()  >  sleepAngularSplitSquare     ||
+        this->mSplitAngularVelocity.lengthSquare() >  sleepAngularSplitSquare )
+    {
+
+        // Reset the sleep time of the body
+        this->mSleepTime = scalar(0.0);
+
+        this->setIsSleeping(false);
+    }
+    else
+    {  // If the body velocity is bellow the sleeping velocity threshold
+
+        // Increase the sleep time
+        this->mSleepTime += timeStep;
+
+        if (this->mSleepTime >= DEFAULT_TIME_BEFORE_SLEEP )
+        {
+            this->mSleepTime = DEFAULT_TIME_BEFORE_SLEEP;
+            this->setIsSleeping(true);
+        }
+    }
+}
 
 
 
@@ -356,14 +397,16 @@ SIMD_INLINE void rpRigidPhysicsBody::setType(BodyType type)
 
 SIMD_INLINE void rpRigidPhysicsBody::setIsSleeping(bool isSleeping)
 {
-	if (isSleeping)
-	{
-        // Stop motion
-		mLinearVelocity.setToZero();
-		mAngularVelocity.setToZero();
-		mExternalForce.setToZero();
-		mExternalTorque.setToZero();
-	}
+    if (isSleeping)
+    {
+        // Absolutely Stop motion
+        mLinearVelocity.setToZero();
+        mAngularVelocity.setToZero();
+        mExternalForce.setToZero();
+        mExternalTorque.setToZero();
+        mSplitLinearVelocity.setToZero();
+        mSplitLinearVelocity.setToZero();
+    }
 
     rpBody::setIsSleeping(isSleeping);
 }
@@ -470,7 +513,7 @@ SIMD_INLINE void rpRigidPhysicsBody::applySplitImpulse(const Vector3& impuls, co
 	// Awake the body if it was sleeping
 	if (mIsSleeping)
 	{
-		setIsSleeping(false);
+        /*setIsSleeping(false);*/ return;
 	}
 
 	applySplitImpulseLinear(impuls);
@@ -487,7 +530,7 @@ SIMD_INLINE void rpRigidPhysicsBody::applySplitImpulseAngular(const Vector3&  im
 	// Awake the body if it was sleeping
 	if (mIsSleeping)
 	{
-		setIsSleeping(false);
+        /*setIsSleeping(false);*/ return;
 	}
 
 	mSplitAngularVelocity += getInertiaTensorInverseWorld() * (impuls);
@@ -503,7 +546,7 @@ SIMD_INLINE  void real_physics::rpRigidPhysicsBody::applySplitImpulseLinear(cons
 	// Awake the body if it was sleeping
 	if (mIsSleeping)
 	{
-		setIsSleeping(false);
+        /*setIsSleeping(false);*/ return;
 	}
 
 	mSplitLinearVelocity += getInverseMass() * (impuls);
@@ -522,7 +565,7 @@ SIMD_INLINE void rpRigidPhysicsBody::applyImpulse(const Vector3& impuls , const 
 	// Awake the body if it was sleeping
 	if (mIsSleeping)
 	{
-		setIsSleeping(false);
+        /*setIsSleeping(false);*/ return;
 	}
 
 	applyImpulseLinear(impuls);
@@ -540,7 +583,7 @@ SIMD_INLINE void rpRigidPhysicsBody::applyImpulseAngular(const Vector3&  impuls 
 	// Awake the body if it was sleeping
 	if (mIsSleeping)
 	{
-		setIsSleeping(false);
+        /*setIsSleeping(false);*/ return;
 	}
 
 	mAngularVelocity += getInertiaTensorInverseWorld() * (impuls);// * gammaInvertFunction(mAngularVelocity);
@@ -558,7 +601,7 @@ SIMD_INLINE  void rpRigidPhysicsBody::applyImpulseLinear( const Vector3& impuls 
 	// Awake the body if it was sleeping
 	if (mIsSleeping)
 	{
-		setIsSleeping(false);
+        /*setIsSleeping(false);*/ return;
 	}
 
 	mLinearVelocity += getInverseMass() * (impuls);// * gammaInvertFunction(mLinearVelocity);
@@ -574,7 +617,7 @@ SIMD_INLINE void rpRigidPhysicsBody::applyForce(const Vector3& force, const Vect
 	// Awake the body if it was sleeping
 	if (mIsSleeping)
 	{
-		setIsSleeping(false);
+        /*setIsSleeping(false);*/ return;
 	}
 
 	// Add the force and torque
@@ -592,7 +635,7 @@ SIMD_INLINE void rpRigidPhysicsBody::applyTorque(const Vector3& torque)
 	// Awake the body if it was sleeping
 	if (mIsSleeping)
 	{
-		setIsSleeping(false);
+        /*setIsSleeping(false);*/ return;
 	}
 
 	// Add the torque
@@ -608,7 +651,7 @@ SIMD_INLINE void rpRigidPhysicsBody::applyForceToCenterOfMass(const Vector3& for
 	// Awake the body if it was sleeping
 	if (mIsSleeping)
 	{
-		setIsSleeping(false);
+        /*setIsSleeping(false);*/ return;
 	}
 
 	// Add the force
