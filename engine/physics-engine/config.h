@@ -25,6 +25,7 @@
     #define LINUX_OS
 #endif
 
+//#include "decimals/umHalf.h"
 
 
 namespace real_physics
@@ -32,7 +33,7 @@ namespace real_physics
 
 
 typedef int            iint;
-typedef float          scalar;
+//typedef float          scalar;
 typedef unsigned int   uint;
 
 
@@ -57,14 +58,21 @@ enum JointsPositionCorrectionTechnique {BAUMGARTE_JOINTS, NON_LINEAR_GAUSS_SEIDE
 enum ContactsPositionCorrectionTechnique {BAUMGARTE_CONTACTS, SPLIT_IMPULSES};
 
 
+
 /// Pi constant
 const scalar PI = scalar(3.14159265);
 
 /// 2*Pi constant
 const scalar PI_TIMES_2 = scalar(6.28318530);
 
+
+
+
 /// Light Velocity c = 300000.kilometers / 1.second
 const scalar LIGHT_MAX_VELOCITY_C = scalar(3000.0);
+
+
+
 
 /// Smallest scalar value (negative)
 const scalar SCALAR_SMALLEST = - std::numeric_limits<scalar>::max();
@@ -121,6 +129,7 @@ const scalar DYNAMIC_TREE_AABB_LIN_GAP_MULTIPLIER = scalar(1.7);
 
 
 
+
 /// Maximum number of contact manifolds in an overlapping pair that involves two
 /// convex collision shapes.
 const int NB_MAX_CONTACT_MANIFOLDS_CONVEX_SHAPE = 1;
@@ -134,28 +143,41 @@ const int NB_MAX_CONTACT_MANIFOLDS_CONCAVE_SHAPE = 3;
 const int NB_COLLISION_SHAPE_TYPES = 9;
 
 
+
+
+
 ///// Time (in seconds) that a body must stay still to be considered sleeping
-//const float DEFAULT_TIME_BEFORE_SLEEP = 1.0f;
+const float DEFAULT_TIME_BEFORE_SLEEP = 0.1;//1.0f;
+
 ///// True if the spleeping technique is enabled
-//const bool SPLEEPING_ENABLED = true;
-//
-///// Time (in seconds) that a body must stay still to be considered sleeping
-//const float DEFAULT_TIME_BEFORE_SLEEP = 1.0f;
-//
+const bool SLEEPING_ENABLED = true;
+
+
+
+
+
 ///// A body with a linear velocity smaller than the sleep linear velocity (in m/s)
 ///// might enter sleeping mode.
-//const scalar DEFAULT_SLEEP_LINEAR_VELOCITY = scalar(0.02);
-//
+const scalar DEFAULT_SLEEP_LINEAR_VELOCITY = scalar(0.0005);
+
 ///// A body with angular velocity smaller than the sleep angular velocity (in rad/s)
 ///// might enter sleeping mode
-//const scalar DEFAULT_SLEEP_ANGULAR_VELOCITY = scalar(3.0 * (Pi() / 180.0));
+const scalar DEFAULT_SLEEP_ANGULAR_VELOCITY = scalar(3.0 * (PI / 180.0));
+
+///// A body with minimum split
+const scalar DEFAULT_SLEEP_SPLIT   = scalar(0.0001);
+
+
+
 
 
 /// Minimum for start damping
 const scalar MINIMUM_FOR_DAPING = scalar(0.5);
 
 ///collision center point for the interpolation of (A-B) / 2
-const bool INTERPOLATION_CONTACT_POINTS = true;
+const bool   INTERPOLATION_CONTACT_POINTS = true;
+
+
 
 }  // namespace
 
