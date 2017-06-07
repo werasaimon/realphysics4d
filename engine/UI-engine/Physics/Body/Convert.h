@@ -13,7 +13,7 @@ namespace utility_engine
         real_physics::Transform transform;
         float m[16];
         matrix4.getTranspose().getDataValue(m);
-        transform.setFromOpenGL(m);
+        transform.setFromOpenGL((real_physics::scalar*)&m);
         return transform;
     }
 
@@ -22,7 +22,7 @@ namespace utility_engine
     {
         Matrix4 matrix;
         float m[16];
-        transform.getOpenGLMatrix(m);
+        transform.getOpenGLMatrix((real_physics::scalar*)&m);
         matrix.setDataValue(m);
         return matrix.getTranspose();
     }
