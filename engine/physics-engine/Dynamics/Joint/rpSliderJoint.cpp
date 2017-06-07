@@ -341,7 +341,7 @@ void rpSliderJoint::solveVelocityConstraint()
             // Compute the Lagrange multiplier lambda for the lower limit constraint
             scalar deltaLambdaLower = mInverseMassMatrixLimit * (-JvLowerLimit -mBLowerLimit);
             scalar lambdaTemp = mImpulseLowerLimit;
-            mImpulseLowerLimit = std::max(mImpulseLowerLimit + deltaLambdaLower, scalar(0.0));
+            mImpulseLowerLimit = Max(mImpulseLowerLimit + deltaLambdaLower, scalar(0.0));
             deltaLambdaLower = mImpulseLowerLimit - lambdaTemp;
 
             // Compute the impulse P=J^T * lambda for the lower limit constraint of body 1
@@ -372,7 +372,7 @@ void rpSliderJoint::solveVelocityConstraint()
             // Compute the Lagrange multiplier lambda for the upper limit constraint
             scalar deltaLambdaUpper = mInverseMassMatrixLimit * (-JvUpperLimit -mBUpperLimit);
             scalar lambdaTemp = mImpulseUpperLimit;
-            mImpulseUpperLimit = std::max(mImpulseUpperLimit + deltaLambdaUpper, scalar(0.0));
+            mImpulseUpperLimit = Max(mImpulseUpperLimit + deltaLambdaUpper, scalar(0.0));
             deltaLambdaUpper = mImpulseUpperLimit - lambdaTemp;
 
             // Compute the impulse P=J^T * lambda for the upper limit constraint of body 1

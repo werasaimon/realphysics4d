@@ -300,16 +300,16 @@ namespace real_physics
     void initWithEulerAngles(T angleX, T angleY, T angleZ)
     {
     	T angle = angleX * T(0.5);
-    	const T sinX = std::sin(angle);
-    	const T cosX = std::cos(angle);
+        const T sinX = Sin(angle);
+        const T cosX = Cos(angle);
 
     	angle = angleY * T(0.5);
-        const T sinY = std::sin(angle);
-    	const T cosY = std::cos(angle);
+        const T sinY = Sin(angle);
+        const T cosY = Cos(angle);
 
     	angle = angleZ * T(0.5);
-    	const T sinZ = std::sin(angle);
-    	const T cosZ = std::cos(angle);
+        const T sinZ = Sin(angle);
+        const T cosZ = Cos(angle);
 
     	const T cosYcosZ = cosY * cosZ;
     	const T sinYcosZ = sinY * cosZ;
@@ -328,9 +328,9 @@ namespace real_physics
 
     rpQuaternion<T>  createRotation( rpVector3D<T> RotAxis , T AngleInRads )
     {
-        scalar Thetad2 = AngleInRads * 0.5f;
-        scalar SinTd2 = std::sin(Thetad2);
-        scalar CosTd2 = std::cos(Thetad2);
+        scalar Thetad2 = AngleInRads * scalar(0.5);
+        scalar SinTd2 = Sin(Thetad2);
+        scalar CosTd2 = Cos(Thetad2);
 
         // Normalize the quaternion axis
         RotAxis.normalize();
@@ -709,7 +709,7 @@ namespace real_physics
       rotationAxis = start.cross(dest);
       //rotationAxis = rotationAxis.normalize();
 
-      T s = std::sqrt( (1+cosTheta)*2 );
+      T s = Sqrt( (1+cosTheta)*2 );
       T invs = 1 / s;
 
       return rpQuaternion<T>

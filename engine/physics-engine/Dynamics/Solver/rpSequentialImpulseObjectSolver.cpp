@@ -39,12 +39,12 @@ rpSequentialImpulseObjectSolver::rpSequentialImpulseObjectSolver( rpRigidPhysics
 	{
 
 		// Initialize the accumulated impulses to zero
-		mContactConstraints->contacts[i].AccumulatedPenetrationImpulse = 0;
-		mContactConstraints->contacts[i].AccumulatedFriction1Impulse   = 0;
-		mContactConstraints->contacts[i].AccumulatedFriction2Impulse   = 0;
+        mContactConstraints->contacts[i].AccumulatedPenetrationImpulse = scalar(0);
+        mContactConstraints->contacts[i].AccumulatedFriction1Impulse   = scalar(0);
+        mContactConstraints->contacts[i].AccumulatedFriction2Impulse   = scalar(0);
 		mContactConstraints->contacts[i].AccumulatedRollingResistanceImpulse = Vector3::ZERO;
 		mContactConstraints->contacts[i].AccumulatedRollingResistanceSplitImpulse = Vector3::ZERO;
-		mContactConstraints->contacts[i].AccumulatedPenetrationSplitImpulse = 0;
+        mContactConstraints->contacts[i].AccumulatedPenetrationSplitImpulse = scalar(0);
 		mContactConstraints->contacts[i].isRestingContact = false;
 	}
 
@@ -183,8 +183,8 @@ SIMD_INLINE void rpSequentialImpulseObjectSolver::initializeForIsland(scalar dt)
 	// If we solve the friction constraints at the center of the contact manifold
 	if (mIsSolveFrictionAtContactManifoldCenterActive && internalManifold->nbContacts > 0)
 	{
-		internalManifold->frictionPointBody1 /=static_cast<scalar>(internalManifold->nbContacts);
-		internalManifold->frictionPointBody2 /=static_cast<scalar>(internalManifold->nbContacts);
+        internalManifold->frictionPointBody1 /=static_cast<scalar>(float(internalManifold->nbContacts));
+        internalManifold->frictionPointBody2 /=static_cast<scalar>(float(internalManifold->nbContacts));
 		internalManifold->r1Friction = internalManifold->frictionPointBody1 - x1;
 		internalManifold->r2Friction = internalManifold->frictionPointBody2 - x2;
 		internalManifold->oldFrictionVector1 = externalManifold->getFrictionVector1();
@@ -444,7 +444,7 @@ SIMD_INLINE void rpSequentialImpulseObjectSolver::warmStart()
 
             /// Penetration Distance
             scalar beta = mIsSplitImpulseActive ? BETA_SPLIT_IMPULSE : BETA;
-            scalar sepp = -fabs( cp->getPenetrationDepth() );
+            scalar sepp = -Abs( cp->getPenetrationDepth() );
             cp->setPenetrationDepth( -(beta/mTimeStep) * Min( scalar(0), sepp + OFFSET_SLOP ));
             /****************************************************************************/
 
@@ -661,7 +661,7 @@ SIMD_INLINE void rpSequentialImpulseObjectSolver::solveVelocityConstraint()
 
 
        lambdaTemp = _accumulaterImpuls;
-       _accumulaterImpuls = std::max(_accumulaterImpuls + deltaLambda, scalar(0.0));
+       _accumulaterImpuls = Max(_accumulaterImpuls + deltaLambda, scalar(0.0));
        deltaLambda = _accumulaterImpuls - lambdaTemp;
 
 
@@ -691,7 +691,7 @@ SIMD_INLINE void rpSequentialImpulseObjectSolver::solveVelocityConstraint()
     	   deltaLambda *= contactPoint.inverseFriction1Mass;
     	   scalar frictionLimit = contactManifold->frictionCoefficient * _accumulaterImpuls;
     	   lambdaTemp = _accumulaterImpulsFriction1;
-    	   _accumulaterImpulsFriction1 = std::max(-frictionLimit, std::min(_accumulaterImpulsFriction1 + deltaLambda, frictionLimit));
+           _accumulaterImpulsFriction1 = Max(-frictionLimit, Min(_accumulaterImpulsFriction1 + deltaLambda, frictionLimit));
     	   deltaLambda = _accumulaterImpulsFriction1 - lambdaTemp;
 
 
@@ -713,7 +713,7 @@ SIMD_INLINE void rpSequentialImpulseObjectSolver::solveVelocityConstraint()
     	   deltaLambda *= contactPoint.inverseFriction2Mass;
     	   frictionLimit = contactManifold->frictionCoefficient * _accumulaterImpuls;
     	   lambdaTemp = _accumulaterImpulsFriction2;
-    	   _accumulaterImpulsFriction2 = std::max(-frictionLimit, std::min(_accumulaterImpulsFriction2 + deltaLambda, frictionLimit));
+           _accumulaterImpulsFriction2 = Max(-frictionLimit, Min(_accumulaterImpulsFriction2 + deltaLambda, frictionLimit));
     	   deltaLambda = _accumulaterImpulsFriction2 - lambdaTemp;
 
 
@@ -764,7 +764,7 @@ SIMD_INLINE void rpSequentialImpulseObjectSolver::solveVelocityConstraint()
 	   scalar deltaLambda = -Jv * contactManifold->inverseFriction1Mass;
 	   scalar frictionLimit = contactManifold->frictionCoefficient * sumPenetrationImpulse;
 	   lambdaTemp = contactManifold->friction1Impulse;
-	   contactManifold->friction1Impulse = std::max(-frictionLimit, std::min(contactManifold->friction1Impulse + deltaLambda, frictionLimit));
+       contactManifold->friction1Impulse = Max(-frictionLimit, Min(contactManifold->friction1Impulse + deltaLambda, frictionLimit));
 	   deltaLambda = contactManifold->friction1Impulse - lambdaTemp;
 
 	   // Compute the impulse P=J^T * lambda
@@ -793,7 +793,7 @@ SIMD_INLINE void rpSequentialImpulseObjectSolver::solveVelocityConstraint()
 	   deltaLambda = -Jv * contactManifold->inverseFriction2Mass;
 	   frictionLimit = contactManifold->frictionCoefficient * sumPenetrationImpulse;
 	   lambdaTemp = contactManifold->friction2Impulse;
-	   contactManifold->friction2Impulse = std::max(-frictionLimit, std::min(contactManifold->friction2Impulse + deltaLambda, frictionLimit));
+       contactManifold->friction2Impulse = Max(-frictionLimit, Min(contactManifold->friction2Impulse + deltaLambda, frictionLimit));
 	   deltaLambda = contactManifold->friction2Impulse - lambdaTemp;
 
 	   // Compute the impulse P=J^T * lambda
@@ -823,7 +823,7 @@ SIMD_INLINE void rpSequentialImpulseObjectSolver::solveVelocityConstraint()
 	   deltaLambda = -Jv * (contactManifold->inverseTwistFrictionMass);
 	   frictionLimit = contactManifold->frictionCoefficient * sumPenetrationImpulse;
 	   lambdaTemp = contactManifold->frictionTwistImpulse;
-	   contactManifold->frictionTwistImpulse = std::max(-frictionLimit, std::min(contactManifold->frictionTwistImpulse + deltaLambda, frictionLimit));
+       contactManifold->frictionTwistImpulse = Max(-frictionLimit, Min(contactManifold->frictionTwistImpulse + deltaLambda, frictionLimit));
 	   deltaLambda = contactManifold->frictionTwistImpulse - lambdaTemp;
 
 	   // Compute the impulse P=J^T * lambda
@@ -917,7 +917,7 @@ SIMD_INLINE void rpSequentialImpulseObjectSolver::solvePositionConstraint()
 		scalar deltaLambdaSplit = -(JvSplit + biasPenetrationDepth) * contactPoint.inversePenetrationMass;
 
 		scalar lambdaTempSplit = _accumulaterSplit;
-		_accumulaterSplit = std::max( _accumulaterSplit + deltaLambdaSplit, scalar(0.0));
+        _accumulaterSplit = Max( _accumulaterSplit + deltaLambdaSplit, scalar(0.0));
 		scalar deltaLambda = _accumulaterSplit - lambdaTempSplit;
 
 

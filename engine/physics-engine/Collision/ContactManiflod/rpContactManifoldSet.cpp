@@ -154,7 +154,7 @@ short int rpContactManifoldSet::computeCubemapNormalId(const Vector3& normal) co
 
     int faceNo;
     scalar u, v;
-    scalar max = max3(fabs(normal.x), fabs(normal.y), fabs(normal.z));
+    scalar max = max3(Abs(normal.x), Abs(normal.y), Abs(normal.z));
     Vector3 normalScaled = normal / max;
 
     if (normalScaled.x >= normalScaled.y && normalScaled.x >= normalScaled.z)

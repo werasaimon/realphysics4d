@@ -9,7 +9,6 @@
 #define SOURCE_ENGIE_SCALAR_H_
 
 
-/// ReactPhysiscs3D namespace
 namespace real_physics
 {
 

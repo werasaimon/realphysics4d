@@ -409,7 +409,7 @@ namespace real_physics
 					const IndexType beginVertex = m_mesh.m_halfEdges[ m_mesh.m_halfEdges[horizonEdges[j]].m_opp ].m_endVertex;
 					if (beginVertex == endVertex)
 					{
-						std::swap(horizonEdges[i+1],horizonEdges[j]);
+                        Swap(horizonEdges[i+1],horizonEdges[j]);
 						foundNext = true;
 						break;
 					}
@@ -431,7 +431,7 @@ namespace real_physics
 			{
 				const T* v = (const T*)(&m_vertexData[extremeValues[i]]);
 				v += i/2;
-				auto a = std::abs(*v);
+                auto a = Abs(scalar(*v));
 				if (a>s)
 				{
 					s = a;
@@ -447,11 +447,11 @@ namespace real_physics
 
 			// If we have at most 4 points, just return a degenerate tetrahedron:
 			if (vertexCount <= 4) {
-				IndexType v[4] = {0,std::min((size_t)1,vertexCount),std::min((size_t)2,vertexCount),std::min((size_t)3,vertexCount)};
+                IndexType v[4] = {0,Min((size_t)1,vertexCount),Min((size_t)2,vertexCount),Min((size_t)3,vertexCount)};
 				const Vector3<T> N = mathutils::getTriangleNormal(m_vertexData[v[0]],m_vertexData[v[1]],m_vertexData[v[2]]);
 				const Plane<T> trianglePlane(N,m_vertexData[v[0]]);
 				if (trianglePlane.isPointOnPositiveSide(m_vertexData[v[3]])) {
-					std::swap(v[0],v[1]);
+                    Swap(v[0],v[1]);
 				}
 				return MeshBuilder<T>(v[0],v[1],v[2],v[3]);
 			}
@@ -475,7 +475,7 @@ namespace real_physics
 			if (maxD == m_epsilonSquared)
 			{
 				// A degenerate case: the point cloud seems to consists of a single point
-				return MeshBuilder<T>(0,std::min((size_t)1,vertexCount),std::min((size_t)2,vertexCount),std::min((size_t)3,vertexCount));
+                return MeshBuilder<T>(0,Min((size_t)1,vertexCount),Min((size_t)2,vertexCount),Min((size_t)3,vertexCount));
 			}
 			assert(selectedPoints.first != selectedPoints.second);
 
@@ -521,7 +521,7 @@ namespace real_physics
 			Plane<T> trianglePlane(N,baseTriangleVertices[0]);
 			for (size_t i=0;i<vCount;i++)
 			{
-				const T d = std::abs(mathutils::getSignedDistanceToPlane(m_vertexData[i],trianglePlane));
+                const T d = Abs(scalar(mathutils::getSignedDistanceToPlane(m_vertexData[i],trianglePlane)));
 				if (d>maxD)
 				{
 					maxD=d;
@@ -545,7 +545,7 @@ namespace real_physics
 			const Plane<T> triPlane(N,baseTriangleVertices[0]);
 			if (triPlane.isPointOnPositiveSide(m_vertexData[maxI]))
 			{
-				std::swap(baseTriangle[0],baseTriangle[1]);
+                Swap(baseTriangle[0],baseTriangle[1]);
 			}
 
 			// Create a tetrahedron half edge mesh and compute planes defined by each triangle

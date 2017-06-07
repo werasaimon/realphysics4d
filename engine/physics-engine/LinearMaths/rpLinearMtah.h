@@ -175,17 +175,21 @@ namespace real_physics
  	{
  		return (scalar) cos(Radians);
  	}
- 	SIMD_INLINE scalar SquareRoot(scalar In)
- 	{
- 		return (scalar) btSqrt(In);
- 	}
+    SIMD_INLINE scalar SquareRoot(scalar In)
+    {
+        return (scalar) btSqrt(In);
+    }
+    SIMD_INLINE scalar Sqrt(scalar In)
+    {
+        return (scalar) btSqrt(In);
+    }
  	SIMD_INLINE scalar Tangent(scalar Radians)
  	{
  		return (scalar) tan(Radians);
  	}
  	SIMD_INLINE scalar ArcTangent(scalar X)
  	{
- 		return (scalar) atan(X);
+        return (scalar) atan(X);
  	}
  	SIMD_INLINE scalar ArcTang(scalar X, scalar Y)
  	{
@@ -203,10 +207,20 @@ namespace real_physics
  	{
  		return (scalar) asin(X);
  	}
- 	SIMD_INLINE scalar ArcCos(scalar X)
- 	{
- 		return (scalar) acos(X);
- 	}
+    SIMD_INLINE scalar ArcCos(scalar X)
+    {
+        return (scalar) acos(X);
+    }
+
+    SIMD_INLINE scalar Pow(scalar X , scalar Y)
+    {
+        return (scalar) pow(X , Y);
+    }
+
+    SIMD_INLINE scalar Atan2(scalar X , scalar Y)
+    {
+        return (scalar) atan2(X , Y);
+    }
 
  	//-----------------------------------------------------//
 
@@ -222,27 +236,27 @@ namespace real_physics
  	SIMD_INLINE int clamp(int value, int lowerLimit, int upperLimit)
  	{
  		assert(lowerLimit <= upperLimit);
- 		return std::min(std::max(value, lowerLimit), upperLimit);
+        return Min(Max(value, lowerLimit), upperLimit);
  	}
 
 
 
- 	SIMD_INLINE scalar clamp(scalar value, scalar lowerLimit, scalar upperLimit)
+    SIMD_INLINE scalar clamp(scalar value, scalar lowerLimit, scalar upperLimit)
  	{
  		assert(lowerLimit <= upperLimit);
- 		return std::min(std::max(value, lowerLimit), upperLimit);
+        return Min(Max(value, lowerLimit), upperLimit);
  	}
 
 
  	SIMD_INLINE scalar min3(scalar a, scalar b, scalar c)
  	{
- 		return std::min(std::min(a, b), c);
+        return Min(Min(a, b), c);
  	}
 
 
  	SIMD_INLINE scalar max3(scalar a, scalar b, scalar c)
  	{
- 		return std::max(std::max(a, b), c);
+        return Max(Max(a, b), c);
  	}
 
 

@@ -496,7 +496,7 @@ struct	GJK
         const scalar	l=d.length2();
         if(l>GJK_SIMPLEX2_EPS)
         {
-            const scalar	t(l>0?-(a.dot(d))/l:0);
+            const scalar	t(l>0?-(a.dot(d))/l:scalar(0));
             if(t>=1)		{ w[0]=0;w[1]=1;m=2;return(b.length2()); }
             else if(t<=0)	{ w[0]=1;w[1]=0;m=1;return(a.length2()); }
             else			{ w[0]=1-(w[1]=t);m=3;return((a+d*t).length2()); }
@@ -811,10 +811,10 @@ struct	EPA
             m_normal	=	m_normal/nl;
         else
             m_normal	=	Vector3(1,0,0);
-        m_depth	=	0;
+        m_depth	=	scalar(0);
         m_result.rank=1;
         m_result.c[0]=simplex.c[0];
-        m_result.p[0]=1;
+        m_result.p[0]=scalar(1);
         return(m_status);
     }
 
@@ -1004,7 +1004,7 @@ bool rpGjkEpaSolver::Distance(const ConvexTemplate &a,
         results.witnesses[1]	=	a.getWorldTransform()*w1;
         results.normal			=	w0-w1;
         results.distance		=	results.normal.length();
-        results.normal			/=	results.distance>GJK_MIN_DISTANCE?results.distance:1;
+        results.normal			/=	results.distance>GJK_MIN_DISTANCE?results.distance:scalar(1);
         return(true);
     }
     else

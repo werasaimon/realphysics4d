@@ -30,7 +30,7 @@ struct rpDistanceJointInfo : public rpJointInfo
                        :rpJointInfo(rigidBody1, rigidBody2, DISTANCEJOINT),
                          distanceWorldSpace(initDistanceWorldSpace)
         {
-            if(initDistanceWorldSpace == 0)
+            if(initDistanceWorldSpace == scalar(0))
             {
 
             }
@@ -81,8 +81,8 @@ class rpDistanceJoint : public rpJoint
 
 
         mAccumulatedImpulse = 0.0f;
-        mLength = 0;
-        mBias = 0;
+        mLength = scalar(0);
+        mBias = scalar(0);
 
 
         this->biasFactor = 0.02f;

@@ -158,7 +158,7 @@ enum { COLLINEAR = 40, PARALLEL, SKEW, SKEW_CROSS, SKEW_NO_CROSS };
 			scalar d = N.dot(V);
 			scalar e = N.dot(W);
 
-			if( e == 0 ) return A;
+            if( e == scalar(0) ) return A;
 
 			Vector3 PlaneIntersectLine = A + W * (d/e);
 

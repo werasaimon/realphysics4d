@@ -148,7 +148,7 @@ namespace real_physics
         	  uint &num_element = _NbPoints;
         	  for( uint i = 0; i < NbCount; i++ )
         	  {
-        		  scalar ang = (2.0f * Pi() / scalar(NbCount)) * scalar(i);
+                  scalar ang = (2.0f * Pi() / scalar(float(NbCount))) * scalar(float(i));
 
         		  Vector3 auxAxis = (axis + n0 * Cos(ang) * epsilon
         				                  + n1 * Sin(ang) * epsilon);

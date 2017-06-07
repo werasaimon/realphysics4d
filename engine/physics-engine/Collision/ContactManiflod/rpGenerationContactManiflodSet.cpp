@@ -42,7 +42,7 @@ namespace
 		Vector3 db = end2 - start2;
 		Vector3 dc = start2 - start1;
 
-		if (dc.dot(da.cross(db)) != 0.0) // lines are not coplanar
+        if (dc.dot(da.cross(db)) != scalar(0.0)) // lines are not coplanar
 			return false;
 
 		scalar s = (dc.cross(db)).dot((da.cross(db)))
@@ -100,7 +100,7 @@ SIMD_INLINE void rpGenerationContactManiflodSet::CollidePointEdgeContacts(const 
 	Vector3 BD = B1 - B0;
 
 	scalar t = (B0A.dot(BD)) / (BD.dot(BD));
-	t = Clamp(t, 0.0f, 1.f);
+    t = Clamp(t, scalar(0.f), scalar(1.f));
 
 	Vector3 B = B0 + t * BD;
 	B = ClosestPointOnLine(B0, B1, A);
@@ -124,7 +124,7 @@ SIMD_INLINE void rpGenerationContactManiflodSet::CollideEdgeEdgeContacts(const V
 	scalar md = M.dot(B0);
 
 	scalar at = (md - A0.dot(M)) / (AD.dot(M));
-	at = Clamp(at, 0.0f, 1.f);
+    at = Clamp(at, scalar(0.f), scalar(1.f));
 
 	/**/
 	Vector3 AA = A0 + at * AD;

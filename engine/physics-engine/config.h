@@ -150,7 +150,7 @@ const int NB_COLLISION_SHAPE_TYPES = 9;
 const float DEFAULT_TIME_BEFORE_SLEEP = 0.1;//1.0f;
 
 ///// True if the spleeping technique is enabled
-const bool SLEEPING_ENABLED = true;
+const bool  SLEEPING_ENABLED = true;
 
 
 

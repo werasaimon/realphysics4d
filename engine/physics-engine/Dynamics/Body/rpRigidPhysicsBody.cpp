@@ -62,7 +62,7 @@ rpRigidPhysicsBody::rpRigidPhysicsBody(const Transform& transform, rpCollisionDe
 	mWorldTransform = getTransform();
 
     /// Compute the inverse mass
-    mMassInverse = (mInitMass > 0)? scalar(1.0) / mInitMass : 0;
+    mMassInverse = (mInitMass > scalar(0))? scalar(1.0) / mInitMass : scalar(0);
 
     /// Compute the  energy to body
     mTotalEnergy = pow(LIGHT_MAX_VELOCITY_C * mInitMass , 2.0);
@@ -78,7 +78,7 @@ SIMD_INLINE void rpRigidPhysicsBody::Integrate(scalar _dt)
 {
         mStepTime = _dt;
 
-		if ( mInitMass == 0.0f || _dt == 0.0f)
+        if ( mInitMass == scalar(0.f) || _dt == scalar(0.f))
 		{
 			mExternalForce.setToZero();
 			mExternalTorque.setToZero();
@@ -105,7 +105,7 @@ SIMD_INLINE void rpRigidPhysicsBody::Integrate(scalar _dt)
 	    scalar gammaInvert = gammaInvertFunction(mLinearVelocity) * gammaInvertFunction(mAngularVelocity);
 
 
-        mTotalEnergy  = pow(mInitMass * LIGHT_MAX_VELOCITY_C , scalar(2.0)) / gamma;
+        mTotalEnergy  = Pow(mInitMass * LIGHT_MAX_VELOCITY_C , scalar(2.0)) / gamma;
 
 
 

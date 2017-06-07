@@ -293,9 +293,9 @@ namespace real_physics
   template<class T>
   SIMD_INLINE void real_physics::rpVector3D<T>::setToZero()
   {
-    x = 0;
-    y = 0;
-    z = 0;
+    x = scalar(0);
+    y = scalar(0);
+    z = scalar(0);
   }
 
   template<class T>
@@ -395,9 +395,9 @@ namespace real_physics
   SIMD_INLINE bool real_physics::rpVector3D<T>::operator ==( const rpVector3D<T>& vector) const
   {
     //return (x == vector.x && y == vector.y && z == vector.z);
-    return ((std::abs(vector.x - x) < MACHINE_EPSILON) &&
-    	    (std::abs(vector.y - y) < MACHINE_EPSILON) &&
-		    (std::abs(vector.z - z) < MACHINE_EPSILON));
+    return ((Abs(scalar(vector.x - x)) < MACHINE_EPSILON) &&
+            (Abs(scalar(vector.y - y)) < MACHINE_EPSILON) &&
+            (Abs(scalar(vector.z - z)) < MACHINE_EPSILON));
   }
 
   template<class T>
@@ -592,7 +592,7 @@ SIMD_INLINE rpVector3D<T> rpVector3D<T>::dot3(const rpVector3D<T>& v0, const rpV
   	        // choose p in y-z plane
   	        T a = n[1]*n[1] + n[2]*n[2];
   	        T k = btRecipSqrt(a);
-  	        p[0] = 0;
+            p[0] = scalar(0);
   	        p[1] = -n[2]*k;
   	        p[2] = n[1]*k;
   	        // set q = n x p
@@ -607,7 +607,7 @@ SIMD_INLINE rpVector3D<T> rpVector3D<T>::dot3(const rpVector3D<T>& v0, const rpV
   	        T k = btRecipSqrt(a);
   	        p[0] = -n[1]*k;
   	        p[1] = n[0]*k;
-  	        p[2] = 0;
+            p[2] = scalar(0);
   	        // set q = n x p
   	        q[0] = -n[2]*p[1];
   	        q[1] = n[2]*p[0];
