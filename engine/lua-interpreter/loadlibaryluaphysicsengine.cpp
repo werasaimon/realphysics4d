@@ -11,8 +11,6 @@ LoadLibaryLuaPhysicsEngine::LoadLibaryLuaPhysicsEngine(lua_State *_VirtualMashin
 void LoadLibaryLuaPhysicsEngine::LoadLibary()
 {
 
-
-
     //---------------------------------------- Physics-Engine -------------------------------------------------------------//
 
     /// Vector2D
