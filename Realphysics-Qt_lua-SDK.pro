@@ -93,8 +93,6 @@ SOURCES += main.cpp\
     engine/lua-interpreter/loadlibaryluavalue.cpp \
     engine/lua-interpreter/lua_integration.cpp \
     engine/lua-interpreter/utilopengl.cpp \
-    engine/physics-engine/Collision/Body/rpBody.cpp \
-    engine/physics-engine/Collision/Body/rpCollisionBody.cpp \
     engine/physics-engine/Collision/BroadPhase/rbBroadPhaseAlgorithm.cpp \
     engine/physics-engine/Collision/BroadPhase/rpDynamicAABBTree.cpp \
     engine/physics-engine/Collision/ContactManiflod/rpContactManifold.cpp \
@@ -110,14 +108,10 @@ SOURCES += main.cpp\
     engine/physics-engine/Collision/Shapes/rpConvexShape.cpp \
     engine/physics-engine/Collision/Shapes/rpSphereShape.cpp \
     engine/physics-engine/Collision/Shapes/rpTriangleShape.cpp \
-    engine/physics-engine/Collision/rpCollisionDetection.cpp \
     engine/physics-engine/Collision/rpCollisionWorld.cpp \
     engine/physics-engine/Collision/rpOverlappingPair.cpp \
     engine/physics-engine/Collision/rpProxyShape.cpp \
     engine/physics-engine/Collision/rpRaycastInfo.cpp \
-    engine/physics-engine/Dynamics/Body/rpPhysicsBody.cpp \
-    engine/physics-engine/Dynamics/Body/rpPhysicsObject.cpp \
-    engine/physics-engine/Dynamics/Body/rpRigidPhysicsBody.cpp \
     engine/physics-engine/Dynamics/Joint/JointAngle/rpAngleJoint.cpp \
     engine/physics-engine/Dynamics/Joint/rpBallAndSocketJoint.cpp \
     engine/physics-engine/Dynamics/Joint/rpDistanceJoint.cpp \
@@ -125,7 +119,6 @@ SOURCES += main.cpp\
     engine/physics-engine/Dynamics/Joint/rpHingeJoint.cpp \
     engine/physics-engine/Dynamics/Joint/rpJoint.cpp \
     engine/physics-engine/Dynamics/Joint/rpSliderJoint.cpp \
-    engine/physics-engine/Dynamics/Material/rpPhysicsMaterial.cpp \
     engine/physics-engine/Dynamics/Solver/rpContactSolver.cpp \
     engine/physics-engine/Dynamics/Solver/rpSequentialImpulseObjectSolver.cpp \
     engine/physics-engine/Dynamics/rpDynamicsWorld.cpp \
@@ -210,7 +203,14 @@ SOURCES += main.cpp\
     engine/UI-engine/Mesh/Mesh.cpp \
     engine/UI-engine/Object/Object3D.cpp \
     engine/UI-engine/Open_GL_/UtilityOpenGL.cpp \
-    engine/UI-engine/Open_GL_/GLUtilityGeometry.cpp
+    engine/UI-engine/Open_GL_/GLUtilityGeometry.cpp \
+    engine/physics-engine/Body/Material/rpPhysicsMaterial.cpp \
+    engine/physics-engine/Body/rpBody.cpp \
+    engine/physics-engine/Body/rpCollisionBody.cpp \
+    engine/physics-engine/Body/rpPhysicsBody.cpp \
+    engine/physics-engine/Body/rpPhysicsObject.cpp \
+    engine/physics-engine/Body/rpRigidPhysicsBody.cpp \
+    engine/physics-engine/Collision/rpContactManager.cpp
 
 HEADERS  += widget.h \
     glwidget.h \
@@ -346,8 +346,6 @@ HEADERS  += widget.h \
     engine/lua-interpreter/lua_integration.h \
     engine/lua-interpreter/lualibary.h \
     engine/lua-interpreter/utilopengl.h \
-    engine/physics-engine/Collision/Body/rpBody.h \
-    engine/physics-engine/Collision/Body/rpCollisionBody.h \
     engine/physics-engine/Collision/BroadPhase/rbBroadPhaseAlgorithm.h \
     engine/physics-engine/Collision/BroadPhase/rpDynamicAABBTree.h \
     engine/physics-engine/Collision/ContactManiflod/maniflod.h \
@@ -367,15 +365,11 @@ HEADERS  += widget.h \
     engine/physics-engine/Collision/Shapes/rpSphereShape.h \
     engine/physics-engine/Collision/Shapes/rpTriangleShape.h \
     engine/physics-engine/Collision/collision.h \
-    engine/physics-engine/Collision/rpCollisionDetection.h \
     engine/physics-engine/Collision/rpCollisionShapeInfo.h \
     engine/physics-engine/Collision/rpCollisionWorld.h \
     engine/physics-engine/Collision/rpOverlappingPair.h \
     engine/physics-engine/Collision/rpProxyShape.h \
     engine/physics-engine/Collision/rpRaycastInfo.h \
-    engine/physics-engine/Dynamics/Body/rpPhysicsBody.h \
-    engine/physics-engine/Dynamics/Body/rpPhysicsObject.h \
-    engine/physics-engine/Dynamics/Body/rpRigidPhysicsBody.h \
     engine/physics-engine/Dynamics/Joint/JointAngle/rpAngleJoint.h \
     engine/physics-engine/Dynamics/Joint/rpBallAndSocketJoint.h \
     engine/physics-engine/Dynamics/Joint/rpDistanceJoint.h \
@@ -383,7 +377,6 @@ HEADERS  += widget.h \
     engine/physics-engine/Dynamics/Joint/rpHingeJoint.h \
     engine/physics-engine/Dynamics/Joint/rpJoint.h \
     engine/physics-engine/Dynamics/Joint/rpSliderJoint.h \
-    engine/physics-engine/Dynamics/Material/rpPhysicsMaterial.h \
     engine/physics-engine/Dynamics/Solver/rpContactSolver.h \
     engine/physics-engine/Dynamics/Solver/rpSequentialImpulseObjectSolver.h \
     engine/physics-engine/Dynamics/dynamics.h \
@@ -468,7 +461,14 @@ HEADERS  += widget.h \
     engine/UI-engine/Object/Object3D.h \
     engine/UI-engine/Open_GL_/UtilityOpenGL.h \
     engine/UI-engine/Open_GL_/GLUtilityGeometry.h \
-    engine/engine.h
+    engine/engine.h \
+    engine/physics-engine/Body/Material/rpPhysicsMaterial.h \
+    engine/physics-engine/Body/rpBody.h \
+    engine/physics-engine/Body/rpCollisionBody.h \
+    engine/physics-engine/Body/rpPhysicsBody.h \
+    engine/physics-engine/Body/rpPhysicsObject.h \
+    engine/physics-engine/Body/rpRigidPhysicsBody.h \
+    engine/physics-engine/Collision/rpContactManager.h
 
 FORMS    += widget.ui \
     formrunscript.ui
