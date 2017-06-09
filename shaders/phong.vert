@@ -24,11 +24,11 @@
 ********************************************************************************/
 
 // Uniform variables
-uniform mat4x4 modelToWorldMatrix;      // Model too world coordinates matrix
-uniform mat4x4 worldToViewMatrix;       // World to camera coordinates matrix
-uniform mat4x4 projectionMatrix;        // Projection matrix
+uniform mat4 modelToWorldMatrix;        // Model too world coordinates matrix
+uniform mat4 worldToViewMatrix;         // World to camera coordinates matrix
+uniform mat4 projectionMatrix;          // Projection matrix
 
-uniform mat4x4 ShadowMatrix;       // Shadow to coordinates matrix
+uniform mat4 ShadowMatrix;              // Shadow to coordinates matrix
 
 
 
