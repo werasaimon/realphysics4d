@@ -14,7 +14,7 @@ namespace utility_engine
     void Camera::ProjectionMatrix(float FieldOfView, float aspect, float NearPlane, float FarPlane)
     {
         mProjectionMatrix.setToIdentity();
-        mProjectionMatrix = Matrix4::Perspective2( FieldOfView , aspect , NearPlane , FarPlane);
+        mProjectionMatrix = Matrix4::Perspectivee( FieldOfView , aspect , NearPlane , FarPlane);
     }
 
     void Camera::LookAt(const Vector3 &eye, const Vector3 &center, const Vector3 &up)
