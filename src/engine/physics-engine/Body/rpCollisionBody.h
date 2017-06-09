@@ -8,9 +8,9 @@
 #ifndef SOURCE_ENGIE_COLLISION_BODY_RPCOLLISIONBODY_H_
 #define SOURCE_ENGIE_COLLISION_BODY_RPCOLLISIONBODY_H_
 
-#include "../../LinearMaths/mathematics.h"
-#include "../../LinearMaths/rpQuaternion.h"
-#include "../../Memory/memory.h"
+#include "../LinearMaths/mathematics.h"
+#include "../LinearMaths/rpQuaternion.h"
+#include "../Memory/memory.h"
 #include "rpBody.h"
 
 
@@ -29,7 +29,7 @@ namespace real_physics
 struct rpContactManifoldListElement;
 class  rpProxyShape;
 class  rpCollisionWorld;
-class  rpCollisionDetection;
+class  rpContactManager;
 
 
 /// Enumeration for the type of a body
@@ -73,7 +73,7 @@ class rpCollisionBody : public rpBody
         uint                  mNbCollisionShapes;
 
         /// Collision detection object
-        rpCollisionDetection  *mCollisionDetection;
+        rpContactManager  *mCollisionDetection;
 
 
         /// First element of the linked list of contact manifolds involving this body
@@ -99,8 +99,9 @@ class rpCollisionBody : public rpBody
         /// Update the broad-phase state for this body (because it has moved for instance)
         virtual void updateBroadPhaseState() const;
 
+
         /// Update the broad-phase state of a proxy collision shape of the body
-        void updateProxyShapeInBroadPhase(rpProxyShape* proxyShape, bool forceReinsert = false) const;
+        void updateProxyShapeInBroadPhase(rpProxyShape* proxyShape, const Vector3& displacement , bool forceReinsert = false) const;
 
 
         /// Ask the broad-phase to test again the collision shapes of the body for collision
@@ -123,7 +124,7 @@ class rpCollisionBody : public rpBody
         // -------------------- Methods -------------------- //
 
         /// Constructor
-        rpCollisionBody(const Transform& transform, rpCollisionDetection *CollideWorld, bodyindex id);
+        rpCollisionBody(const Transform& transform, real_physics::rpContactManager *CollideWorld, bodyindex id);
 
         /// Destructor
         virtual ~rpCollisionBody();
@@ -187,7 +188,7 @@ class rpCollisionBody : public rpBody
         //-------------------- Friendship --------------------//
         friend class rpCollisionWorld;
         friend class rpDynamicsWorld;
-        friend class rpCollisionDetection;
+        friend class rpContactManager;
         friend class rpBroadPhaseAlgorithm;
         friend class rpConvexMeshShape;
         friend class rpProxyShape;

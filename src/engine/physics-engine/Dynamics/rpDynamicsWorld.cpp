@@ -21,9 +21,12 @@ rpDynamicsWorld::rpDynamicsWorld(const Vector3& gravity)
 : mGravity(gravity),
   mNbVelocitySolverIterations(DEFAULT_VELOCITY_SOLVER_NB_ITERATIONS),
   mNbPositionSolverIterations(DEFAULT_POSITION_SOLVER_NB_ITERATIONS),
-  mTimer( scalar(1.0) )
+  mTimer( scalar(1.0) ) ,
+  mIsSleepingEnabled(SLEEPING_ENABLED)
 {
     resetContactManifoldListsOfBodies();
+
+    mTimer.start();
 }
 
 
@@ -97,9 +100,10 @@ void rpDynamicsWorld::destroy()
 
 void rpDynamicsWorld::update(scalar timeStep)
 {
+    mTimer.setTimeStep(timeStep);
 
-     mTimer.setTimeStep(timeStep);
-     mTimer.start();
+  if(mTimer.getIsRunning())
+  {
      mTimer.update();
 
      while( mTimer.isPossibleToTakeStep() )
@@ -109,6 +113,7 @@ void rpDynamicsWorld::update(scalar timeStep)
          // next step simulation
          mTimer.nextStep();
      }
+  }
 
 }
 
@@ -118,23 +123,40 @@ void rpDynamicsWorld::updateFixedTime(scalar timeStep)
     // Reset all the contact manifolds lists of each body
     resetContactManifoldListsOfBodies();
 
-    /****************************/
+    //Integrate all bodies
     integrateGravity(timeStep);
 
     /****************************/
+
+    //Update state bodies of broad phase
     updateBodiesState(timeStep);
 
-    /****************************/
-    CollidePhase();
-    DynamicPhase(timeStep);
+    //Collision broad phase
+    Collision();
 
     /****************************/
+
+    // Dynamica phase
+    Dynamics(timeStep);
+
+    /****************************/
+
+    // Integrate the position and orientation of each body
     integrateBodiesVelocities(timeStep);
+
+
+    // Sleeping for all bodies
+    if(mIsSleepingEnabled)
+    {
+      updateSleepingBodies(timeStep);
+    }
+
+
 
 }
 
 
-void rpDynamicsWorld::CollidePhase()
+void rpDynamicsWorld::Collision()
 {
 
 	for( auto pair : mContactSolvers )
@@ -155,7 +177,6 @@ void rpDynamicsWorld::CollidePhase()
 	}
 
 	/// Overlapping pairs in contact (during the current Narrow-phase collision detection)
-	//static std::map<overlappingpairid, rpOverlappingPair*> mCollisionContactOverlappingPairs;
 	mCollisionDetection.computeCollisionDetection(mCollisionContactOverlappingPairs);
 
 
@@ -176,8 +197,8 @@ void rpDynamicsWorld::CollidePhase()
 	{
 		if( !pair.second->isFakeCollid )
 		{
-			delete mContactSolvers.find(pair.first)->second;
-			       mContactSolvers.erase(pair.first);
+            delete pair.second;
+            mContactSolvers.erase(pair.first);
 		}
 	}
 
@@ -185,7 +206,7 @@ void rpDynamicsWorld::CollidePhase()
 
 
 
-void rpDynamicsWorld::DynamicPhase( scalar timeStep )
+void rpDynamicsWorld::Dynamics( scalar timeStep )
 {
 
     //---------------------------------------------------------------------//
@@ -222,7 +243,7 @@ void rpDynamicsWorld::DynamicPhase( scalar timeStep )
 		}
 	}
 
-	//---------------------------------------------------------------------//
+    //---------------------------------------------------------------------//
 
 	for( uint i = 0; i < mNbPositionSolverIterations; ++i)
 	{
@@ -237,6 +258,7 @@ void rpDynamicsWorld::DynamicPhase( scalar timeStep )
 		}
 	}
 
+    //---------------------------------------------------------------------//
 
 }
 
@@ -267,78 +289,27 @@ void rpDynamicsWorld::updateBodiesState(scalar timeStep)
 
 	for( auto it = mPhysicsBodies.begin(); it != mPhysicsBodies.end(); ++it )
 	{
-		(*it)->updateBroadPhaseState();
-		(*it)->updateTransformWithCenterOfMass();
+        (*it)->updateBroadPhaseState();
+        (*it)->updateTransformWithCenterOfMass();
 	}
 }
 
 
+/**/
 //// Put bodies to sleep if needed.
 ///// For each island, if all the bodies have been almost still for a long enough period of
 ///// time, we put all the bodies of the island to sleep.
-//void rpDynamicsWorld::updateSleepingBodies(scalar timeStep)
-//{
-//
-//	const scalar sleepLinearVelocitySquare  = DEFAULT_SLEEP_LINEAR_VELOCITY * DEFAULT_SLEEP_LINEAR_VELOCITY;//mSleepLinearVelocity * mSleepLinearVelocity;
-//    const scalar sleepAngularVelocitySquare = DEFAULT_SLEEP_ANGULAR_VELOCITY * DEFAULT_SLEEP_ANGULAR_VELOCITY;//mSleepAngularVelocity * mSleepAngularVelocity;
-//    const scalar mTimeBeforeSleep           = 0.3;//DEFAULT_TIME_BEFORE_SLEEP;
-//          scalar minSleepTime               = 1;// DECIMAL_LARGEST;
-//
-//
-//
-//          scalar min=0;
-//    for( int i = 0; i < mPhysicBodies.size(); ++i )
-//	{
-//
-//    	rpRigidPhysicsBody *bodies = static_cast<rpRigidPhysicsBody*>(mPhysicBodies[i]);
-//    	// Skip static bodies
-//        if (bodies->getType() == STATIC) continue;
-//
-//        // If the body is velocity is large enough to stay awake
-//        if (bodies->getLinearVelocity().lengthSquare() > sleepLinearVelocitySquare   ||
-//        	bodies->getAngularVelocity().lengthSquare() > sleepAngularVelocitySquare ||
-//		   !bodies->isAllowedToSleep())
-//        {
-//
-//        	// Reset the sleep time of the body
-//        	bodies->mSleepTime = scalar(0.0);
-//        	minSleepTime = scalar(0.0);
-//        }
-//        else
-//        {  // If the body velocity is bellow the sleeping velocity threshold
-//
-//
-//        	// Increase the sleep time
-//        	bodies->mSleepTime += timeStep;
-//
-//
-//        	if (bodies->mSleepTime < minSleepTime && bodies->mSleepTime != scalar(0))
-//        	{
-//        		minSleepTime = bodies->mSleepTime;
-//        		min = bodies->mSleepTime;
-//
-//        	}
-//        }
-//
-//	}
-//
-//    //cout << "min sleep:  " <<  min <<endl;
-//
-//    // If the velocity of all the bodies of the island is under the
-//    // sleeping velocity threshold for a period of time larger than
-//    // the time required to become a sleeping body
-//    if (min >= mTimeBeforeSleep)
-//    {
-//    	cout << "sleep:  " << min <<endl;
-//    	// Put all the bodies of the island to sleep
-//    	for( int i = 0; i < mPhysicBodies.size(); ++i )
-//    	{
-//    		mPhysicBodies[i]->setIsSleeping(true);
-//    	}
-//    }
-//
-//}
+void rpDynamicsWorld::updateSleepingBodies(scalar timeStep)
+{
 
+
+    for( auto it = mPhysicsBodies.begin(); it != mPhysicsBodies.end(); ++it )
+    {
+       (*it)->updateSleeping(timeStep);
+    }
+
+}
+/**/
 
 
 void rpDynamicsWorld::addChekCollisionPair( overlappingpairid keyPair, rpContactManifold* maniflod )
@@ -498,7 +469,7 @@ rpJoint* rpDynamicsWorld::createJoint(const rpJointInfo& jointInfo)
           addJointToBody(newJoint);
 
 	    // Return the pointer to the created joint
-	    return newJoint;
+          return newJoint;
 }
 
 void rpDynamicsWorld::destroyJoint(rpJoint* joint)

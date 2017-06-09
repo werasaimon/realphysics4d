@@ -108,7 +108,7 @@ bool rpBoxShape::raycast(const Ray& ray, RaycastInfo& raycastInfo, rpProxyShape*
 
 
         // If ray is parallel to the slab
-        if (std::abs(rayDirection[i]) < MACHINE_EPSILON)
+        if (Abs(rayDirection[i]) < MACHINE_EPSILON)
         {
 
             // If the ray's origin is not inside the slab, there is no hit
@@ -129,7 +129,7 @@ bool rpBoxShape::raycast(const Ray& ray, RaycastInfo& raycastInfo, rpProxyShape*
             // t2 with far plane
             if (t1 > t2)
             {
-                std::swap(t1, t2);
+                Swap(t1, t2);
                 currentNormal = -currentNormal;
             }
 
@@ -139,7 +139,7 @@ bool rpBoxShape::raycast(const Ray& ray, RaycastInfo& raycastInfo, rpProxyShape*
                 tMin = t1;
                 normalDirection = currentNormal;
             }
-            tMax = std::min(tMax, t2);
+            tMax = Min(tMax, t2);
 
             // If tMin is larger than the maximum raycasting fraction, we return no hit
             if (tMin > ray.maxFraction) return false;

@@ -58,11 +58,11 @@ template<class T> class rpTransformUtil
 		else
 		{
 			// sync(fAngle) = sin(c*fAngle)/t
-            axis = angvel * (std::sin(T(0.5) * fAngle * timeStep) / fAngle);
+            axis = angvel * (Sin(T(0.5) * fAngle * timeStep) / fAngle);
 		}
 
 
-        rpQuaternion<T> dorn(axis, std::cos(fAngle * timeStep * T(0.5)));
+        rpQuaternion<T> dorn(axis, Cos(fAngle * timeStep * T(0.5)));
 		rpQuaternion<T> predictedOrn = dorn * curTrans.getOrientation();
 		predictedOrn.normalize();
 
@@ -96,11 +96,11 @@ template<class T> class rpTransformUtil
 		else
 		{
 			// sync(fAngle) = sin(c*fAngle)/t
-            axis = angvel * (std::sin(T(0.5) * fAngle * timeStep) / fAngle);
+            axis = angvel * (Sin(T(0.5) * fAngle * timeStep) / fAngle);
 		}
 
 
-        rpQuaternion<T> dorn(axis, std::cos(fAngle * timeStep * T(0.5)));
+        rpQuaternion<T> dorn(axis, Cos(fAngle * timeStep * T(0.5)));
 		rpQuaternion<T> predictedOrn = dorn * curTrans.getOrientation();
 		predictedOrn.normalize();
 

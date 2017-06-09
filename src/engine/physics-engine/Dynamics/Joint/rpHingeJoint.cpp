@@ -362,7 +362,7 @@ void rpHingeJoint::solveVelocityConstraint()
     		// Compute the Lagrange multiplier lambda for the lower limit constraint
     		scalar deltaLambdaLower = mInverseMassMatrixLimitMotor * (-JvLowerLimit -mBLowerLimit);
     		scalar lambdaTemp = mImpulseLowerLimit;
-    		mImpulseLowerLimit = std::max(mImpulseLowerLimit + deltaLambdaLower, scalar(0.0));
+            mImpulseLowerLimit = Max(mImpulseLowerLimit + deltaLambdaLower, scalar(0.0));
     		deltaLambdaLower = mImpulseLowerLimit - lambdaTemp;
 
     		// Compute the impulse P=J^T * lambda for the lower limit constraint of body 1
@@ -389,7 +389,7 @@ void rpHingeJoint::solveVelocityConstraint()
     		// Compute the Lagrange multiplier lambda for the upper limit constraint
     		scalar deltaLambdaUpper = mInverseMassMatrixLimitMotor * (-JvUpperLimit -mBUpperLimit);
     		scalar lambdaTemp = mImpulseUpperLimit;
-    		mImpulseUpperLimit = std::max(mImpulseUpperLimit + deltaLambdaUpper, scalar(0.0));
+            mImpulseUpperLimit = Max(mImpulseUpperLimit + deltaLambdaUpper, scalar(0.0));
     		deltaLambdaUpper = mImpulseUpperLimit - lambdaTemp;
 
     		// Compute the impulse P=J^T * lambda for the upper limit constraint of body 1
@@ -883,7 +883,7 @@ scalar rpHingeJoint::computeNormalizedAngle(scalar angle) const
 {
 
     // Convert it into the range [-2*pi; 2*pi]
-    angle = fmod(angle, PI_TIMES_2);
+    angle = Modulo(angle, PI_TIMES_2);
 
     // Convert it into the range [-pi; pi]
     if (angle < -PI)
@@ -911,14 +911,14 @@ scalar rpHingeJoint::computeCorrespondingAngleNearLimits(scalar inputAngle, scal
     }
     else if (inputAngle > upperLimitAngle)
     {
-        scalar diffToUpperLimit = fabs(computeNormalizedAngle(inputAngle - upperLimitAngle));
-        scalar diffToLowerLimit = fabs(computeNormalizedAngle(inputAngle - lowerLimitAngle));
+        scalar diffToUpperLimit = Abs(computeNormalizedAngle(inputAngle - upperLimitAngle));
+        scalar diffToLowerLimit = Abs(computeNormalizedAngle(inputAngle - lowerLimitAngle));
         return (diffToUpperLimit > diffToLowerLimit) ? (inputAngle - PI_TIMES_2) : inputAngle;
     }
     else if (inputAngle < lowerLimitAngle)
     {
-        scalar diffToUpperLimit = fabs(computeNormalizedAngle(upperLimitAngle - inputAngle));
-        scalar diffToLowerLimit = fabs(computeNormalizedAngle(lowerLimitAngle - inputAngle));
+        scalar diffToUpperLimit = Abs(computeNormalizedAngle(upperLimitAngle - inputAngle));
+        scalar diffToLowerLimit = Abs(computeNormalizedAngle(lowerLimitAngle - inputAngle));
         return (diffToUpperLimit > diffToLowerLimit) ? inputAngle : (inputAngle + PI_TIMES_2);
     }
     else
@@ -929,7 +929,8 @@ scalar rpHingeJoint::computeCorrespondingAngleNearLimits(scalar inputAngle, scal
 
 // Compute the current angle around the hinge axis
 scalar rpHingeJoint::computeCurrentHingeAngle(const Quaternion& orientationBody1,
-                                             const Quaternion& orientationBody2) {
+                                              const Quaternion& orientationBody2)
+{
 
     scalar hingeAngle;
 
@@ -959,11 +960,11 @@ scalar rpHingeJoint::computeCurrentHingeAngle(const Quaternion& orientationBody1
     // If the relative rotation axis and the hinge axis are pointing the same direction
     if (dotProduct >= scalar(0.0))
     {
-        hingeAngle = scalar(2.0) * std::atan2(sinHalfAngleAbs, cosHalfAngle);
+        hingeAngle = scalar(2.0) * Atan2(sinHalfAngleAbs, cosHalfAngle);
     }
     else
     {
-        hingeAngle = scalar(2.0) * std::atan2(sinHalfAngleAbs, -cosHalfAngle);
+        hingeAngle = scalar(2.0) * Atan2(sinHalfAngleAbs, -cosHalfAngle);
     }
 
     // Convert the angle from range [-2*pi; 2*pi] into the range [-pi; pi]

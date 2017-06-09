@@ -10,7 +10,7 @@
 
 
 #include "Shapes/rpCollisionShape.h"
-#include "Body/rpCollisionBody.h"
+#include "../Body/rpCollisionBody.h"
 
 namespace real_physics
 {
@@ -148,7 +148,7 @@ namespace real_physics
         	  uint &num_element = _NbPoints;
         	  for( uint i = 0; i < NbCount; i++ )
         	  {
-        		  scalar ang = (2.0f * Pi() / scalar(NbCount)) * scalar(i);
+                  scalar ang = (2.0f * Pi() / scalar(float(NbCount))) * scalar(float(i));
 
         		  Vector3 auxAxis = (axis + n0 * Cos(ang) * epsilon
         				                  + n1 * Sin(ang) * epsilon);
@@ -275,7 +275,7 @@ namespace real_physics
           friend class rpCollisionBody;
           friend class rpBroadPhaseAlgorithm;
           friend class rpDynamicAABBTree;
-          friend class rpCollisionDetection;
+          friend class rpContactManager;
           friend class rpCollisionWorld;
           friend class rpDynamicsWorld;
           friend class rpConvexMeshShape;

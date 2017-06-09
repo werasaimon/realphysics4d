@@ -11,13 +11,13 @@
 #include  <set>
 #include  <map>
 
-#include "../Dynamics/Material/rpPhysicsMaterial.h"
+#include "../Body/Material/rpPhysicsMaterial.h"
 #include "../Memory/memory.h"
 
 #include "../Dynamics/Solver/rpSequentialImpulseObjectSolver.h"
-#include "../Dynamics/Body/rpPhysicsBody.h"
-#include "../Dynamics/Body/rpPhysicsObject.h"
-#include "../Dynamics/Body/rpRigidPhysicsBody.h"
+#include "../Body/rpPhysicsBody.h"
+#include "../Body/rpPhysicsObject.h"
+#include "../Body/rpRigidPhysicsBody.h"
 
 #include "Joint/rpJoint.h"
 #include "Joint/rpBallAndSocketJoint.h"
@@ -89,7 +89,11 @@ class rpDynamicsWorld : public rpCollisionWorld
 
 	// -------------------- Attributes -------------------- //
 
+    /// Update time step correctly interval
     rpTimer mTimer;
+
+    /// True if the spleeping technique for inactive bodies is enabled
+    bool mIsSleepingEnabled;
 
 	/// Number of iterations for the velocity solver of the Sequential Impulses technique
 	uint mNbVelocitySolverIterations;
@@ -102,7 +106,7 @@ class rpDynamicsWorld : public rpCollisionWorld
 
 
 	std::set<rpJoint*>       mPhysicsJoints;
-	std::set<rpPhysicsBody*> mPhysicsBodies;
+    std::set<rpPhysicsBody*> mPhysicsBodies;
 
 
 	// array map contacts solver
@@ -120,10 +124,10 @@ class rpDynamicsWorld : public rpCollisionWorld
 
 
     /// Detection for all collision pairs
-    void CollidePhase();
+    void Collision();
 
     /// Compute physics for all collision pairs
-    void DynamicPhase( scalar timeStep );
+    void Dynamics( scalar timeStep );
 
 	/// Integrate the garvity
 	void integrateGravity( scalar timeStep );
@@ -133,8 +137,6 @@ class rpDynamicsWorld : public rpCollisionWorld
 
 	/// Update the postion/orientation of the bodies
 	void updateBodiesState(  scalar timeStep );
-
-
 
 	 /// Put bodies to sleep if needed.
 	void updateSleepingBodies(scalar timeStep);

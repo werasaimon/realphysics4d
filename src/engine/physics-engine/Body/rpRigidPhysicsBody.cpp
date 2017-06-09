@@ -5,26 +5,23 @@
  *      Author: wera
  */
 
-#include "../../Dynamics/Body/rpRigidPhysicsBody.h"
+#include "rpRigidPhysicsBody.h"
+#include "rpPhysicsObject.h"
 
 #include <stddef.h>
 #include <cassert>
-
-//#include "../../Collision/Body/rpBody.h"
-#include "../../Collision/rpProxyShape.h"
-#include "../../Collision/Shapes/rpCollisionShape.h"
-#include "../../LinearMaths/mathematics.h"
-#include "../../LinearMaths/rpLinearMtah.h"
-#include "../../LinearMaths/rpMatrix3x3.h"
-#include "../../LinearMaths/rpQuaternion.h"
-#include "../../LinearMaths/rpTransformUtil.h"
-#include "../../LinearMaths/rpVector3D.h"
-#include "../../config.h"
-
-
 #include <iostream>
 
-#include "../../Dynamics/Body/rpPhysicsObject.h"
+#include "../Collision/rpProxyShape.h"
+#include "../Collision/Shapes/rpCollisionShape.h"
+#include "../LinearMaths/mathematics.h"
+#include "../LinearMaths/rpLinearMtah.h"
+#include "../config.h"
+
+
+
+
+
 using namespace std;
 
 
@@ -36,7 +33,7 @@ namespace real_physics
 
 
 
-rpRigidPhysicsBody::rpRigidPhysicsBody(const Transform& transform, rpCollisionDetection* CollideWorld, bodyindex id)
+rpRigidPhysicsBody::rpRigidPhysicsBody(const Transform& transform, rpContactManager* CollideWorld, bodyindex id)
 :rpPhysicsBody(transform, CollideWorld, id),
  mInitMass(scalar(1.0)),
  mCenterOfMassLocal(0, 0, 0),
@@ -52,7 +49,8 @@ rpRigidPhysicsBody::rpRigidPhysicsBody(const Transform& transform, rpCollisionDe
  mAngularFourVelocity4(0,0,0,0),
  mFourForce4(0,0,0,0),
  mFourTorque4(0,0,0,0),
- mFourPosition4(transform.getPosition(),0)
+ mFourPosition4(transform.getPosition(),0) ,
+ mStepTime(0.0)
 {
 	/// body To type
 	mTypePhysics = PhysicsBodyType::RIGID_BODY;
@@ -61,7 +59,7 @@ rpRigidPhysicsBody::rpRigidPhysicsBody(const Transform& transform, rpCollisionDe
 	mWorldTransform = getTransform();
 
     /// Compute the inverse mass
-    mMassInverse = (mInitMass > 0)? scalar(1.0) / mInitMass : 0;
+    mMassInverse = (mInitMass > scalar(0))? scalar(1.0) / mInitMass : scalar(0);
 
     /// Compute the  energy to body
     mTotalEnergy = pow(LIGHT_MAX_VELOCITY_C * mInitMass , 2.0);
@@ -75,8 +73,9 @@ rpRigidPhysicsBody::rpRigidPhysicsBody(const Transform& transform, rpCollisionDe
 ///********************************************************/
 SIMD_INLINE void rpRigidPhysicsBody::Integrate(scalar _dt)
 {
+        mStepTime = _dt;
 
-		if ( mInitMass == 0.0f || _dt == 0.0f)
+        if ( mInitMass == scalar(0.f) || _dt == scalar(0.f))
 		{
 			mExternalForce.setToZero();
 			mExternalTorque.setToZero();
@@ -103,7 +102,7 @@ SIMD_INLINE void rpRigidPhysicsBody::Integrate(scalar _dt)
 	    scalar gammaInvert = gammaInvertFunction(mLinearVelocity) * gammaInvertFunction(mAngularVelocity);
 
 
-        mTotalEnergy  = pow(mInitMass * LIGHT_MAX_VELOCITY_C , scalar(2.0)) / gamma;
+        mTotalEnergy  = Pow(mInitMass * LIGHT_MAX_VELOCITY_C , scalar(2.0)) / gamma;
 
 
 
@@ -115,7 +114,7 @@ SIMD_INLINE void rpRigidPhysicsBody::Integrate(scalar _dt)
         mFourTorque4 = MinkowskiVector4(  mExternalTorque / (LIGHT_MAX_VELOCITY_C * gammaInvert) , E);
 
 
-	    mLinearVelocity  +=  mExternalForce  * _dt;
+        mLinearVelocity  +=  mExternalForce  * _dt;
 	    mAngularVelocity +=  mExternalTorque * _dt;
 
 
@@ -124,11 +123,11 @@ SIMD_INLINE void rpRigidPhysicsBody::Integrate(scalar _dt)
 
 	    /*********************************************
 	     *          Damping  velocity
-	     ********************************************/
+         ********************************************/
 	    if( mLinearVelocity.length2() < MINIMUM_FOR_DAPING )
 	    {
 
-	    	if( mLinearVelocity.length() > mLinearDamping )
+            if( mLinearVelocity.length() > mLinearDamping )
 	    	{
 	    		mLinearVelocity -= ( mLinearVelocity.getUnit() * mLinearDamping);
 	    	}
@@ -143,7 +142,7 @@ SIMD_INLINE void rpRigidPhysicsBody::Integrate(scalar _dt)
 	    if( mAngularVelocity.length2()  < MINIMUM_FOR_DAPING )
 	    {
 
-	    	if( mAngularVelocity.length() > mAngularDamping )
+            if( mAngularVelocity.length() > mAngularDamping )
 	    	{
 	    		mAngularVelocity -= ( mAngularVelocity.getUnit() * mAngularDamping);
 	    	}
@@ -152,14 +151,14 @@ SIMD_INLINE void rpRigidPhysicsBody::Integrate(scalar _dt)
 	    		mAngularVelocity  = Vector3::ZERO;
 	    	}
 
-	    }
+        }
 
 
 
 
 
 	    /**********************************************
-	     *         Integrate  velocity
+         *         Integrate lorentz evolution
          **********************************************/
 
         /// Time invert interval local-frame
@@ -235,7 +234,6 @@ void rpRigidPhysicsBody::changeToFrameOfReference( rpRigidPhysicsBody *rigidBody
 	MinkowskiVector4 UAngular = mAngularFourVelocity4;
 
 
-
 	/**/
 	ULinear.setVector3( (ULinear.getVector3() - ((VL/LIGHT_MAX_VELOCITY_C) * ULinear.t)) / gammaInvert  );
 	ULinear.t = (ULinear.t - (VL/LIGHT_MAX_VELOCITY_C).dot(R)) / gammaInvert ;
@@ -266,12 +264,75 @@ void rpRigidPhysicsBody::changeToFrameOfReference( rpRigidPhysicsBody *rigidBody
 }
 
 
+/// To remove a collision shape, you need to specify the pointer to the proxy
+/// shape that has been returned when you have added the collision shape to the
+/// body
+/**
+ * @param proxyShape The pointer of the proxy shape you want to remove
+ */
+void rpRigidPhysicsBody::removeCollisionShape(const rpProxyShape *proxyShape)
+{
+    // Remove the collision shape
+    rpCollisionBody::removeCollisionShapee(proxyShape);
+
+    // Recompute the total mass, center of mass and inertia tensor
+    recomputeMassInformation();
+}
+
+
 SIMD_INLINE void real_physics::rpRigidPhysicsBody::applyGravity(const Vector3& gravity)
 {
 	if( mMassInverse > 0 && !mIsSleeping && getType() == BodyType::DYNAMIC)
 	{
 		applyImpulseLinear(gravity * mInitMass);
-	}
+    }
+}
+
+
+
+SIMD_INLINE void rpRigidPhysicsBody::updateBroadPhaseState() const
+{
+    rpPhysicsObject::updateBroadPhaseStatee( mStepTime * mLinearVelocity );
+}
+
+
+
+
+SIMD_INLINE void rpRigidPhysicsBody::updateSleeping(scalar timeStep)
+{
+
+    const scalar sleepLinearVelocitySquare  = (DEFAULT_SLEEP_LINEAR_VELOCITY * DEFAULT_SLEEP_LINEAR_VELOCITY);
+    const scalar sleepAngularVelocitySquare = (DEFAULT_SLEEP_ANGULAR_VELOCITY * DEFAULT_SLEEP_ANGULAR_VELOCITY);
+    const scalar sleepAngularSplitSquare    = (DEFAULT_SLEEP_SPLIT  * DEFAULT_SLEEP_SPLIT);
+
+
+    // Skip static bodies
+    if (this->getType() == STATIC) return;
+
+    // If the body is velocity is large enough to stay awake
+    if (this->mLinearVelocity.lengthSquare()       >  sleepLinearVelocitySquare   ||
+        this->mAngularVelocity.lengthSquare()      >  sleepAngularVelocitySquare  ||
+        this->mSplitLinearVelocity.lengthSquare()  >  sleepAngularSplitSquare     ||
+        this->mSplitAngularVelocity.lengthSquare() >  sleepAngularSplitSquare )
+    {
+
+        // Reset the sleep time of the body
+        this->mSleepTime = scalar(0.0);
+
+        this->setIsSleeping(false);
+    }
+    else
+    {  // If the body velocity is bellow the sleeping velocity threshold
+
+        // Increase the sleep time
+        this->mSleepTime += timeStep;
+
+        if (this->mSleepTime >= DEFAULT_TIME_BEFORE_SLEEP )
+        {
+            this->mSleepTime = DEFAULT_TIME_BEFORE_SLEEP;
+            this->setIsSleeping(true);
+        }
+    }
 }
 
 
@@ -317,27 +378,34 @@ SIMD_INLINE void rpRigidPhysicsBody::setType(BodyType type)
 	UpdateMatrices();
 
 	// Remove all the contacts with this body
-	//resetContactManifoldsList();
+    resetContactManifoldsList();
 
 	// Ask the broad-phase to test again the collision shapes of the body for collision
 	// detection (as if the body has moved)
-	//askForBroadPhaseCollisionCheck();
+    askForBroadPhaseCollisionCheck();
 
 	// Reset the force and torque on the body
 	mExternalForce.setToZero();
 	mExternalTorque.setToZero();
 
+
+
 }
 
 SIMD_INLINE void rpRigidPhysicsBody::setIsSleeping(bool isSleeping)
 {
-	if (isSleeping)
-	{
-		mLinearVelocity.setToZero();
-		mAngularVelocity.setToZero();
-		mExternalForce.setToZero();
-		mExternalTorque.setToZero();
-	}
+    if (isSleeping)
+    {
+        // Absolutely Stop motion
+        mLinearVelocity.setToZero();
+        mAngularVelocity.setToZero();
+        mExternalForce.setToZero();
+        mExternalTorque.setToZero();
+        mSplitLinearVelocity.setToZero();
+        mSplitLinearVelocity.setToZero();
+    }
+
+    rpBody::setIsSleeping(isSleeping);
 }
 
 
@@ -425,8 +493,6 @@ SIMD_INLINE void rpRigidPhysicsBody::UpdateMatrices()
 	mInertiaTensorWorldInverse = mTransform.getBasis() * mInertiaTensorLocalInverse *
 			                     mTransform.getBasis().getTranspose();
 
-	//mInertiaTensorWorldInverse *= mMassInverse;
-
 	mCenterOfMassWorld = mTransform * mCenterOfMassLocal;
 }
 
@@ -444,7 +510,7 @@ SIMD_INLINE void rpRigidPhysicsBody::applySplitImpulse(const Vector3& impuls, co
 	// Awake the body if it was sleeping
 	if (mIsSleeping)
 	{
-		setIsSleeping(false);
+        /*setIsSleeping(false);*/ return;
 	}
 
 	applySplitImpulseLinear(impuls);
@@ -461,7 +527,7 @@ SIMD_INLINE void rpRigidPhysicsBody::applySplitImpulseAngular(const Vector3&  im
 	// Awake the body if it was sleeping
 	if (mIsSleeping)
 	{
-		setIsSleeping(false);
+        /*setIsSleeping(false);*/ return;
 	}
 
 	mSplitAngularVelocity += getInertiaTensorInverseWorld() * (impuls);
@@ -477,7 +543,7 @@ SIMD_INLINE  void real_physics::rpRigidPhysicsBody::applySplitImpulseLinear(cons
 	// Awake the body if it was sleeping
 	if (mIsSleeping)
 	{
-		setIsSleeping(false);
+        /*setIsSleeping(false);*/ return;
 	}
 
 	mSplitLinearVelocity += getInverseMass() * (impuls);
@@ -496,7 +562,7 @@ SIMD_INLINE void rpRigidPhysicsBody::applyImpulse(const Vector3& impuls , const 
 	// Awake the body if it was sleeping
 	if (mIsSleeping)
 	{
-		setIsSleeping(false);
+        /*setIsSleeping(false);*/ return;
 	}
 
 	applyImpulseLinear(impuls);
@@ -514,7 +580,7 @@ SIMD_INLINE void rpRigidPhysicsBody::applyImpulseAngular(const Vector3&  impuls 
 	// Awake the body if it was sleeping
 	if (mIsSleeping)
 	{
-		setIsSleeping(false);
+        /*setIsSleeping(false);*/ return;
 	}
 
 	mAngularVelocity += getInertiaTensorInverseWorld() * (impuls);// * gammaInvertFunction(mAngularVelocity);
@@ -532,7 +598,7 @@ SIMD_INLINE  void rpRigidPhysicsBody::applyImpulseLinear( const Vector3& impuls 
 	// Awake the body if it was sleeping
 	if (mIsSleeping)
 	{
-		setIsSleeping(false);
+        /*setIsSleeping(false);*/ return;
 	}
 
 	mLinearVelocity += getInverseMass() * (impuls);// * gammaInvertFunction(mLinearVelocity);
@@ -548,7 +614,7 @@ SIMD_INLINE void rpRigidPhysicsBody::applyForce(const Vector3& force, const Vect
 	// Awake the body if it was sleeping
 	if (mIsSleeping)
 	{
-		setIsSleeping(false);
+        /*setIsSleeping(false);*/ return;
 	}
 
 	// Add the force and torque
@@ -566,7 +632,7 @@ SIMD_INLINE void rpRigidPhysicsBody::applyTorque(const Vector3& torque)
 	// Awake the body if it was sleeping
 	if (mIsSleeping)
 	{
-		setIsSleeping(false);
+        /*setIsSleeping(false);*/ return;
 	}
 
 	// Add the torque
@@ -582,7 +648,7 @@ SIMD_INLINE void rpRigidPhysicsBody::applyForceToCenterOfMass(const Vector3& for
 	// Awake the body if it was sleeping
 	if (mIsSleeping)
 	{
-		setIsSleeping(false);
+        /*setIsSleeping(false);*/ return;
 	}
 
 	// Add the force

@@ -248,15 +248,15 @@ namespace real_physics
   template<class T>
   SIMD_INLINE void rpVector2D<T>::setToZero()
   {
-    x = 0;
-    y = 0;
+    x = scalar(0);
+    y = scalar(0);
   }
 
 
   template<class T>
   SIMD_INLINE T rpVector2D<T>::length() const
   {
-    return SquareRoot(x*x + y*y);
+    return Sqrt(x*x + y*y);
   }
 
 
@@ -272,7 +272,7 @@ namespace real_physics
   template<class T>
   SIMD_INLINE rpVector2D<T> rpVector2D<T>::getAbsoluteVector() const
   {
-    return Vector2(std::abs(x), std::abs(y));
+    return Vector2(Abs(x), Abs(y));
   }
 
 
@@ -413,15 +413,15 @@ namespace real_physics
   template<class T>
   SIMD_INLINE rpVector2D<T> rpVector2D<T>::min( const rpVector2D<T>& vector1, const rpVector2D<T>& vector2 )
   {
-    return rpVector2D<T>(std::min(vector1.x, vector2.x),
-			 std::min(vector1.y, vector2.y));
+    return rpVector2D<T>(Min(vector1.x, vector2.x),
+             Min(vector1.y, vector2.y));
   }
 
   template<class T>
   SIMD_INLINE rpVector2D<T> rpVector2D<T>::max( const rpVector2D<T>& vector1, const rpVector2D<T>& vector2)
   {
-    return rpVector2D<T>(std::max(vector1.x, vector2.x),
-			             std::max(vector1.y, vector2.y));
+    return rpVector2D<T>(Max(vector1.x, vector2.x),
+                         Max(vector1.y, vector2.y));
   }
 
 

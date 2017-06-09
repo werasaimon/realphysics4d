@@ -365,7 +365,7 @@ void rpDynamicAABBTree::insertLeafNode(int nodeID)
         assert(rightChild != rpTreeNode::NULL_TREE_NODE);
 
         // Recompute the height of the node in the tree
-        mNodes[currentNodeID].height = std::max(mNodes[leftChild].height,
+        mNodes[currentNodeID].height = Max(mNodes[leftChild].height,
                                                 mNodes[rightChild].height) + 1;
         assert(mNodes[currentNodeID].height > 0);
 
@@ -439,7 +439,7 @@ void rpDynamicAABBTree::removeLeafNode(int nodeID)
             // Recompute the AABB and the height of the current node
             mNodes[currentNodeID].aabb.mergeTwoAABBs(mNodes[leftChildID].aabb,
                                                      mNodes[rightChildID].aabb);
-            mNodes[currentNodeID].height = std::max(mNodes[leftChildID].height,
+            mNodes[currentNodeID].height = Max(mNodes[leftChildID].height,
                                                     mNodes[rightChildID].height) + 1;
             assert(mNodes[currentNodeID].height > 0);
 
@@ -535,8 +535,8 @@ int rpDynamicAABBTree::balanceSubTreeAtNode(int nodeID)
             nodeC->aabb.mergeTwoAABBs(nodeA->aabb, nodeF->aabb);
 
             // Recompute the height of node A and C
-            nodeA->height = std::max(nodeB->height, nodeG->height) + 1;
-            nodeC->height = std::max(nodeA->height, nodeF->height) + 1;
+            nodeA->height = Max(nodeB->height, nodeG->height) + 1;
+            nodeC->height = Max(nodeA->height, nodeF->height) + 1;
             assert(nodeA->height > 0);
             assert(nodeC->height > 0);
         }
@@ -551,8 +551,8 @@ int rpDynamicAABBTree::balanceSubTreeAtNode(int nodeID)
             nodeC->aabb.mergeTwoAABBs(nodeA->aabb, nodeG->aabb);
 
             // Recompute the height of node A and C
-            nodeA->height = std::max(nodeB->height, nodeF->height) + 1;
-            nodeC->height = std::max(nodeA->height, nodeG->height) + 1;
+            nodeA->height = Max(nodeB->height, nodeF->height) + 1;
+            nodeC->height = Max(nodeA->height, nodeG->height) + 1;
             assert(nodeA->height > 0);
             assert(nodeC->height > 0);
         }
@@ -612,8 +612,8 @@ int rpDynamicAABBTree::balanceSubTreeAtNode(int nodeID)
             nodeB->aabb.mergeTwoAABBs(nodeA->aabb, nodeF->aabb);
 
             // Recompute the height of node A and B
-            nodeA->height = std::max(nodeC->height, nodeG->height) + 1;
-            nodeB->height = std::max(nodeA->height, nodeF->height) + 1;
+            nodeA->height = Max(nodeC->height, nodeG->height) + 1;
+            nodeB->height = Max(nodeA->height, nodeF->height) + 1;
             assert(nodeA->height > 0);
             assert(nodeB->height > 0);
         }
@@ -628,8 +628,8 @@ int rpDynamicAABBTree::balanceSubTreeAtNode(int nodeID)
             nodeB->aabb.mergeTwoAABBs(nodeA->aabb, nodeG->aabb);
 
             // Recompute the height of node A and B
-            nodeA->height = std::max(nodeC->height, nodeF->height) + 1;
-            nodeB->height = std::max(nodeA->height, nodeG->height) + 1;
+            nodeA->height = Max(nodeC->height, nodeF->height) + 1;
+            nodeB->height = Max(nodeA->height, nodeG->height) + 1;
             assert(nodeA->height > 0);
             assert(nodeB->height > 0);
         }
@@ -819,7 +819,7 @@ void rpDynamicAABBTree::checkNode(int nodeID) const
         assert(mNodes[rightChild].parentID == nodeID);
 
         // Check the height of node
-        int height = 1 + std::max(mNodes[leftChild].height, mNodes[rightChild].height);
+        int height = 1 + Max(mNodes[leftChild].height, mNodes[rightChild].height);
         assert(mNodes[nodeID].height == height);
 
         // Check the AABB of the node
@@ -857,7 +857,7 @@ int rpDynamicAABBTree::computeHeight(int nodeID)
     int rightHeight = computeHeight(node->children[1]);
 
     // Return the height of the node
-    return 1 + std::max(leftHeight, rightHeight);
+    return 1 + Max(leftHeight, rightHeight);
 }
 
 } /* namespace real_physics */

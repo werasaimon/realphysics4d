@@ -8,8 +8,14 @@
 #ifndef MEMORY_RPSTACK_H_
 #define MEMORY_RPSTACK_H_
 
+#include <stdlib.h>
+#include <cassert>
+#include <cstring>
 
+#include "../config.h"
 #include "../LinearMaths/rpLinearMtah.h"
+
+
 
 
 namespace real_physics

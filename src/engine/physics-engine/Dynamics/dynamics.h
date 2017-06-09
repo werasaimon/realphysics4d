@@ -8,11 +8,11 @@
 #ifndef SOURCE_ENGIE_KINEMATICPHYSICS_PHYSICS_H_
 #define SOURCE_ENGIE_KINEMATICPHYSICS_PHYSICS_H_
 
-#include "../Dynamics/Body/rpPhysicsBody.h"
-#include "../Dynamics/Body/rpRigidPhysicsBody.h"
+#include "../Body/rpPhysicsBody.h"
+#include "../Body/rpRigidPhysicsBody.h"
 #include "../Dynamics/rpDynamicsWorld.h"
 
-#include "../Dynamics/Material/rpPhysicsMaterial.h"
+#include "../Body/Material/rpPhysicsMaterial.h"
 #include "../Dynamics/Solver/rpContactSolver.h"
 #include "../Dynamics/Solver/rpSequentialImpulseObjectSolver.h"
 

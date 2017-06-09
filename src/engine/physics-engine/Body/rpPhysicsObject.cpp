@@ -10,16 +10,16 @@
 #include <stddef.h>
 #include <cassert>
 
-#include "../../Collision/rpCollisionDetection.h"
-#include "../../Collision/rpProxyShape.h"
-#include "../../Collision/Shapes/rpAABB.h"
-#include "../../Collision/Shapes/rpCollisionShape.h"
+#include "../Collision/rpContactManager.h"
+#include "../Collision/rpProxyShape.h"
+#include "../Collision/Shapes/rpAABB.h"
+#include "../Collision/Shapes/rpCollisionShape.h"
 
 namespace real_physics
 {
 
 
-rpPhysicsObject::rpPhysicsObject(const Transform& transform, rpCollisionDetection* CollideWorld, bodyindex id)
+rpPhysicsObject::rpPhysicsObject(const Transform& transform, rpContactManager* CollideWorld, bodyindex id)
 :rpCollisionBody(transform, CollideWorld, id)
 {
 
@@ -82,25 +82,29 @@ SIMD_INLINE void rpPhysicsObject::removeCollisionShape(const rpProxyShape* proxy
 }
 
 
-SIMD_INLINE void rpPhysicsObject::updateBroadPhaseState() const
+
+
+
+SIMD_INLINE void rpPhysicsObject::updateBroadPhaseStatee( const Vector3& _displacement ) const
 {
-
 	    //DynamicsWorld& world = static_cast<DynamicsWorld&>(mWorld);
-	 	const Vector3 displacement =  Vector3::ZERO;//world.mTimeStep * mLinearVelocity;
+    const Vector3 displacement =  _displacement;
 
-	    // For all the proxy collision shapes of the body
-	    for (rpProxyShape* shape = mProxyCollisionShapes; shape != NULL; shape = shape->mNext)
-	    {
-	        // Recompute the world-space AABB of the collision shape
-	        rpAABB aabb;
-	        shape->getCollisionShape()->computeAABB(aabb, mTransform , shape->getLocalToBodyTransform() , mRelativityMotion.getLorentzMatrix());
+    // For all the proxy collision shapes of the body
+    for (rpProxyShape* shape = mProxyCollisionShapes; shape != NULL; shape = shape->mNext)
+    {
+        // Recompute the world-space AABB of the collision shape
+        rpAABB aabb;
+        shape->getCollisionShape()->computeAABB(aabb, mTransform , shape->getLocalToBodyTransform() , mRelativityMotion.getLorentzMatrix());
 
 
-	        // Update the broad-phase state for the proxy collision shape
-	        mCollisionDetection->updateProxyCollisionShape(shape, aabb, displacement);
-	    }
+        // Update the broad-phase state for the proxy collision shape
+        mCollisionDetection->updateProxyCollisionShape(shape, aabb, displacement);
+    }
 
 }
+
+
 
 
 

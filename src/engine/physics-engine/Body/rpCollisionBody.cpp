@@ -6,13 +6,13 @@
  */
 
 #include "rpCollisionBody.h"
-#include "../../LinearMaths/rpVector3D.h"
-#include "../rpProxyShape.h"
-#include "../rpRaycastInfo.h"
-#include "../Shapes/rpAABB.h"
-#include "../Shapes/rpCollisionShape.h"
-#include "../../Collision/rpCollisionDetection.h"
-#include "../../Geometry/QuickHull/Structs/Ray.hpp"
+#include "../LinearMaths/rpVector3D.h"
+#include "../Collision/rpProxyShape.h"
+#include "../Collision/rpRaycastInfo.h"
+#include "../Collision/Shapes/rpAABB.h"
+#include "../Collision/Shapes/rpCollisionShape.h"
+#include "../Collision/rpContactManager.h"
+#include "../Geometry/QuickHull/Structs/Ray.hpp"
 #include "rpBody.h"
 
 namespace real_physics
@@ -25,7 +25,7 @@ namespace real_physics
  * @param world The physics world where the body is created
  * @param id ID of the body
  */
-rpCollisionBody::rpCollisionBody(const Transform& transform, rpCollisionDetection* collideWorld , bodyindex id)
+rpCollisionBody::rpCollisionBody(const Transform& transform, rpContactManager* collideWorld , bodyindex id)
               : rpBody(id), mType(DYNAMIC), mTransform(transform), mProxyCollisionShapes(NULL),
                 mNbCollisionShapes(0) , mCollisionDetection(collideWorld) , mContactManifoldsList(NULL) //, mWorld(world)
 {
@@ -210,14 +210,14 @@ void rpCollisionBody::updateBroadPhaseState() const
     for (rpProxyShape* shape = mProxyCollisionShapes; shape != NULL; shape = shape->mNext)
     {
         // Update the proxy
-        updateProxyShapeInBroadPhase(shape);
+        updateProxyShapeInBroadPhase(shape , Vector3::ZERO);
     }
 }
 
 
 
 // Update the broad-phase state of a proxy collision shape of the body
-void rpCollisionBody::updateProxyShapeInBroadPhase(rpProxyShape* proxyShape, bool forceReinsert) const
+void rpCollisionBody::updateProxyShapeInBroadPhase(rpProxyShape* proxyShape, const Vector3& displacement, bool forceReinsert) const
 {
 
 	// Recompute the world-space AABB of the collision shape
@@ -226,7 +226,7 @@ void rpCollisionBody::updateProxyShapeInBroadPhase(rpProxyShape* proxyShape, boo
 
 
 	// Update the broad-phase state for the proxy collision shape
-	mCollisionDetection->updateProxyCollisionShape(proxyShape, aabb, Vector3(0, 0, 0), forceReinsert);
+    mCollisionDetection->updateProxyCollisionShape(proxyShape, aabb , displacement , forceReinsert);
 
 }
 

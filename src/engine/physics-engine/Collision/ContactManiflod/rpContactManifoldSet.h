@@ -129,7 +129,7 @@ class rpContactManifoldSet
 
         // -------------------- Friendships -------------------- //
 
-        friend class rpCollisionDetection;
+        friend class rpContactManager;
 };
 
 

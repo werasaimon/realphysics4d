@@ -13,7 +13,7 @@
 #include <cstring>
 
 #include "../../Memory/memory.h"
-#include "../rpCollisionDetection.h"
+#include "../rpContactManager.h"
 #include "../rpRaycastInfo.h"
 
 namespace real_physics
@@ -22,7 +22,7 @@ namespace real_physics
 
 
 // Constructor
-rpBroadPhaseAlgorithm::rpBroadPhaseAlgorithm(rpCollisionDetection* collisionDetection)
+rpBroadPhaseAlgorithm::rpBroadPhaseAlgorithm(rpContactManager* collisionDetection)
                     :mDynamicAABBTree(DYNAMIC_TREE_AABB_GAP), mNbMovedShapes(0), mNbAllocatedMovedShapes(8),
                      mNbNonUsedMovedShapes(0), mNbPotentialPairs(0), mNbAllocatedPotentialPairs(8),
                      mCollisionDetection(collisionDetection)
@@ -271,8 +271,8 @@ void rpBroadPhaseAlgorithm::notifyOverlappingNodes(int node1ID, int node2ID)
     }
 
     // Add the new potential pair into the array of potential overlapping pairs
-    mPotentialPairs[mNbPotentialPairs].collisionShape1ID = std::min(node1ID, node2ID);
-    mPotentialPairs[mNbPotentialPairs].collisionShape2ID = std::max(node1ID, node2ID);
+    mPotentialPairs[mNbPotentialPairs].collisionShape1ID = Min(node1ID, node2ID);
+    mPotentialPairs[mNbPotentialPairs].collisionShape2ID = Max(node1ID, node2ID);
     mNbPotentialPairs++;
 }
 

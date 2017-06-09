@@ -24,12 +24,12 @@ namespace real_physics
 
 	template <typename T> T gammaFunction( const rpVector3D<T>& v )
 	{
-	  return T(1.0) / sqrt(T(1.0) - (v.dot(v) / (LIGHT_MAX_VELOCITY_C * LIGHT_MAX_VELOCITY_C)));
+      return T(1.0) / Sqrt(T(1.0) - (v.dot(v) / (LIGHT_MAX_VELOCITY_C * LIGHT_MAX_VELOCITY_C)));
 	}
 
 	template <typename T> T gammaInvertFunction( const rpVector3D<T>& v )
 	{
-	   return sqrt(T(1.0) - (v.dot(v) / (LIGHT_MAX_VELOCITY_C * LIGHT_MAX_VELOCITY_C)));
+       return sqrt( float(T(1.0) - (v.dot(v) / (LIGHT_MAX_VELOCITY_C * LIGHT_MAX_VELOCITY_C))) );
 	}
 
 

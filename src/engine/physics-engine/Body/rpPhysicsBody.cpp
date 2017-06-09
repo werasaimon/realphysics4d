@@ -5,14 +5,14 @@
  *      Author: wera
  */
 
-#include "../../Dynamics/Body/rpPhysicsBody.h"
-#include "../../Dynamics/Joint/rpJoint.h"
+#include "rpPhysicsBody.h"
+#include "../Dynamics/Joint/rpJoint.h"
 
 namespace real_physics
 {
 
 
-rpPhysicsBody::rpPhysicsBody(const Transform& transform, rpCollisionDetection* CollideWorld, bodyindex id)
+rpPhysicsBody::rpPhysicsBody(const Transform& transform, rpContactManager* CollideWorld, bodyindex id)
 :rpPhysicsObject(transform, CollideWorld, id) ,  mJointsList(NULL)
 {
 

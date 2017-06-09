@@ -44,7 +44,7 @@ void rpDistanceJoint::initBeforeSolve( scalar timeStep )
 	mEffectiveMass += softnessOverDt;
 
 
-     mBias = 0;
+     mBias = scalar(0);
     if (mPositionCorrectionTechnique == BAUMGARTE_JOINTS )
     {
          mBias   = (deltaLength * biasFactor);

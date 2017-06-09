@@ -1,12 +1,12 @@
 /*
- * rpCollisionDetection.h
+ * rpContactManager.h
  *
  *  Created on: 23 нояб. 2016 г.
  *      Author: wera
  */
 
-#ifndef SOURCE_ENGIE_COLLISION_RPCOLLISIONDETECTION_H_
-#define SOURCE_ENGIE_COLLISION_RPCOLLISIONDETECTION_H_
+#ifndef SOURCE_ENGIE_COLLISION_RPCONTACTMANAGER_H_
+#define SOURCE_ENGIE_COLLISION_RPCONTACTMANAGER_H_
 
 
 
@@ -55,7 +55,7 @@ class CollisionCallback;
  * collide and then we run a narrow-phase algorithm to compute the
  * collision contacts between bodies.
  */
-class rpCollisionDetection
+class rpContactManager
 {
 
     private :
@@ -83,16 +83,16 @@ class rpCollisionDetection
         // -------------------- Methods -------------------- //
 
         /// Private copy-constructor
-        rpCollisionDetection(const rpCollisionDetection& collisionDetection);
+        rpContactManager(const rpContactManager& collisionDetection);
 
         /// Private assignment operator
-        rpCollisionDetection& operator=(const rpCollisionDetection& collisionDetection);
+        rpContactManager& operator=(const rpContactManager& collisionDetection);
 
         /// Compute the broad-phase collision detection
         void computeBroadPhase();
 
         /// Compute the narrow-phase collision detection
-	    void computeNarrowPhase(std::map<overlappingpairid, rpOverlappingPair*>& ContactOverlappingPairs );
+        void computeNarrowPhase( std::map<overlappingpairid, rpOverlappingPair*>& ContactOverlappingPairs );
 
         /// Add a contact manifold to the linked list of contact manifolds of the two bodies
         /// involed in the corresponding contact.
@@ -113,10 +113,10 @@ class rpCollisionDetection
         // -------------------- Methods -------------------- //
 
         /// Constructor
-         rpCollisionDetection();
+         rpContactManager();
 
         /// Destructor
-        ~rpCollisionDetection();
+        ~rpContactManager();
 
 
 
@@ -167,4 +167,4 @@ class rpCollisionDetection
 
 } /* namespace real_physics */
 
-#endif /* SOURCE_ENGIE_COLLISION_RPCOLLISIONDETECTION_H_ */
+#endif /* SOURCE_ENGIE_COLLISION_RPCONTACTMANAGER_H_ */

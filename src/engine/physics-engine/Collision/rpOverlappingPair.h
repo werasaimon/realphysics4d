@@ -117,7 +117,7 @@ class rpOverlappingPair
 
         // -------------------- Friendship -------------------- //
 
-        friend class rpCollisionDetection;
+        friend class rpContactManager;
         friend class rpCollisionWorld;
         friend class rpDynamicsWorld;
 

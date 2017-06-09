@@ -123,7 +123,7 @@ bool rpSphereShape::raycast(const Ray& ray, RaycastInfo& raycastInfo, rpProxySha
 //	if (discriminant < scalar(0.0) || raySquareLength < MACHINE_EPSILON) return false;
 //
 //	// Compute the solution "t" closest to the origin
-//	scalar t = -b - std::sqrt(discriminant);
+//	scalar t = -b - Sqrt(discriminant);
 //
 //	assert(t >= scalar(0.0));
 //
