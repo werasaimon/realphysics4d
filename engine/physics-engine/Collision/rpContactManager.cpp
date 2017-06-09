@@ -1,11 +1,11 @@
 /*
- * rpCollisionDetection.cpp
+ * rpContactManager.cpp
  *
  *  Created on: 23 нояб. 2016 г.
  *      Author: wera
  */
 
-#include "rpCollisionDetection.h"
+#include "rpContactManager.h"
 
 
 #include <stddef.h>
@@ -25,9 +25,9 @@
 #include "rpRaycastInfo.h"
 
 
-#include "../Dynamics/Body/rpRigidPhysicsBody.h"
-#include "Body/rpBody.h"
-#include "Body/rpCollisionBody.h"
+#include "../Body/rpRigidPhysicsBody.h"
+#include "../Body/rpBody.h"
+#include "../Body/rpCollisionBody.h"
 
 using namespace std;
 
@@ -264,17 +264,15 @@ bool  timeOfImpact( const rpProxyShape* shape_a ,
 /**/
 
 
-rpCollisionDetection::rpCollisionDetection()
+rpContactManager::rpContactManager()
 : mBroadPhaseAlgorithm(this)
 {
 
 }
 
 
-void rpCollisionDetection::computeCollisionDetection( std::map<overlappingpairid, rpOverlappingPair*> &OverlappingPairs )
+void rpContactManager::computeCollisionDetection( std::map<overlappingpairid, rpOverlappingPair*> &OverlappingPairs )
 {
-
-
     // Compute the broad-phase collision detection
     computeBroadPhase();
 
@@ -283,7 +281,7 @@ void rpCollisionDetection::computeCollisionDetection( std::map<overlappingpairid
 }
 
 
-void rpCollisionDetection::computeBroadPhase()
+void rpContactManager::computeBroadPhase()
 {
 
     // If new collision shapes have been added to bodies
@@ -301,7 +299,7 @@ void rpCollisionDetection::computeBroadPhase()
 
 
 
-void rpCollisionDetection::computeNarrowPhase( std::map<overlappingpairid, rpOverlappingPair*> &ContactOverlappingPairs )
+void rpContactManager::computeNarrowPhase( std::map<overlappingpairid, rpOverlappingPair*> &ContactOverlappingPairs )
 {
 
 
@@ -439,12 +437,9 @@ void rpCollisionDetection::computeNarrowPhase( std::map<overlappingpairid, rpOve
                 if(testCollision)
 	        	{
 
-
 	        		Vector3 normal = infoContact.m_normal.getUnit();
 	        		scalar  penetration = infoContact.m_penetrationDepth;
 
-	        		//normal = Ncoll;
-	        		//penetration = tcoll;
 
 	        		const int maxContacts = 1;
 	        		overlappingpairid pairId = rpOverlappingPair::computeID(shape1,  shape2);
@@ -475,7 +470,7 @@ void rpCollisionDetection::computeNarrowPhase( std::map<overlappingpairid, rpOve
 
 
 
-void rpCollisionDetection::addAllContactManifoldsToBodies( std::map<overlappingpairid, rpOverlappingPair*> &ContactOverlappingPairs )
+void rpContactManager::addAllContactManifoldsToBodies( std::map<overlappingpairid, rpOverlappingPair*> &ContactOverlappingPairs )
 {
     for (auto it = ContactOverlappingPairs.begin(); it != ContactOverlappingPairs.end(); ++it)
     {
@@ -486,7 +481,7 @@ void rpCollisionDetection::addAllContactManifoldsToBodies( std::map<overlappingp
 
 }
 
-void rpCollisionDetection::addContactManifoldToBody(rpOverlappingPair *pair)
+void rpContactManager::addContactManifoldToBody(rpOverlappingPair *pair)
 {
 
     assert(pair != NULL);
@@ -517,7 +512,7 @@ void rpCollisionDetection::addContactManifoldToBody(rpOverlappingPair *pair)
 
 }
 
-void rpCollisionDetection::broadPhaseNotifyOverlappingPair( rpProxyShape* shape1 ,
+void rpContactManager::broadPhaseNotifyOverlappingPair( rpProxyShape* shape1 ,
 		                                                    rpProxyShape* shape2 )
 {
 
@@ -559,12 +554,12 @@ void rpCollisionDetection::broadPhaseNotifyOverlappingPair( rpProxyShape* shape1
 
 }
 
-rpCollisionDetection::~rpCollisionDetection()
+rpContactManager::~rpContactManager()
 {
 
 }
 
-void rpCollisionDetection::addProxyCollisionShape(rpProxyShape* proxyShape, const rpAABB& aabb)
+void rpContactManager::addProxyCollisionShape(rpProxyShape* proxyShape, const rpAABB& aabb)
 {
 	// Add the body to the broad-phase
 	mBroadPhaseAlgorithm.addProxyCollisionShape(proxyShape, aabb);
@@ -572,12 +567,11 @@ void rpCollisionDetection::addProxyCollisionShape(rpProxyShape* proxyShape, cons
 	mIsCollisionShapesAdded = true;
 }
 
-void rpCollisionDetection::removeProxyCollisionShape(rpProxyShape* proxyShape)
+void rpContactManager::removeProxyCollisionShape(rpProxyShape* proxyShape)
 {
 
 	// Remove all the overlapping pairs involving this proxy shape
-	//std::map<overlappingpairid, OverlappingPair*>::iterator it;
-	for (auto it = mOverlappingPairs.begin(); it != mOverlappingPairs.end(); )
+    for ( auto it = mOverlappingPairs.begin(); it != mOverlappingPairs.end(); )
 	{
 		if (it->second->getShape1()->mBroadPhaseID == proxyShape->mBroadPhaseID||
 			it->second->getShape2()->mBroadPhaseID == proxyShape->mBroadPhaseID)
@@ -607,29 +601,29 @@ void rpCollisionDetection::removeProxyCollisionShape(rpProxyShape* proxyShape)
 }
 
 
-void rpCollisionDetection::updateProxyCollisionShape(rpProxyShape* shape, const rpAABB& aabb,
+void rpContactManager::updateProxyCollisionShape(rpProxyShape* shape, const rpAABB& aabb,
                                                      const Vector3& displacement, bool forceReinsert)
 {
 	  mBroadPhaseAlgorithm.updateProxyCollisionShape(shape, aabb, displacement);
 
 }
 
-void rpCollisionDetection::addNoCollisionPair(rpCollisionBody* body1, rpCollisionBody* body2)
+void rpContactManager::addNoCollisionPair(rpCollisionBody* body1, rpCollisionBody* body2)
 {
 	 mNoCollisionPairs.insert(rpOverlappingPair::computeBodiesIndexPair(body1, body2));
 }
 
-void rpCollisionDetection::removeNoCollisionPair(rpCollisionBody* body1, rpCollisionBody* body2)
+void rpContactManager::removeNoCollisionPair(rpCollisionBody* body1, rpCollisionBody* body2)
 {
 	 mNoCollisionPairs.erase(rpOverlappingPair::computeBodiesIndexPair(body1, body2));
 }
 
-void rpCollisionDetection::askForBroadPhaseCollisionCheck(rpProxyShape* shape)
+void rpContactManager::askForBroadPhaseCollisionCheck(rpProxyShape* shape)
 {
 	mBroadPhaseAlgorithm.addMovedCollisionShape(shape->mBroadPhaseID);
 }
 
-void rpCollisionDetection::raycast(RaycastCallback* raycastCallback, const Ray& ray,
+void rpContactManager::raycast(RaycastCallback* raycastCallback, const Ray& ray,
 		                           unsigned short raycastWithCategoryMaskBits) const
 {
 	    RaycastTest rayCastTest(raycastCallback);

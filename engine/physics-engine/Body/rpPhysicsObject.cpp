@@ -10,16 +10,16 @@
 #include <stddef.h>
 #include <cassert>
 
-#include "../../Collision/rpCollisionDetection.h"
-#include "../../Collision/rpProxyShape.h"
-#include "../../Collision/Shapes/rpAABB.h"
-#include "../../Collision/Shapes/rpCollisionShape.h"
+#include "../Collision/rpContactManager.h"
+#include "../Collision/rpProxyShape.h"
+#include "../Collision/Shapes/rpAABB.h"
+#include "../Collision/Shapes/rpCollisionShape.h"
 
 namespace real_physics
 {
 
 
-rpPhysicsObject::rpPhysicsObject(const Transform& transform, rpCollisionDetection* CollideWorld, bodyindex id)
+rpPhysicsObject::rpPhysicsObject(const Transform& transform, rpContactManager* CollideWorld, bodyindex id)
 :rpCollisionBody(transform, CollideWorld, id)
 {
 

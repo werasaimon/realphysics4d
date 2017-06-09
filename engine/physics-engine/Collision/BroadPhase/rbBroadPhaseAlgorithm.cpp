@@ -13,7 +13,7 @@
 #include <cstring>
 
 #include "../../Memory/memory.h"
-#include "../rpCollisionDetection.h"
+#include "../rpContactManager.h"
 #include "../rpRaycastInfo.h"
 
 namespace real_physics
@@ -22,7 +22,7 @@ namespace real_physics
 
 
 // Constructor
-rpBroadPhaseAlgorithm::rpBroadPhaseAlgorithm(rpCollisionDetection* collisionDetection)
+rpBroadPhaseAlgorithm::rpBroadPhaseAlgorithm(rpContactManager* collisionDetection)
                     :mDynamicAABBTree(DYNAMIC_TREE_AABB_GAP), mNbMovedShapes(0), mNbAllocatedMovedShapes(8),
                      mNbNonUsedMovedShapes(0), mNbPotentialPairs(0), mNbAllocatedPotentialPairs(8),
                      mCollisionDetection(collisionDetection)

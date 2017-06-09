@@ -15,10 +15,10 @@
 #include <list>
 #include <algorithm>
 #include "../LinearMaths/mathematics.h"
-#include "Body/rpCollisionBody.h"
+#include "../Body/rpCollisionBody.h"
 #include "rpRaycastInfo.h"
 #include "rpOverlappingPair.h"
-#include "rpCollisionDetection.h"
+#include "rpContactManager.h"
 
 
 namespace real_physics
@@ -40,7 +40,7 @@ class rpCollisionWorld
 		// -------------------- Attributes -------------------- //
 
 		/// Reference to the collision detection
-		rpCollisionDetection       mCollisionDetection;
+        rpContactManager       mCollisionDetection;
 
 		/// All the bodies (rigid and soft) of the world
 		std::set<rpCollisionBody*> mBodies;
@@ -117,7 +117,7 @@ class rpCollisionWorld
         // -------------------- Friendship -------------------- //
 
         friend class rpDynamicsWorld;
-        friend class rpCollisionDetection;
+        friend class rpContactManager;
         friend class rpCollisionBody;
         friend class rpRigidPhysicsBody;
         friend class rpConvexMeshShape;

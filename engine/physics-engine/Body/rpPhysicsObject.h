@@ -8,15 +8,11 @@
 #ifndef SOURCE_ENGIE_KINEMATICPHYSICS_BODY_RPPHYSICSOBJECT_H_
 #define SOURCE_ENGIE_KINEMATICPHYSICS_BODY_RPPHYSICSOBJECT_H_
 
-#include "../../Collision/Body/rpBody.h"
-#include "../../Collision/Body/rpCollisionBody.h"
-#include "../../LinearMaths/mathematics.h"
-#include "../../LinearMaths/rpLinearMtah.h"
-#include "../../LinearMaths/rpMatrix3x3.h"
-#include "../../LinearMaths/rpVector3D.h"
-#include "../Material/rpPhysicsMaterial.h"
-
-#include "../../Memory/memory.h"
+#include "rpBody.h"
+#include "rpCollisionBody.h"
+#include "../LinearMaths/mathematics.h"
+#include "Material/rpPhysicsMaterial.h"
+#include "../Memory/memory.h"
 
 namespace real_physics
 {
@@ -39,7 +35,7 @@ class rpPhysicsObject : public rpCollisionBody
 
     public:
 
-        rpPhysicsObject(const Transform& transform, rpCollisionDetection *CollideWorld, bodyindex id );
+        rpPhysicsObject(const Transform& transform, rpContactManager *CollideWorld, bodyindex id );
 
 
 		virtual ~rpPhysicsObject();

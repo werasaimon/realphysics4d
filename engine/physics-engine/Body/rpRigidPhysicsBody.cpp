@@ -5,26 +5,23 @@
  *      Author: wera
  */
 
-#include "../../Dynamics/Body/rpRigidPhysicsBody.h"
+#include "rpRigidPhysicsBody.h"
+#include "rpPhysicsObject.h"
 
 #include <stddef.h>
 #include <cassert>
-
-//#include "../../Collision/Body/rpBody.h"
-#include "../../Collision/rpProxyShape.h"
-#include "../../Collision/Shapes/rpCollisionShape.h"
-#include "../../LinearMaths/mathematics.h"
-#include "../../LinearMaths/rpLinearMtah.h"
-#include "../../LinearMaths/rpMatrix3x3.h"
-#include "../../LinearMaths/rpQuaternion.h"
-#include "../../LinearMaths/rpTransformUtil.h"
-#include "../../LinearMaths/rpVector3D.h"
-#include "../../config.h"
-
-
 #include <iostream>
 
-#include "../../Dynamics/Body/rpPhysicsObject.h"
+#include "../Collision/rpProxyShape.h"
+#include "../Collision/Shapes/rpCollisionShape.h"
+#include "../LinearMaths/mathematics.h"
+#include "../LinearMaths/rpLinearMtah.h"
+#include "../config.h"
+
+
+
+
+
 using namespace std;
 
 
@@ -36,7 +33,7 @@ namespace real_physics
 
 
 
-rpRigidPhysicsBody::rpRigidPhysicsBody(const Transform& transform, rpCollisionDetection* CollideWorld, bodyindex id)
+rpRigidPhysicsBody::rpRigidPhysicsBody(const Transform& transform, rpContactManager* CollideWorld, bodyindex id)
 :rpPhysicsBody(transform, CollideWorld, id),
  mInitMass(scalar(1.0)),
  mCenterOfMassLocal(0, 0, 0),

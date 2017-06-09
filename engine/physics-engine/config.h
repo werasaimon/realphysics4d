@@ -81,7 +81,7 @@ const scalar SCALAR_SMALLEST = - std::numeric_limits<scalar>::max();
 const scalar SCALAR_LARGEST = std::numeric_limits<scalar>::max();
 
 /// Machine epsilon
-const scalar MACHINE_EPSILON = std::numeric_limits<scalar>::epsilon();
+//const scalar MACHINE_EPSILONE = std::numeric_limits<scalar>::epsilon();
 
 
 
@@ -174,7 +174,7 @@ const scalar DEFAULT_SLEEP_SPLIT   = scalar(0.0001);
 /// Minimum for start damping
 const scalar MINIMUM_FOR_DAPING = scalar(0.5);
 
-///collision center point for the interpolation of (A-B) / 2
+///collision center point for the interpolation of (A+B) / 2.0
 const bool   INTERPOLATION_CONTACT_POINTS = true;
 
 

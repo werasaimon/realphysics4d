@@ -11,13 +11,13 @@
 #include  <set>
 #include  <map>
 
-#include "../Dynamics/Material/rpPhysicsMaterial.h"
+#include "../Body/Material/rpPhysicsMaterial.h"
 #include "../Memory/memory.h"
 
 #include "../Dynamics/Solver/rpSequentialImpulseObjectSolver.h"
-#include "../Dynamics/Body/rpPhysicsBody.h"
-#include "../Dynamics/Body/rpPhysicsObject.h"
-#include "../Dynamics/Body/rpRigidPhysicsBody.h"
+#include "../Body/rpPhysicsBody.h"
+#include "../Body/rpPhysicsObject.h"
+#include "../Body/rpRigidPhysicsBody.h"
 
 #include "Joint/rpJoint.h"
 #include "Joint/rpBallAndSocketJoint.h"
@@ -124,10 +124,10 @@ class rpDynamicsWorld : public rpCollisionWorld
 
 
     /// Detection for all collision pairs
-    void CollidePhase();
+    void Collision();
 
     /// Compute physics for all collision pairs
-    void DynamicPhase( scalar timeStep );
+    void Dynamics( scalar timeStep );
 
 	/// Integrate the garvity
 	void integrateGravity( scalar timeStep );

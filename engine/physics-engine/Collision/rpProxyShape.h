@@ -10,7 +10,7 @@
 
 
 #include "Shapes/rpCollisionShape.h"
-#include "Body/rpCollisionBody.h"
+#include "../Body/rpCollisionBody.h"
 
 namespace real_physics
 {
@@ -275,7 +275,7 @@ namespace real_physics
           friend class rpCollisionBody;
           friend class rpBroadPhaseAlgorithm;
           friend class rpDynamicAABBTree;
-          friend class rpCollisionDetection;
+          friend class rpContactManager;
           friend class rpCollisionWorld;
           friend class rpDynamicsWorld;
           friend class rpConvexMeshShape;

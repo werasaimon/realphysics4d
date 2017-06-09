@@ -5,7 +5,7 @@
  *      Author: wera
  */
 
-#include "../../Dynamics/Material/rpPhysicsMaterial.h"
+#include "../Material/rpPhysicsMaterial.h"
 #include "../../config.h"
 
 

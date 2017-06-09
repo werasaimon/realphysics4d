@@ -8,8 +8,8 @@
 #ifndef SOURCE_ENGIE_KINEMATICPHYSICS_BODY_RPRIGIDPHYSICSBODY_H_
 #define SOURCE_ENGIE_KINEMATICPHYSICS_BODY_RPRIGIDPHYSICSBODY_H_
 
-#include "../../Dynamics/Material/rpPhysicsMaterial.h"
-#include "../../Dynamics/Body/rpPhysicsBody.h"
+#include "Material/rpPhysicsMaterial.h"
+#include "rpPhysicsBody.h"
 
 namespace real_physics
 {
@@ -137,7 +137,7 @@ class rpRigidPhysicsBody: public rpPhysicsBody
 	public:
 
 
-		rpRigidPhysicsBody( const Transform& transform, rpCollisionDetection *CollideWorld, bodyindex id );
+        rpRigidPhysicsBody(const Transform& transform, rpContactManager *CollideWorld, bodyindex id );
 
 
 

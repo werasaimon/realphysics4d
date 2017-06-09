@@ -12,8 +12,7 @@
 // Libraries
 #include "../../Collision/collision.h"
 #include "../../Dynamics/Solver/rpContactSolver.h"
-#include "../../Dynamics/Body/rpRigidPhysicsBody.h"
-
+#include "../../Body/rpRigidPhysicsBody.h"
 #include "../../config.h"
 
 

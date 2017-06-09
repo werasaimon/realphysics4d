@@ -40,7 +40,7 @@ namespace real_physics
 
 
 	#define FLT_EPSILON 1.1920928955078125E-7f
-	#define MACHINE_EPSILON 10E-7f
+    #define MACHINE_EPSILON 10E-7f
 
 
 

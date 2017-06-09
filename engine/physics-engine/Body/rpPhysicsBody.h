@@ -9,7 +9,7 @@
 #define SOURCE_ENGIE_DYNAMICS_BODY_RPPHYSICSBODY_H_
 
 
-#include "../../Dynamics/Body/rpPhysicsObject.h"
+#include "rpPhysicsObject.h"
 
 namespace real_physics
 {
@@ -46,7 +46,7 @@ class rpPhysicsBody: public rpPhysicsObject
 
    public:
 
-             rpPhysicsBody( const Transform& transform, rpCollisionDetection *CollideWorld, bodyindex id );
+             rpPhysicsBody(const Transform& transform, rpContactManager *CollideWorld, bodyindex id );
 	virtual ~rpPhysicsBody();
 
 

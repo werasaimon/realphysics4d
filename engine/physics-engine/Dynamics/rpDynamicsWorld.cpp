@@ -132,12 +132,12 @@ void rpDynamicsWorld::updateFixedTime(scalar timeStep)
     updateBodiesState(timeStep);
 
     //Collision broad phase
-    CollidePhase();
+    Collision();
 
     /****************************/
 
     // Dynamica phase
-    DynamicPhase(timeStep);
+    Dynamics(timeStep);
 
     /****************************/
 
@@ -156,7 +156,7 @@ void rpDynamicsWorld::updateFixedTime(scalar timeStep)
 }
 
 
-void rpDynamicsWorld::CollidePhase()
+void rpDynamicsWorld::Collision()
 {
 
 	for( auto pair : mContactSolvers )
@@ -177,7 +177,6 @@ void rpDynamicsWorld::CollidePhase()
 	}
 
 	/// Overlapping pairs in contact (during the current Narrow-phase collision detection)
-	//static std::map<overlappingpairid, rpOverlappingPair*> mCollisionContactOverlappingPairs;
 	mCollisionDetection.computeCollisionDetection(mCollisionContactOverlappingPairs);
 
 
@@ -198,8 +197,8 @@ void rpDynamicsWorld::CollidePhase()
 	{
 		if( !pair.second->isFakeCollid )
 		{
-			delete mContactSolvers.find(pair.first)->second;
-			       mContactSolvers.erase(pair.first);
+            delete pair.second;
+            mContactSolvers.erase(pair.first);
 		}
 	}
 
@@ -207,7 +206,7 @@ void rpDynamicsWorld::CollidePhase()
 
 
 
-void rpDynamicsWorld::DynamicPhase( scalar timeStep )
+void rpDynamicsWorld::Dynamics( scalar timeStep )
 {
 
     //---------------------------------------------------------------------//
@@ -244,7 +243,7 @@ void rpDynamicsWorld::DynamicPhase( scalar timeStep )
 		}
 	}
 
-	//---------------------------------------------------------------------//
+    //---------------------------------------------------------------------//
 
 	for( uint i = 0; i < mNbPositionSolverIterations; ++i)
 	{
@@ -259,6 +258,7 @@ void rpDynamicsWorld::DynamicPhase( scalar timeStep )
 		}
 	}
 
+    //---------------------------------------------------------------------//
 
 }
 
@@ -469,7 +469,7 @@ rpJoint* rpDynamicsWorld::createJoint(const rpJointInfo& jointInfo)
           addJointToBody(newJoint);
 
 	    // Return the pointer to the created joint
-	    return newJoint;
+          return newJoint;
 }
 
 void rpDynamicsWorld::destroyJoint(rpJoint* joint)

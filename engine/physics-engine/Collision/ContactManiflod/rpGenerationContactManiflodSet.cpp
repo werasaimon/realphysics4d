@@ -303,7 +303,7 @@ void rpGenerationContactManiflodSet::computeContacteManiflodSet( rpContactManifo
 				Vector3 point1 = mInfoContacts[i].localPoint1;
 				Vector3 point2 = mInfoContacts[i].localPoint2;
 				//mInfoContacts[i].penetrationDepth = (point2 - point1).dot(normal);
-				Vector3 approximationPoint =  (point1 + point2) * scalar(0.5);
+                Vector3 approximationPoint =  (point1 + point2) * scalar(0.5);
 				mInfoContacts[i].localPoint1 = approximationPoint;
 				mInfoContacts[i].localPoint2 = approximationPoint;
 			}
