@@ -4,11 +4,11 @@ CC=g++
 OBJS =		realphysics4d_make.o
 
 
-#LIBS = -lGL -lGLU -lglut -lGLEW 
-LIBS = -lopengl32 -lglu32 -lglew32 -lfreeglut
+LIBS = -lGL -lGLU -lglut -lGLEW 
+#LIBS = -lopengl32 -lglu32 -lglew32 -lfreeglut
 
 
-TARGET =	bin/realphysics4d_make.exe
+TARGET =	bin/realphysics4d_make
 
 #----------------------- core main -------------------------#
 LDFLAGS =
@@ -17,9 +17,10 @@ SOURCES  += src/examples/GLViewer.cpp
 SOURCES  += src/examples/UnitSceneDrawMesh.cpp
 
 
+
+
 #-------------------- physics-engie ------------------------#
-SOURCES  += src/engine/physics-engine/Collision/Body/rpBody.cpp 
-SOURCES  += src/engine/physics-engine/Collision/Body/rpCollisionBody.cpp 
+SOURCES  += src/engine/physics-engine/Body/Material/rpPhysicsMaterial.cpp
 SOURCES  += src/engine/physics-engine/Collision/BroadPhase/rbBroadPhaseAlgorithm.cpp 
 SOURCES  += src/engine/physics-engine/Collision/BroadPhase/rpDynamicAABBTree.cpp 
 SOURCES  += src/engine/physics-engine/Collision/ContactManiflod/rpContactManifold.cpp 
@@ -35,14 +36,11 @@ SOURCES  += src/engine/physics-engine/Collision/Shapes/rpConvexHullShape.cpp
 SOURCES  += src/engine/physics-engine/Collision/Shapes/rpConvexShape.cpp 
 SOURCES  += src/engine/physics-engine/Collision/Shapes/rpSphereShape.cpp 
 SOURCES  += src/engine/physics-engine/Collision/Shapes/rpTriangleShape.cpp 
-SOURCES  += src/engine/physics-engine/Collision/rpCollisionDetection.cpp 
+SOURCES  += src/engine/physics-engine/Collision/rpContactManager.cpp 
 SOURCES  += src/engine/physics-engine/Collision/rpCollisionWorld.cpp 
 SOURCES  += src/engine/physics-engine/Collision/rpOverlappingPair.cpp 
 SOURCES  += src/engine/physics-engine/Collision/rpProxyShape.cpp 
 SOURCES  += src/engine/physics-engine/Collision/rpRaycastInfo.cpp 
-SOURCES  += src/engine/physics-engine/Dynamics/Body/rpPhysicsBody.cpp 
-SOURCES  += src/engine/physics-engine/Dynamics/Body/rpPhysicsObject.cpp 
-SOURCES  += src/engine/physics-engine/Dynamics/Body/rpRigidPhysicsBody.cpp 
 SOURCES  += src/engine/physics-engine/Dynamics/Joint/JointAngle/rpAngleJoint.cpp 
 SOURCES  += src/engine/physics-engine/Dynamics/Joint/rpBallAndSocketJoint.cpp 
 SOURCES  += src/engine/physics-engine/Dynamics/Joint/rpDistanceJoint.cpp 
@@ -50,7 +48,6 @@ SOURCES  += src/engine/physics-engine/Dynamics/Joint/rpFixedJoint.cpp
 SOURCES  += src/engine/physics-engine/Dynamics/Joint/rpHingeJoint.cpp 
 SOURCES  += src/engine/physics-engine/Dynamics/Joint/rpJoint.cpp 
 SOURCES  += src/engine/physics-engine/Dynamics/Joint/rpSliderJoint.cpp 
-SOURCES  += src/engine/physics-engine/Dynamics/Material/rpPhysicsMaterial.cpp 
 SOURCES  += src/engine/physics-engine/Dynamics/Solver/rpContactSolver.cpp 
 SOURCES  += src/engine/physics-engine/Dynamics/Solver/rpSequentialImpulseObjectSolver.cpp 
 SOURCES  += src/engine/physics-engine/Dynamics/rpDynamicsWorld.cpp 
@@ -76,7 +73,11 @@ SOURCES  += src/engine/physics-engine/Collision/NarrowPhase/MPR/rpMPRAlgorithm.c
 SOURCES  += src/engine/physics-engine/Collision/NarrowPhase/GJK/rpGJKAlgorithm.cpp 
 SOURCES  += src/engine/physics-engine/Collision/NarrowPhase/GJK_EPA/VoronoiSimplex/rpVoronoiSimplexSolver.cpp 
 SOURCES  += src/engine/physics-engine/Collision/NarrowPhase/rpNarrowPhaseMprAlgorithm.cpp
-
+SOURCES  += src/engine/physics-engine/Body/rpBody.cpp
+SOURCES  += src/engine/physics-engine/Body/rpCollisionBody.cpp
+SOURCES  += src/engine/physics-engine/Body/rpPhysicsBody.cpp 
+SOURCES  += src/engine/physics-engine/Body/rpPhysicsObject.cpp
+SOURCES  += src/engine/physics-engine/Body/rpRigidPhysicsBody.cpp 
 
 
 #----------------- opengl-utility -------------------------#
