@@ -50,10 +50,10 @@ bool UnitSceneDrawMesh::Init()
 	mLight0.createShadowMap( SHADOW_MAP_SIZE, SHADOW_MAP_SIZE );
 
 	bool init = mShaderProgram.create("shaders/phong.vert",
-				                      "shaders/phong.frag");
+			                          "shaders/phong.frag");
 
 	mShaderProgram.bind();
-	mShaderProgram.setUniformValue( "Texturing" , 0);
+	//mShaderProgram.setUniformValue( "Texturing" , 0);
 	mShaderProgram.setUniformValue( "ShadowMap" , 1);
 	mShaderProgram.unbind();
 
@@ -74,35 +74,35 @@ bool UnitSceneDrawMesh::Init()
 
 
 
-    mLightProjectionMatrix = Matrix4::Perspectivee( 90.f, 1.0f, 4.0f, 500.0f );
+	mLightProjectionMatrix = Matrix4::Perspectivee( 90.f, 1.0f, 4.0f, 500.0f );
 	//mLightProjectionMatrix = Matrix4::Perspective2( 90.f, 1.0f, 4.0f, 500.0f );
 
 
-    mFBO.create( SHADOW_MAP_SIZE, SHADOW_MAP_SIZE , true);
-    mShadowMapTexure.createDepth( SHADOW_MAP_SIZE , SHADOW_MAP_SIZE );
-    mFBO.attachTexture( 0 , mShadowMapTexure.getID() );
+	mFBO.create( SHADOW_MAP_SIZE, SHADOW_MAP_SIZE , true);
+	mShadowMapTexure.createDepth( SHADOW_MAP_SIZE , SHADOW_MAP_SIZE );
+	mFBO.attachTexture( 0 , mShadowMapTexure.getID() );
 
-//    glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION,  1.5f);
-//    glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 1.0f / 128.0f);
-//    glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 1.0f / 256.0f);
+	//    glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION,  1.5f);
+	//    glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 1.0f / 128.0f);
+	//    glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 1.0f / 256.0f);
 
 
-    bool b = false;
-    for( unsigned int i = 0; i < 10; ++i )
-    {
-    	Mesh *mesh = new MeshReadFile3DS( "Files/cub.3ds");
+	bool b = false;
+	for( unsigned int i = 0; i < 10; ++i )
+	{
+		Mesh *mesh = new MeshReadFile3DS( "Files/cub.3ds");
 
-    	Vector3 pos(0, i * 7.0 ,0);
+		Vector3 pos(0, i * 7.0 ,0);
 
-    	Matrix4 matrix;
-    	matrix.setToIdentity();
-    	matrix = Matrix4::translationMatrix(pos);
+		Matrix4 matrix;
+		matrix.setToIdentity();
+		matrix = Matrix4::translationMatrix(pos);
 
-    	mesh->setTransformMatrix( matrix );
-    	mesh->setTexture( mTexture[0] );
+		mesh->setTransformMatrix( matrix );
+		mesh->setTexture( mTexture[2] );
 
-    	mMeshes.push_back( meshTest = mesh );
-    }
+		mMeshes.push_back( meshTest = mesh );
+	}
 
 
 
@@ -120,7 +120,6 @@ void UnitSceneDrawMesh::Render(float FrameTime)
 {
 
 	mViewer->beginLookCameara();
-
 
 	glViewport(0, 0, mViewer->getWidth() , mViewer->getHeight());
 
@@ -147,7 +146,7 @@ void UnitSceneDrawMesh::Render(float FrameTime)
 
 
 	/// Camera Viewer
-	Matrix4 projection = mViewer->getProjectionMatrix();
+	Matrix4 projection = mViewer->getProjectionMatrix().getTranspose();
 	Matrix4 viewMatrix = mViewer->getViewMatrix().getTranspose();
 	mShaderProgram.setUniformValue("projectionMatrix",projection);
 	mShaderProgram.setUniformValue("worldToViewMatrix",viewMatrix);
@@ -161,7 +160,7 @@ void UnitSceneDrawMesh::Render(float FrameTime)
 	mShaderProgram.setUniformValue( "Texturing" , 1);
 
 	/// Position camera and position light object
-	mShaderProgram.setUniformValue( "cameraWorldPosition" , cameraValue.mEyePosition);
+	mShaderProgram.setUniformValue( "cameraWorldPosition" , mViewer->getCamera().getOrigin());
 	mShaderProgram.setUniformValue(  "lightWorldPosition" , mLight0.getOrigin());
 
 
@@ -216,8 +215,8 @@ void UnitSceneDrawMesh::Render(float FrameTime)
 
 	mShadowMapTexure.unbind();
 
-	glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, 0);
-	glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, 0);
+	//glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, 0);
+	//glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, 0);
 
 
 	glEnable(GL_CULL_FACE);
@@ -231,13 +230,13 @@ void UnitSceneDrawMesh::Render(float FrameTime)
 
 	mShaderProgram.unbind();
 
+
 }
 
 
 
 void UnitSceneDrawMesh::RenderShadow(float FrameTime)
 {
-
 
 	glViewport(0, 0,  SHADOW_MAP_SIZE , SHADOW_MAP_SIZE );
 	//glViewport(0, 0, Width, Height);
@@ -247,6 +246,7 @@ void UnitSceneDrawMesh::RenderShadow(float FrameTime)
 	mLightViewMatrix =  Matrix4::Look( Vector3(LightPosition.x , LightPosition.y , LightPosition.z) ,
 			                           Vector3(0,0,0) ,
 			                           Vector3(0,1,0) );
+
 
 
 	/****************************************************/
@@ -307,30 +307,30 @@ void UnitSceneDrawMesh::keyboard(unsigned char key)
 {
 	switch (key)
 	{
-		case ' ':
-		{
+	case ' ':
+	{
 
 
-			break;
-		}
+		break;
+	}
 
-		case 'p':
-		{
-			mPause = !mPause;
-			break;
-		}
-
-
-		case 'x':
-		{
-			cout<< "X" <<endl;
-			meshTest->rotateWorld( Vector3::Z  , 0.01);
-			break;
-		}
+	case 'p':
+	{
+		mPause = !mPause;
+		break;
+	}
 
 
-		default:
-			break;
+	case 'x':
+	{
+		cout<< "X" <<endl;
+		meshTest->rotateWorld( Vector3::Z  , 0.01);
+		break;
+	}
+
+
+	default:
+		break;
 	}
 
 }
@@ -338,23 +338,23 @@ void UnitSceneDrawMesh::keyboard(unsigned char key)
 void UnitSceneDrawMesh::Destroy()
 {
 
-	mFBO.destroy();
+		mFBO.destroy();
 
-	mTexture[0].destroy();
-	mTexture[1].destroy();
-	mTexture[2].destroy();
+		mTexture[0].destroy();
+		mTexture[1].destroy();
+		mTexture[2].destroy();
 
-	mLight0.destroyShadowMap();
+		mLight0.destroyShadowMap();
 
-	mShaderProgram.destroy();
-	mShadowMapTexure.destroy();
+		mShaderProgram.destroy();
+		mShadowMapTexure.destroy();
 
-	glDeleteBuffers(1, &VBO);
+		glDeleteBuffers(1, &VBO);
 
-	for (unsigned int i = 0; i < mMeshes.size(); ++i)
-	{
-	  	if(mMeshes[i] != NULL) delete mMeshes[i];
-	}
+		for (unsigned int i = 0; i < mMeshes.size(); ++i)
+		{
+		  	if(mMeshes[i] != NULL) delete mMeshes[i];
+		}
 
 }
 
