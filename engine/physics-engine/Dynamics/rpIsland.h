@@ -4,7 +4,7 @@
 #include "../Body/rpPhysicsBody.h"
 #include "../Body/rpRigidPhysicsBody.h"
 #include "Solver/rpContactSolverSequentialImpulseObject.h"
-#include "../Collision/ContactManiflod/rpContactManifold.h"
+#include "../Collision/Manifold/rpContactManifold.h"
 
 
 namespace real_physics

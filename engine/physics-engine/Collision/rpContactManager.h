@@ -20,8 +20,8 @@
 #include "../LinearMaths/mathematics.h"
 #include "../Memory/memory.h"
 #include "BroadPhase/rbBroadPhaseAlgorithm.h"
-#include "ContactManiflod/rpContactManifoldSet.h"
-#include "ContactManiflod/rpGenerationContactManiflodSet.h"
+#include "Manifold/rpContactManifoldSet.h"
+#include "Manifold/rpGenerationContactManiflodSet.h"
 #include "rpOverlappingPair.h"
 
 
