@@ -28,7 +28,7 @@ linux: {
 
 #Linux default
  !android: {
-   LIBS += -lGL -lGLU -lglut #-lGLEW
+   LIBS += -lGL -lGLU #-lGLEW
 }
 
 }
