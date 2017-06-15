@@ -28,7 +28,7 @@ linux: {
 
 #Linux default
  !android: {
-   LIBS += -lGL -lGLU #-lGLEW
+   LIBS += -lGL -lGLU -lglut #-lGLEW
 }
 
 }
@@ -95,10 +95,10 @@ SOURCES += main.cpp\
     engine/lua-interpreter/utilopengl.cpp \
     engine/physics-engine/Collision/BroadPhase/rbBroadPhaseAlgorithm.cpp \
     engine/physics-engine/Collision/BroadPhase/rpDynamicAABBTree.cpp \
-    engine/physics-engine/Collision/ContactManiflod/rpContactManifold.cpp \
-    engine/physics-engine/Collision/ContactManiflod/rpContactManifoldSet.cpp \
-    engine/physics-engine/Collision/ContactManiflod/rpContactPoint.cpp \
-    engine/physics-engine/Collision/ContactManiflod/rpGenerationContactManiflodSet.cpp \
+    engine/physics-engine/Collision/Manifold/rpContactManifold.cpp \
+    engine/physics-engine/Collision/Manifold/rpContactManifoldSet.cpp \
+    engine/physics-engine/Collision/Manifold/rpContactPoint.cpp \
+    engine/physics-engine/Collision/Manifold/rpGenerationContactManiflodSet.cpp \
     engine/physics-engine/Collision/NarrowPhase/GJK_EPA/rpGjkEpa.cpp \
     engine/physics-engine/Collision/NarrowPhase/rpNarrowPhaseCollisionAlgorithm.cpp \
     engine/physics-engine/Collision/Shapes/rpAABB.cpp \
@@ -120,12 +120,9 @@ SOURCES += main.cpp\
     engine/physics-engine/Dynamics/Joint/rpJoint.cpp \
     engine/physics-engine/Dynamics/Joint/rpSliderJoint.cpp \
     engine/physics-engine/Dynamics/Solver/rpContactSolver.cpp \
-    engine/physics-engine/Dynamics/Solver/rpSequentialImpulseObjectSolver.cpp \
     engine/physics-engine/Dynamics/rpDynamicsWorld.cpp \
     engine/physics-engine/Dynamics/rpTimer.cpp \
     engine/physics-engine/Geometry/QuickHull/QuickHull.cpp \
-    engine/physics-engine/Geometry/rpGrahamScan2dConvexHull.cpp \
-    engine/physics-engine/Geometry/rpPolygonClipping.cpp \
     engine/physics-engine/LinearMaths/rpGyroscopic.cpp \
     engine/physics-engine/LinearMaths/rpLorentzContraction.cpp \
     engine/physics-engine/LinearMaths/rpMatrix2x2.cpp \
@@ -137,7 +134,6 @@ SOURCES += main.cpp\
     engine/physics-engine/LinearMaths/rpTransform.cpp \
     engine/physics-engine/LinearMaths/rpVector2D.cpp \
     engine/physics-engine/LinearMaths/rpVector3D.cpp \
-    engine/physics-engine/Memory/rpAlignedallocator.cpp \
     engine/UI-engine/Light/Light.cpp \
     engine/UI-engine/maths/glmath.cpp \
     engine/UI-engine/maths/Matrix4.cpp \
@@ -210,7 +206,11 @@ SOURCES += main.cpp\
     engine/physics-engine/Body/rpPhysicsBody.cpp \
     engine/physics-engine/Body/rpPhysicsObject.cpp \
     engine/physics-engine/Body/rpRigidPhysicsBody.cpp \
-    engine/physics-engine/Collision/rpContactManager.cpp
+    engine/physics-engine/Collision/rpContactManager.cpp \
+    engine/physics-engine/Dynamics/rpIsland.cpp \
+    engine/physics-engine/Memory/MemoryAllocator.cpp \
+    engine/physics-engine/Dynamics/Solver/rpContactSolverSequentialImpulseObject.cpp \
+    engine/physics-engine/Geometry/QuickClipping/rpQuickClippingPolygons.cpp
 
 HEADERS  += widget.h \
     glwidget.h \
@@ -348,11 +348,10 @@ HEADERS  += widget.h \
     engine/lua-interpreter/utilopengl.h \
     engine/physics-engine/Collision/BroadPhase/rbBroadPhaseAlgorithm.h \
     engine/physics-engine/Collision/BroadPhase/rpDynamicAABBTree.h \
-    engine/physics-engine/Collision/ContactManiflod/maniflod.h \
-    engine/physics-engine/Collision/ContactManiflod/rpContactManifold.h \
-    engine/physics-engine/Collision/ContactManiflod/rpContactManifoldSet.h \
-    engine/physics-engine/Collision/ContactManiflod/rpContactPoint.h \
-    engine/physics-engine/Collision/ContactManiflod/rpGenerationContactManiflodSet.h \
+    engine/physics-engine/Collision/Manifold/rpContactManifold.h \
+    engine/physics-engine/Collision/Manifold/rpContactManifoldSet.h \
+    engine/physics-engine/Collision/Manifold/rpContactPoint.h \
+    engine/physics-engine/Collision/Manifold/rpGenerationContactManiflodSet.h \
     engine/physics-engine/Collision/NarrowPhase/GJK_EPA/rpComputeGjkEpaPenetration.h \
     engine/physics-engine/Collision/NarrowPhase/GJK_EPA/rpGjkCollisionDescription.h \
     engine/physics-engine/Collision/NarrowPhase/GJK_EPA/rpGjkEpa.h \
@@ -378,7 +377,6 @@ HEADERS  += widget.h \
     engine/physics-engine/Dynamics/Joint/rpJoint.h \
     engine/physics-engine/Dynamics/Joint/rpSliderJoint.h \
     engine/physics-engine/Dynamics/Solver/rpContactSolver.h \
-    engine/physics-engine/Dynamics/Solver/rpSequentialImpulseObjectSolver.h \
     engine/physics-engine/Dynamics/dynamics.h \
     engine/physics-engine/Dynamics/rpDynamicsWorld.h \
     engine/physics-engine/Dynamics/rpTimer.h \
@@ -394,8 +392,6 @@ HEADERS  += widget.h \
     engine/physics-engine/Geometry/QuickHull/QuickHull.hpp \
     engine/physics-engine/Geometry/QuickHull/Types.hpp \
     engine/physics-engine/Geometry/geometry.h \
-    engine/physics-engine/Geometry/rpGrahamScan2dConvexHull.h \
-    engine/physics-engine/Geometry/rpPolygonClipping.h \
     engine/physics-engine/LinearMaths/mathematics.h \
     engine/physics-engine/LinearMaths/rpGyroscopic.h \
     engine/physics-engine/LinearMaths/rpLinearMtah.h \
@@ -413,8 +409,6 @@ HEADERS  += widget.h \
     engine/physics-engine/LinearMaths/rpVector2D.h \
     engine/physics-engine/LinearMaths/rpVector3D.h \
     engine/physics-engine/Memory/memory.h \
-    engine/physics-engine/Memory/rpAlignedallocator.h \
-    engine/physics-engine/Memory/rpAlignedobjectarray.h \
     engine/physics-engine/Memory/rpList.h \
     engine/physics-engine/Memory/rpStack.h \
     engine/physics-engine/config.h \
@@ -468,7 +462,12 @@ HEADERS  += widget.h \
     engine/physics-engine/Body/rpPhysicsBody.h \
     engine/physics-engine/Body/rpPhysicsObject.h \
     engine/physics-engine/Body/rpRigidPhysicsBody.h \
-    engine/physics-engine/Collision/rpContactManager.h
+    engine/physics-engine/Collision/rpContactManager.h \
+    engine/physics-engine/Dynamics/rpIsland.h \
+    engine/physics-engine/Memory/MemoryAllocator.h \
+    engine/physics-engine/Dynamics/Solver/rpContactSolverSequentialImpulseObject.h \
+    engine/physics-engine/Geometry/QuickClipping/rpQuickClippingPolygons.h \
+    engine/physics-engine/Collision/Manifold/manifold.h
 
 FORMS    += widget.ui \
     formrunscript.ui
