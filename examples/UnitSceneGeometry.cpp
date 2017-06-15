@@ -42,7 +42,7 @@ UnitSceneGeometry::UnitSceneGeometry()
 
 void UnitSceneGeometry::initCamera()
 {
-    _bb_ = true;
+    _bb_ = false;
 
     width  = 600;
     height = 400;
@@ -82,14 +82,14 @@ void UnitSceneGeometry::initGeometry()
 
 
 
-    const int NbSize = 50;
+    const int NbSize = 140;
     UltimatePhysicsBody *bodies[NbSize];
-    for( int i = 0; i < NbSize; ++i)
+    for( int i = 0; i < NbSize; i++ )
     {
 
         //************************************************//
         Mesh *model1 = new MeshBox( Vector3(5,4,5) );
-        model1->translateWorld( Vector3::Y * 5.0 * i /*+ Vector3::X * 2.0 * sin(i)*/ );
+        model1->translateWorld( Vector3::Y * 5.0 * i + Vector3::X * 2.0 * sin(i) );
         model1->setColorToAllVertices(Color(1,0,0,1));
         mMeshes.push_back(model1);
 
@@ -136,24 +136,23 @@ void UnitSceneGeometry::render(float FrameTime)
      mCamera.LookAt( mEye , mCenter  , mUp );
 
      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-     //glLoadIdentity();
+     glLoadIdentity();
 
 
-//     glMatrixMode(GL_PROJECTION);
-//     glLoadMatrixf(mCamera.getProjectionMatrix().getTranspose().dataBlock());
+     glMatrixMode(GL_PROJECTION);
+     glLoadMatrixf(mCamera.getProjectionMatrix().getTranspose().dataBlock());
 
-//     glMatrixMode(GL_MODELVIEW);
-//     glLoadMatrixf(mCamera.getViewMatrix().getTranspose().dataBlock());
+     glMatrixMode(GL_MODELVIEW);
+     glLoadMatrixf(mCamera.getViewMatrix().getTranspose().dataBlock());
 
 
-//     ///------------ draw ---------------///
+     ///------------ draw ---------------///
 
-//     for(unsigned int i=0; i < mMeshes.size(); ++i)
-//     {
-//            mMeshes[i]->Draw();
-//         // mMeshes[i]->DrawOpenGL(&mProgramShader);
-//     }
-
+     for(unsigned int i=0; i < mMeshes.size(); ++i)
+     {
+            mMeshes[i]->Draw();
+         // mMeshes[i]->DrawOpenGL(&mProgramShader);
+     }
 
 
 
@@ -162,13 +161,15 @@ void UnitSceneGeometry::render(float FrameTime)
 
 void UnitSceneGeometry::update()
 {
-      if(!_bb_) return;
+
+    if(!_bb_) return;
 
 
-      if( world != NULL )
-      {
-          world->update( (1.0/60.0) );
-      }
+    if( world != NULL )
+    {
+        world->updateFixedStep( (1.0/60.0) );
+    }
+
 
 }
 

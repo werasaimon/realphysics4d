@@ -2,6 +2,9 @@
 #include <QFile>
 
 
+#include <GL/freeglut.h>
+
+
 namespace
 {
 
@@ -172,6 +175,7 @@ void UnitSceneLuaInterpretationSDK::render(float FrameTime)
     //    glEnable(GL_CULL_FACE);
 
 
+
     try
     {
         luabind::call_function<void>(mLuaMashine.getVirtualMashinLua(), "render" , this);
@@ -180,6 +184,7 @@ void UnitSceneLuaInterpretationSDK::render(float FrameTime)
     {
        // cout<< "is not initilization function render" <<endl;
     }
+
 
 }
 
