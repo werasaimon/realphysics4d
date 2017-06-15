@@ -133,7 +133,7 @@ void rpCollisionWorld::UpdateCollision()
 	/**/
 
 
-	mCollisionDetection.computeCollisionDetection(mCollisionContactOverlappingPairs);
+    mCollisionDetection.computeCollisionDetectionAllPairs(mCollisionContactOverlappingPairs);
 
 
 

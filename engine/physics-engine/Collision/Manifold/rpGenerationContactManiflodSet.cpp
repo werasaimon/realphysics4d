@@ -156,15 +156,15 @@ SIMD_INLINE void rpGenerationContactManiflodSet::CollidePolygonContacts(const Ve
 		                                                                const Vector3* Clipper, int iClipperSize)
 {
 
-    rpQuickClippingPolygons polyClipping(Poly, iPolySize, Clipper,iClipperSize);
-	if (polyClipping.isComputeClippingToPoly())
+    rpQuickClippingPolygons *polyClipping = new rpQuickClippingPolygons(Poly, iPolySize, Clipper,iClipperSize);
+    if (polyClipping->isComputeClippingToPoly())
 	{
 		Vector3 ClipperNormal = Vector3::planeNormal(Poly[0], Poly[1], Poly[2]);
 		scalar clipper_d = Poly[0].dot(ClipperNormal);
 
-		for (int i = 0; i < polyClipping.getSizeClipVertices(); i++)
+        for (int i = 0; i < polyClipping->getSizeClipVertices(); i++)
 		{
-            Vector3 PB = polyClipping.getOutClippingPoint(i);
+            Vector3 PB = polyClipping->getOutClippingPoint(i);
 			scalar dist = (PB.dot(ClipperNormal)) - clipper_d;
 
 			if ((dist) <= 0)
@@ -180,7 +180,7 @@ SIMD_INLINE void rpGenerationContactManiflodSet::CollidePolygonContacts(const Ve
 			}
 		}
 	}
-    polyClipping.Destroy();
+    delete polyClipping;
 }
 
 //==============================================================================//
@@ -302,9 +302,6 @@ void rpGenerationContactManiflodSet::computeContacteManiflodSet( rpContactManifo
 
     free(SupportVertA);
     free(SupportVertB);
-
-//    delete[] SupportVertA;
-//    delete[] SupportVertB;
 
 
 /**

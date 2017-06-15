@@ -5,7 +5,7 @@
  *      Author: wera
  */
 
-#include "../Geometry/rpPolygonClipping.h"
+#include "rpQuickClippingPolygons.h"
 #include <iostream>
 using namespace std;
 
@@ -13,14 +13,8 @@ namespace real_physics
 {
 
 
-
-
 //*****************************************************************//
-
-
-
-
-bool rpPolygonClipping::isComputeClippingToPoly()
+bool rpQuickClippingPolygons::isComputeClippingToPoly()
 {
 
 	assert(mCountPolygonVertices >= 3 && mCountClipVertices >= 2);
@@ -34,7 +28,7 @@ bool rpPolygonClipping::isComputeClippingToPoly()
 
 	  rpPlane rootPlane(Normal0, mPolygonVertices[0]);
 
-	  int _NbCountA =  mCountPolygonVertices;
+      int _NbCountA =  mCountPolygonVertices;
 	  int _NbCountB =  mCountClipVertices;
 
 	  const Vector3* _axInputVerticesA = mPolygonVertices;
@@ -48,7 +42,7 @@ bool rpPolygonClipping::isComputeClippingToPoly()
 
 	  bool exceptions = (_NbCountB == 2);
 
-	  int &IteratorOut = mOutCountVertices;
+      int &IteratorOut = mOutCountVertices;
 	  int linearIterator = 0;
 
 	  Vector3 start_point;
@@ -63,11 +57,11 @@ bool rpPolygonClipping::isComputeClippingToPoly()
 	  if(_NbCountB >= 3)
 	  {
 
-		  Vector3 NormalClipPlane = Vector3::planeNormal( _axInputVerticesB[0],
-				                                          _axInputVerticesB[1],
-				                                          _axInputVerticesB[2]);
+          NormalClipPlane = Vector3::planeNormal( _axInputVerticesB[0],
+                                                  _axInputVerticesB[1],
+                                                  _axInputVerticesB[2]);
 
-		  isLookFaceToFace = (NormalClipPlane.dot(Normal0) >= 0);
+          isLookFaceToFace = (NormalClipPlane.dot(Normal0) >= 0);
 	  }
 
 	  /*************************************************/
@@ -278,9 +272,6 @@ bool rpPolygonClipping::isComputeClippingToPoly()
 	   }
 	  /*************************************************/
 
-
-	  //if( IteratorOut <= 1 && exceptions ) cout << "suka suka sukja " <<endl;
-
 	  return (IteratorOut > 1);
 }
 
@@ -289,7 +280,7 @@ bool rpPolygonClipping::isComputeClippingToPoly()
 
 
 
-const rpEdge rpPolygonClipping::MoveEdgeToIndex(int& end_index , int indicatorEDGE) const
+const rpEdge rpQuickClippingPolygons::MoveEdgeToIndex(int& end_index , int indicatorEDGE) const
 {
 
     int NbCount = 0;
@@ -324,7 +315,7 @@ const rpEdge rpPolygonClipping::MoveEdgeToIndex(int& end_index , int indicatorED
 
 //****************   Help Function ****************************//
 
-void rpPolygonClipping::CoretionIndex(int& _out0, int& _out1, int _max, int& _i)
+void rpQuickClippingPolygons::CoretionIndex(int& _out0, int& _out1, int _max, int& _i)
 {
 	int index = (_i >= 0) ? _i : _i + _max;
 	int indexation = (index >= 0 && index < _max) ? index : 0;
@@ -347,7 +338,7 @@ void rpPolygonClipping::CoretionIndex(int& _out0, int& _out1, int _max, int& _i)
 
 
 
-int rpPolygonClipping::nextMoveIndexToEdges( bool bPlaneAIMSLookToLineA,
+int rpQuickClippingPolygons::nextMoveIndexToEdges( bool bPlaneAIMSLookToLineA,
 		                                     bool aPlaneAIMSLookToLineB,
 	 	                                     bool isLeftClassification,
 											 int& moveIndexA,
@@ -416,7 +407,7 @@ int rpPolygonClipping::nextMoveIndexToEdges( bool bPlaneAIMSLookToLineA,
 
 
 
-void rpPolygonClipping::MoveIndex(int& index , bool isLookFaceToFace)
+void rpQuickClippingPolygons::MoveIndex(int& index , bool isLookFaceToFace)
 {
 	 (isLookFaceToFace)? index++ : index--;
 }

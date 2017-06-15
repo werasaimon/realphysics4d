@@ -12,31 +12,33 @@ namespace real_physics
 {
 
 
-class rpGEN_Link
+template<class T>
+class  rpListElement
 {
   public:
 
-    rpGEN_Link() : m_next(0), m_prev(0)
+    rpListElement()
+    : m_next(0),
+      m_prev(0)
+    {
+    }
+
+    rpListElement(rpListElement *next, rpListElement *prev)
+    : m_next(next),
+      m_prev(prev)
     {
     }
 
 
-
-    rpGEN_Link(rpGEN_Link *next, rpGEN_Link *prev)
-    : m_next(next), m_prev(prev)
-    {
-    }
-
-
-    rpGEN_Link *getNext() const { return m_next; }
-    rpGEN_Link *getPrev() const { return m_prev; }
+    rpListElement *getNext() const { return m_next; }
+    rpListElement *getPrev() const { return m_prev; }
 
 
     bool isHead() const { return m_prev == 0; }
     bool isTail() const { return m_next == 0; }
 
 
-    void insertBefore(rpGEN_Link *link)
+    void insertBefore(rpListElement *link)
     {
         m_next         = link;
         m_prev         = link->m_prev;
@@ -45,7 +47,7 @@ class rpGEN_Link
     }
 
 
-    void insertAfter(rpGEN_Link *link)
+    void insertAfter(rpListElement *link)
     {
         m_next         = link->m_next;
         m_prev         = link;
@@ -60,34 +62,61 @@ class rpGEN_Link
         m_prev->m_next = m_next;
     }
 
- private:
 
-    rpGEN_Link  *m_next;
-    rpGEN_Link  *m_prev;
+
+    ///Get real value
+    T *getPointer() const;
+
+    void setPointer(T *pointer);
+
+private:
+
+    rpListElement  *m_next;
+    rpListElement  *m_prev;
+
+    ///pointer value
+    T *m_pointer;
 };
 
 
-class rpGEN_List
+///Get real value
+template< class T >
+T *rpListElement<T>::getPointer() const
+{
+   return m_pointer;
+}
+
+template< class T >
+void rpListElement<T>::setPointer(T *pointer)
+{
+   m_pointer = pointer;
+}
+
+
+template<class T>
+class rpList
 {
   public:
 
-    rpGEN_List()
+    rpList()
     : m_head(&m_tail, 0),
 	  m_tail(0, &m_head)
     {
     }
 
-    rpGEN_Link *getHead() const { return m_head.getNext(); }
-    rpGEN_Link *getTail() const { return m_tail.getPrev(); }
+    rpListElement<T> *getHead() const { return m_head.getNext(); }
+    rpListElement<T> *getTail() const { return m_tail.getPrev(); }
 
-    void addHead(rpGEN_Link *link) { link->insertAfter(&m_head); }
-    void addTail(rpGEN_Link *link) { link->insertBefore(&m_tail); }
+    void addHead(rpListElement<T> *link) { link->insertAfter(&m_head); }
+    void addTail(rpListElement<T> *link) { link->insertBefore(&m_tail); }
 
  private:
 
-    rpGEN_Link m_head;
-    rpGEN_Link m_tail;
+    rpListElement<T> m_head;
+    rpListElement<T> m_tail;
 };
+
+
 
 
 } /* namespace real_physics */

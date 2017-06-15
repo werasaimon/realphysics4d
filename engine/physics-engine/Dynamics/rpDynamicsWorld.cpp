@@ -22,7 +22,11 @@ rpDynamicsWorld::rpDynamicsWorld(const Vector3& gravity)
   mNbVelocitySolverIterations(DEFAULT_VELOCITY_SOLVER_NB_ITERATIONS),
   mNbPositionSolverIterations(DEFAULT_POSITION_SOLVER_NB_ITERATIONS),
   mTimer( scalar(1.0) ) ,
-  mIsSleepingEnabled(SLEEPING_ENABLED)
+  mIsSleepingEnabled(SLEEPING_ENABLED) ,
+  mNbIslands(0),
+  mNbIslandsCapacity(0),
+  mIslands(NULL),
+  mNbBodiesCapacity(0)
 {
     resetContactManifoldListsOfBodies();
 
@@ -136,8 +140,12 @@ void rpDynamicsWorld::updateFixedTime(scalar timeStep)
 
     /****************************/
 
-    // Dynamica phase
-    Dynamics(timeStep);
+    // Compute the islands (separate groups of bodies with constraints between each others)
+    computeIslands();
+
+
+    // Solve the contacts and constraints joint
+    solve(timeStep);
 
     /****************************/
 
@@ -159,12 +167,6 @@ void rpDynamicsWorld::updateFixedTime(scalar timeStep)
 void rpDynamicsWorld::Collision()
 {
 
-	for( auto pair : mContactSolvers )
-	{
-		pair.second->isFakeCollid = false;
-	}
-
-
 	/// delete overlapping pairs collision
     if(!mCollisionContactOverlappingPairs.empty())
 	{
@@ -177,44 +179,22 @@ void rpDynamicsWorld::Collision()
 	}
 
 	/// Overlapping pairs in contact (during the current Narrow-phase collision detection)
-	mCollisionDetection.computeCollisionDetection(mCollisionContactOverlappingPairs);
+    mCollisionDetection.computeCollisionDetectionAllPairs(mCollisionContactOverlappingPairs);
 
-
-	for( auto pair : mCollisionContactOverlappingPairs )
-	{
-
-		for (int i = 0; i < pair.second->getContactManifoldSet().getNbContactManifolds(); ++i)
-		{
-			rpContactManifold* maniflod = pair.second->getContactManifoldSet().getContactManifold(i);
-			overlappingpairid pairId = rpOverlappingPair::computeID( maniflod->mShape1 , maniflod->mShape2 );
-			//pairKey key(maniflod->mShape1 , maniflod->mShape2);
-		    addChekCollisionPair(pairId, maniflod);
-		}
-	}
-
-	/// delete overlapping pairs collision
-	for( auto pair : mContactSolvers )
-	{
-		if( !pair.second->isFakeCollid )
-		{
-            delete pair.second;
-            mContactSolvers.erase(pair.first);
-		}
-	}
 
 }
 
 
 
-void rpDynamicsWorld::Dynamics( scalar timeStep )
+void rpDynamicsWorld::solve( scalar timeStep )
 {
 
     //---------------------------------------------------------------------//
 
     for( auto it = mPhysicsJoints.begin(); it != mPhysicsJoints.end(); ++it )
     {
-    	(*it)->initBeforeSolve(timeStep);
-    	(*it)->warmstart();
+        (*it)->initBeforeSolve(timeStep);
+        (*it)->warmstart();
     }
 
     //---------------------------------------------------------------------//
@@ -232,10 +212,10 @@ void rpDynamicsWorld::Dynamics( scalar timeStep )
 
 	for( uint i = 0; i < mNbVelocitySolverIterations; ++i)
 	{
-		for( auto it = mPhysicsJoints.begin(); it != mPhysicsJoints.end(); ++it )
-		{
-			(*it)->solveVelocityConstraint();
-		}
+        for( auto it = mPhysicsJoints.begin(); it != mPhysicsJoints.end(); ++it )
+        {
+            (*it)->solveVelocityConstraint();
+        }
 
 		for( auto pair : mContactSolvers )
 		{
@@ -247,10 +227,10 @@ void rpDynamicsWorld::Dynamics( scalar timeStep )
 
 	for( uint i = 0; i < mNbPositionSolverIterations; ++i)
 	{
-		for( auto it = mPhysicsJoints.begin(); it != mPhysicsJoints.end(); ++it )
-		{
-			(*it)->solvePositionConstraint();
-		}
+        for( auto it = mPhysicsJoints.begin(); it != mPhysicsJoints.end(); ++it )
+        {
+            (*it)->solvePositionConstraint();
+        }
 
 		for( auto pair : mContactSolvers )
 		{
@@ -258,7 +238,6 @@ void rpDynamicsWorld::Dynamics( scalar timeStep )
 		}
 	}
 
-    //---------------------------------------------------------------------//
 
 }
 
@@ -302,32 +281,303 @@ void rpDynamicsWorld::updateBodiesState(scalar timeStep)
 void rpDynamicsWorld::updateSleepingBodies(scalar timeStep)
 {
 
+    const scalar sleepLinearVelocitySquare  = (DEFAULT_SLEEP_LINEAR_VELOCITY * DEFAULT_SLEEP_LINEAR_VELOCITY);
+    const scalar sleepAngularVelocitySquare = (DEFAULT_SLEEP_ANGULAR_VELOCITY * DEFAULT_SLEEP_ANGULAR_VELOCITY);
+    const scalar sleepAngularSplitSquare    = (DEFAULT_SLEEP_SPLIT  * DEFAULT_SLEEP_SPLIT);
 
-    for( auto it = mPhysicsBodies.begin(); it != mPhysicsBodies.end(); ++it )
+
+    // For each island of the world
+    for (uint i=0; i<mNbIslands; i++)
     {
-       (*it)->updateSleeping(timeStep);
+
+        scalar minSleepTime = DECIMAL_LARGEST;
+
+        // For each body of the island
+        rpRigidPhysicsBody** bodies = mIslands[i]->getBodies();
+        for (uint b=0; b < mIslands[i]->getNbBodies(); b++)
+        {
+
+            // Skip static bodies
+            if (bodies[b]->getType() == STATIC) continue;
+
+            // If the body is velocity is large enough to stay awake
+
+            // If the body is velocity is large enough to stay awake
+            if (bodies[b]->mLinearVelocity.lengthSquare()       >  sleepLinearVelocitySquare   ||
+                bodies[b]->mAngularVelocity.lengthSquare()      >  sleepAngularVelocitySquare  ||
+                bodies[b]->mSplitLinearVelocity.lengthSquare()  >  sleepAngularSplitSquare     ||
+                bodies[b]->mSplitAngularVelocity.lengthSquare() >  sleepAngularSplitSquare     ||
+                !bodies[b]->isAllowedToSleep())
+            {
+                // Reset the sleep time of the body
+                bodies[b]->mSleepTime = scalar(0.0);
+                minSleepTime = scalar(0.0);
+            }
+            else
+            {  // If the body velocity is bellow the sleeping velocity threshold
+
+                // Increase the sleep time
+                bodies[b]->mSleepTime += timeStep;
+                if (bodies[b]->mSleepTime < minSleepTime)
+                {
+                    minSleepTime = bodies[b]->mSleepTime;
+                }
+            }
+        }
+
+        // If the velocity of all the bodies of the island is under the
+        // sleeping velocity threshold for a period of time larger than
+        // the time required to become a sleeping body
+        if ( minSleepTime >= DEFAULT_TIME_BEFORE_SLEEP )
+        {
+
+            // Put all the bodies of the island to sleep
+            for (uint b=0; b < mIslands[i]->getNbBodies(); b++)
+            {
+                bodies[b]->setIsSleeping(true);
+            }
+        }
     }
 
+
 }
-/**/
 
 
-void rpDynamicsWorld::addChekCollisionPair( overlappingpairid keyPair, rpContactManifold* maniflod )
+
+// Compute the islands of awake bodies.
+/// An island is an isolated group of rigid bodies that have constraints (joints or contacts)
+/// between each other. This method computes the islands at each time step as follows: For each
+/// awake rigid body, we run a Depth First Search (DFS) through the constraint graph of that body
+/// (graph where nodes are the bodies and where the edges are the constraints between the bodies) to
+/// find all the bodies that are connected with it (the bodies that share joints or contacts with
+/// it). Then, we create an island with this group of connected bodies.
+void rpDynamicsWorld::computeIslands()
 {
 
-	if(mContactSolvers.find(keyPair) == mContactSolvers.end())
+
+
+    for( auto pair : mContactSolvers )
+    {
+        pair.second->isFakeCollid = false;
+    }
+
+
+    uint nbBodies = mPhysicsBodies.size();
+
+
+    // Clear all the islands
+    for (uint i=0; i<mNbIslands; i++)
+    {
+        // Call the island destructor
+        // Release the allocated memory for the island
+        delete mIslands[i];
+    }
+
+    // Allocate and create the array of islands
+    if (mNbIslandsCapacity != nbBodies && nbBodies > 0)
+    {
+        if (mNbIslandsCapacity > 0)
+        {
+            delete[] mIslands;
+        }
+
+        mNbIslandsCapacity = nbBodies;
+        mIslands = new rpIsland*[mNbIslandsCapacity];
+    }
+
+    mNbIslands = 0;
+
+    int nbContactManifolds = 0;
+
+    // Reset all the isAlreadyInIsland variables of bodies, joints and contact manifolds
+    for (auto it = mPhysicsBodies.begin(); it != mPhysicsBodies.end(); ++it)
+    {
+        int nbBodyManifolds = (*it)->resetIsAlreadyInIslandAndCountManifolds();
+        nbContactManifolds += nbBodyManifolds;
+    }
+
+    for (auto it = mPhysicsJoints.begin(); it !=  mPhysicsJoints.end(); ++it)
+    {
+        (*it)->mIsAlreadyInIsland = false;
+    }
+
+
+    rpRigidPhysicsBody** stackBodiesToVisit = new rpRigidPhysicsBody*[nbBodies];
+    int i=0;
+    for (auto it = mPhysicsBodies.begin(); it != mPhysicsBodies.end(); ++it )
+    {
+        rpPhysicsBody* body = *it;
+        stackBodiesToVisit[i++] =    static_cast<rpRigidPhysicsBody*>(body);
+    }
+
+
+    // For each rigid body of the world
+    for (auto it = mPhysicsBodies.begin(); it != mPhysicsBodies.end(); ++it)
+    {
+
+        rpPhysicsBody* body = *it;
+
+        // If the body has already been added to an island, we go to the next body
+        if (body->mIsAlreadyInIsland) continue;
+
+        // If the body is static, we go to the next body
+        if (body->getType() == STATIC) continue;
+
+        // If the body is sleeping or inactive, we go to the next body
+        if (body->isSleeping() || !body->isActive()) continue;
+
+        // Reset the stack of bodies to visit
+        uint stackIndex = 0;
+        stackBodiesToVisit[stackIndex] = static_cast<rpRigidPhysicsBody*>(body);
+        stackIndex++;
+        body->mIsAlreadyInIsland = true;
+
+
+
+        // Create the new island
+        mIslands[mNbIslands] = new rpIsland( nbBodies , nbContactManifolds , mPhysicsJoints.size());
+
+
+
+        // While there are still some bodies to visit in the stack
+        while (stackIndex > 0)
+        {
+
+            // Get the next body to visit from the stack
+            stackIndex--;
+            rpRigidPhysicsBody* bodyToVisit = stackBodiesToVisit[stackIndex];
+            assert(bodyToVisit->isActive());
+
+            // Awake the body if it is slepping
+            bodyToVisit->setIsSleeping(false);
+
+            // Add the body into the island
+            mIslands[mNbIslands]->addBody(bodyToVisit);
+
+            // If the current body is static, we do not want to perform the DFS
+            // search across that body
+            if (bodyToVisit->getType() == STATIC) continue;
+
+            // For each contact manifold in which the current body is involded
+            rpContactManifoldListElement* contactElement;
+            for (contactElement = bodyToVisit->mContactManifoldsList; contactElement != NULL;  contactElement = contactElement->next)
+            {
+                rpContactManifold* contactManifold = contactElement->contactManifold;
+
+                assert(contactManifold->getNbContactPoints() > 0);
+
+                // Check if the current contact manifold has already been added into an island
+                if (contactManifold->isAlreadyInIsland()) continue;
+
+                // Add the contact manifold into the island
+                //mIslands[mNbIslands]->addContactManifold(contactManifold);
+                contactManifold->mIsAlreadyInIsland = true;
+
+
+                // Add the contact manifold
+                addChekCollisionPair(contactManifold);
+
+                // Get the other body of the contact manifold
+                rpRigidPhysicsBody* body1 = static_cast<rpRigidPhysicsBody*>(contactManifold->getBody1());
+                rpRigidPhysicsBody* body2 = static_cast<rpRigidPhysicsBody*>(contactManifold->getBody2());
+                rpRigidPhysicsBody* otherBody = (body1->getID() == bodyToVisit->getID()) ? body2 : body1;
+
+                // Check if the other body has already been added to the island
+                if (otherBody->mIsAlreadyInIsland) continue;
+
+                // Insert the other body into the stack of bodies to visit
+                stackBodiesToVisit[stackIndex] = otherBody;
+                stackIndex++;
+                otherBody->mIsAlreadyInIsland = true;
+            }
+
+                //            // For each joint in which the current body is involved
+                //            rpJointListElement* jointElement;
+                //            for (jointElement = bodyToVisit->mJointsList; jointElement != NULL; jointElement = jointElement->next)
+                //            {
+                //                rpJoint* joint = jointElement->joint;
+
+                //                // Check if the current joint has already been added into an island
+                //                if (joint->isAlreadyInIsland()) continue;
+
+                //                // Add the joint into the island
+                //                mIslands[mNbIslands]->addJoint(joint);
+                //                joint->mIsAlreadyInIsland = true;
+
+                //                // Get the other body of the contact manifold
+                //                rpRigidPhysicsBody* body1 = static_cast<rpRigidPhysicsBody*>(joint->getBody1());
+                //                rpRigidPhysicsBody* body2 = static_cast<rpRigidPhysicsBody*>(joint->getBody2());
+                //                rpRigidPhysicsBody* otherBody = (body1->getID() == bodyToVisit->getID()) ? body2 : body1;
+
+                //                // Check if the other body has already been added to the island
+                //                if (otherBody->mIsAlreadyInIsland) continue;
+
+                //                // Insert the other body into the stack of bodies to visit
+                //                stackBodiesToVisit[stackIndex] = otherBody;
+                //                stackIndex++;
+                //                otherBody->mIsAlreadyInIsland = true;
+                //            }
+        }
+
+
+
+        // Reset the isAlreadyIsland variable of the static bodies so that they
+        // can also be included in the other islands
+        for (uint i=0; i < mIslands[mNbIslands]->mNbBodies; i++)
+        {
+
+            if (mIslands[mNbIslands]->mBodies[i]->getType() == STATIC)
+            {
+                mIslands[mNbIslands]->mBodies[i]->mIsAlreadyInIsland = false;
+            }
+        }
+
+        mNbIslands++;
+
+
+
+    }
+
+
+    delete[] stackBodiesToVisit;
+
+
+
+    /// delete overlapping pairs collision
+    for( auto pair : mContactSolvers )
+    {
+        if( !pair.second->isFakeCollid )
+        {
+            delete pair.second;
+            mContactSolvers.erase(pair.first);
+        }
+    }
+
+
+}
+
+
+
+///add colision check pairs
+void rpDynamicsWorld::addChekCollisionPair( rpContactManifold* manifold )
+{
+
+    overlappingpairid keyPair = rpOverlappingPair::computeID( manifold->mShape1 ,
+                                                              manifold->mShape2 );
+
+    if(mContactSolvers.find(keyPair) == mContactSolvers.end())
 	{
 
-		rpRigidPhysicsBody *body1 = static_cast<rpRigidPhysicsBody*>(maniflod->mShape2->getBody());
-		rpRigidPhysicsBody *body2 = static_cast<rpRigidPhysicsBody*>(maniflod->mShape1->getBody());
+        rpRigidPhysicsBody *body1 = static_cast<rpRigidPhysicsBody*>(manifold->mShape2->getBody());
+        rpRigidPhysicsBody *body2 = static_cast<rpRigidPhysicsBody*>(manifold->mShape1->getBody());
 
 
-		rpSequentialImpulseObjectSolver *solverObject = new rpSequentialImpulseObjectSolver( body1 , body2 );
+        rpContactSolver *solverObject = new rpContactSolverSequentialImpulseObject( body1 , body2 );
 
 		mContactSolvers.insert( std::make_pair(keyPair, solverObject) );
 	}
 
-	mContactSolvers.find(keyPair)->second->initManiflod(maniflod);
+    mContactSolvers.find(keyPair)->second->initManiflod(manifold);
 	mContactSolvers.find(keyPair)->second->isFakeCollid = true;
 
 }

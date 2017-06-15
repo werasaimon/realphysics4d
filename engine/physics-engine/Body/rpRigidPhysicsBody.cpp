@@ -298,44 +298,6 @@ SIMD_INLINE void rpRigidPhysicsBody::updateBroadPhaseState() const
 
 
 
-SIMD_INLINE void rpRigidPhysicsBody::updateSleeping(scalar timeStep)
-{
-
-    const scalar sleepLinearVelocitySquare  = (DEFAULT_SLEEP_LINEAR_VELOCITY * DEFAULT_SLEEP_LINEAR_VELOCITY);
-    const scalar sleepAngularVelocitySquare = (DEFAULT_SLEEP_ANGULAR_VELOCITY * DEFAULT_SLEEP_ANGULAR_VELOCITY);
-    const scalar sleepAngularSplitSquare    = (DEFAULT_SLEEP_SPLIT  * DEFAULT_SLEEP_SPLIT);
-
-
-    // Skip static bodies
-    if (this->getType() == STATIC) return;
-
-    // If the body is velocity is large enough to stay awake
-    if (this->mLinearVelocity.lengthSquare()       >  sleepLinearVelocitySquare   ||
-        this->mAngularVelocity.lengthSquare()      >  sleepAngularVelocitySquare  ||
-        this->mSplitLinearVelocity.lengthSquare()  >  sleepAngularSplitSquare     ||
-        this->mSplitAngularVelocity.lengthSquare() >  sleepAngularSplitSquare )
-    {
-
-        // Reset the sleep time of the body
-        this->mSleepTime = scalar(0.0);
-
-        this->setIsSleeping(false);
-    }
-    else
-    {  // If the body velocity is bellow the sleeping velocity threshold
-
-        // Increase the sleep time
-        this->mSleepTime += timeStep;
-
-        if (this->mSleepTime >= DEFAULT_TIME_BEFORE_SLEEP )
-        {
-            this->mSleepTime = DEFAULT_TIME_BEFORE_SLEEP;
-            this->setIsSleeping(true);
-        }
-    }
-}
-
-
 
 SIMD_INLINE void rpRigidPhysicsBody::setType(BodyType type)
 {

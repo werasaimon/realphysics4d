@@ -12,8 +12,7 @@
 
 #include "../Geometry/QuickHull/ConvexHull.hpp"
 #include "../Geometry/QuickHull/QuickHull.hpp"
-#include "../Geometry/rpGrahamScan2dConvexHull.h"
-#include "../Geometry/rpPolygonClipping.h"
+#include "../Geometry/QuickClipping/rpQuickClippingPolygons.h"
 
 namespace  real_physics
 {

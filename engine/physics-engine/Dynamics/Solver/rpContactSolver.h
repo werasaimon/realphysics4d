@@ -22,9 +22,12 @@ class rpPhysicsBody;
 class rpContactSolver
 {
 
- protected:
+  protected:
 
-	bool isFakeCollid;
+    //------- Attribute ---------//
+    bool isFakeCollid;
+
+
 
 	public:
 	         rpContactSolver();

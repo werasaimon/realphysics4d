@@ -199,9 +199,6 @@ class rpRigidPhysicsBody: public rpPhysicsBody
 
 		/*******************************************************/
 
-        /// Sleeping of body
-        void updateSleeping( scalar timeStep );
-
 
 
 	    /// Material get to Body
@@ -246,7 +243,7 @@ class rpRigidPhysicsBody: public rpPhysicsBody
 
 		// -------------------- Friendships -------------------- //
 		friend class rpDynamicsWorld;
-        friend class rpSequentialImpulseObjectSolver;
+        friend class rpContactSolverSequentialImpulseObject;
 
 		friend class rpDistanceJoint;
 		friend class rpFixedJoint;

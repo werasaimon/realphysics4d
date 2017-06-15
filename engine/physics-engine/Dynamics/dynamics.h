@@ -14,7 +14,7 @@
 
 #include "../Body/Material/rpPhysicsMaterial.h"
 #include "../Dynamics/Solver/rpContactSolver.h"
-#include "../Dynamics/Solver/rpSequentialImpulseObjectSolver.h"
+#include "../Dynamics/Solver/rpContactSolverSequentialImpulseObject.h"
 
 #include "Joint/rpJoint.h"
 #include "Joint/rpBallAndSocketJoint.h"
