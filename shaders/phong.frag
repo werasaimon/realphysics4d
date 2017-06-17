@@ -59,6 +59,7 @@ void main()
 	
 	//--------------------- Light mapping ------------------------------//
 
+
     // Compute the ambient term
     vec3 ambient = lightAmbientColor;
 
@@ -67,16 +68,18 @@ void main()
     if (Texturing > 0) textureColor = texture2D(texture, texCoords).rgb;
 
     // Compute the diffuse term
-    vec3 L = normalize(lightWorldPosition - worldPosition);
+    vec3 L = normalize((lightWorldPosition - worldPosition));
     vec3 N = normalize(worldNormal);
 
     vec3 diffuse = lightDiffuseColor * max(dot(N, L), 0.0) * textureColor;
 
     // Compute the specular term
-    vec3 V = normalize(cameraWorldPosition - worldPosition);
+    vec3 V = normalize((cameraWorldPosition - worldPosition));
     vec3 H = normalize(V + L);
 
-    vec3 specular = lightSpecularColor * pow(max(dot(N, H), 0), shininess);
+    vec3 R = reflect ( -V, N );
+
+    vec3 specular = lightSpecularColor * pow(max(dot(L,R), 0), shininess);
 
 
 

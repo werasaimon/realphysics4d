@@ -41,7 +41,6 @@ varying vec4   ShadowMapTexCoord;       // Texture shadow coordinates 4d
 varying vec2   texCoords;               // Texture coordinates 2d
 
 
-
 void main() 
 {
     // Compute the vertex position
@@ -59,6 +58,8 @@ void main()
     // Compute the shadow
     ShadowMapTexCoord = ShadowMatrix * worldPos;
 
+
+    
     // Compute the clip-space vertex coordinates
-    gl_Position = projectionMatrix * worldToViewMatrix * worldPos;
+    gl_Position =  projectionMatrix * worldToViewMatrix * worldPos;
 }
