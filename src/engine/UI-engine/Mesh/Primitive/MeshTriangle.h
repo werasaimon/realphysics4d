@@ -1,10 +1,3 @@
-/*
- * MeshTriangle.h
- *
- *  Created on: 17 нояб. 2016 г.
- *      Author: wera
- */
-
 #ifndef OPENGL_FRAMEWORK_MESH_PRIMITIVE_MESHTRIANGLE_H_
 #define OPENGL_FRAMEWORK_MESH_PRIMITIVE_MESHTRIANGLE_H_
 

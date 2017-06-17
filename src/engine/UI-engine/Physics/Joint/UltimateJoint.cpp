@@ -3,7 +3,6 @@
 namespace utility_engine
 {
 
-
 UltimateJoint::UltimateJoint(real_physics::rpJoint *_joint)
  : mJoint(_joint)
 {

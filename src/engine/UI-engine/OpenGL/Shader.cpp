@@ -1,10 +1,3 @@
-/*
- * Shader.cpp
- *
- *  Created on: 27.08.2016
- *      Author: wera
- */
-
 #include "Shader.h"
 
 #include <stdio.h>

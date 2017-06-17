@@ -1,10 +1,3 @@
-/*
- * MeshBox.cpp
- *
- *  Created on: 6 февр. 2017 г.
- *      Author: wera
- */
-
 #include "MeshBox.h"
 
 namespace utility_engine

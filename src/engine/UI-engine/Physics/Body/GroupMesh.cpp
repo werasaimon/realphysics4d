@@ -4,7 +4,6 @@
 namespace utility_engine
 {
 
-
     GroupMesh::GroupMesh()
     {
 

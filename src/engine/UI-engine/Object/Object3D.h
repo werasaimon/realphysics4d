@@ -1,10 +1,3 @@
-/*
- * object3D.h
- *
- *  Created on: 9 окт. 2016 г.
- *      Author: wera
- */
-
 #ifndef MESH_OBJECT3D_H_
 #define MESH_OBJECT3D_H_
 

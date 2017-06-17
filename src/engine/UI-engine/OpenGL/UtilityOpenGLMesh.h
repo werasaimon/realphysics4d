@@ -1,10 +1,3 @@
-/*
- * UtilityOpenGLMesh.h
- *
- *  Created on: 3 февр. 2017 г.
- *      Author: wera
- */
-
 #ifndef OPENGL_UTILITY_OPENGL_UTILITYOPENGLMESH_H_
 #define OPENGL_UTILITY_OPENGL_UTILITYOPENGLMESH_H_
 

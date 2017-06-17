@@ -1,10 +1,3 @@
-/*
- * MeshBox.h
- *
- *  Created on: 6 февр. 2017 г.
- *      Author: wera
- */
-
 #ifndef OPENGL_UTILITY_MESH_PRIMITIVE_MESHBOX_H_
 #define OPENGL_UTILITY_MESH_PRIMITIVE_MESHBOX_H_
 

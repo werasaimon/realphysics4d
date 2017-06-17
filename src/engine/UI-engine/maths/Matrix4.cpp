@@ -1,11 +1,3 @@
-/*
- * Matrix4.cpp
- *
- *  Created on: 1 окт. 2016 г.
- *      Author: wera
- */
-
-
 #include "Matrix4.h"
 #include "Vector2.h"
 #include "Vector3.h"

@@ -1,7 +1,6 @@
 #ifndef CONVERT_H
 #define CONVERT_H
 
-
 #include "../../Mesh/Mesh.h"
 #include "../../../physics-engine/physics.h"
 

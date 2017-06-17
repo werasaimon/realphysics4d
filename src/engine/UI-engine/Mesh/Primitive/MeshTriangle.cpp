@@ -1,9 +1,3 @@
-/*
- * MeshTriangle.cpp
- *
- *  Created on: 17 нояб. 2016 г.
- *      Author: wera
- */
 
 #include "MeshTriangle.h"
 

@@ -1,9 +1,3 @@
-/*
- * MeshPlane.cpp
- *
- *  Created on: 25 сент. 2016 г.
- *      Author: wera
- */
 
 #include "MeshPlane.h"
 

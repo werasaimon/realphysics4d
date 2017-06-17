@@ -1,10 +1,3 @@
-/*
- * MeshPlane.h
- *
- *  Created on: 25 сент. 2016 г.
- *      Author: wera
- */
-
 #ifndef MESH_MESHPLANE_H_
 #define MESH_MESHPLANE_H_
 

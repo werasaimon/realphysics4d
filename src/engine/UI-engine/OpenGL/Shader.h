@@ -1,10 +1,3 @@
-/*
- * Shader.h
- *
- *  Created on: 27.08.2016
- *      Author: wera
- */
-
 #ifndef SHADER_H_
 #define SHADER_H_
 
@@ -31,7 +24,7 @@ class Shader
 
     private :
 
-        // -------------------- Attributes -------------------- //
+        //-------------------- Attributes -----------------//
 
         // Shader object program ID
         GLuint mProgramObjectID;
@@ -41,7 +34,7 @@ class Shader
 
     public :
 
-        // -------------------- Methods -------------------- //
+        //-------------------- Methods --------------------//
 
         // Constructor
         Shader();

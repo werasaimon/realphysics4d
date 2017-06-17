@@ -1,7 +1,6 @@
 #include "camera.h"
 
 
-
 namespace utility_engine
 {
     Camera::Camera()

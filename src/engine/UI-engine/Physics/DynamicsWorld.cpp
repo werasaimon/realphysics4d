@@ -4,7 +4,6 @@
 namespace utility_engine
 {
 
-
     /// Constructor
     DynamicsWorld::DynamicsWorld(const Vector3 &gravity)
     {

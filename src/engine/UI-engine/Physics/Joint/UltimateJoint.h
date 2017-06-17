@@ -1,7 +1,6 @@
 #ifndef ULTIMATEJOINT_H
 #define ULTIMATEJOINT_H
 
-
 #include "../../../physics-engine/physics.h"
 #include "../Body/UltimatePhysicsBody.h"
 

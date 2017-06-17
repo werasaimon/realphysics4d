@@ -1,7 +1,6 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-
 #include "../Object/Object3D.h"
 
 namespace utility_engine

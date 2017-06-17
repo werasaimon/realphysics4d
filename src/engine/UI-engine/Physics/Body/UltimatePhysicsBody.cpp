@@ -5,8 +5,6 @@ namespace utility_engine
 {
 
 
-
-
 UltimatePhysicsBody::UltimatePhysicsBody( real_physics::rpPhysicsBody *_PhysicsBody)
  : mPhysicsBody(_PhysicsBody)
 {
