@@ -45,6 +45,10 @@ class UnitSceneDrawMesh: public UnitScene
 	Matrix4  mLightViewMatrix;
 
 
+	//---------- physics ----------//
+
+    DynamicsWorld *world;
+
 
   public:
 	         UnitSceneDrawMesh( Viewer* viewer );

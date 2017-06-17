@@ -11,7 +11,7 @@
 
 namespace
 {
-    static Vector3 LightPosition( 5.0f, 55.f, 25.0f);
+    static Vector3 LightPosition( 2.0f, 35.f, 15.0f);
 
     Mesh *meshTest;
 }
@@ -87,12 +87,33 @@ bool UnitSceneDrawMesh::Init()
 	//    glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 1.0f / 256.0f);
 
 
+	world = new DynamicsWorld( Vector3::Y * -30.0 );
+
+
+
+	Mesh *model0 = new MeshBox( Vector3(250,4,250) );
+	model0->translateWorld( Vector3::Y * -10.0);
+	model0->setColorToAllVertices(Color(1,1,1,1));
+	mMeshes.push_back(model0);
+
+
+	Matrix4 M;
+	M.setToIdentity();
+	UltimatePhysicsBody *body0 = world->createRigidBody( Matrix4::translationMatrix(Vector3::Y * -5) );
+	body0->addCollisionGeometry_Box( NULL , M , Vector3(150,5,150) , 20 );
+	body0->setType(real_physics::BodyType::STATIC);
+
+
+
+    const int NbSize = 100;
+    UltimatePhysicsBody *bodies[NbSize];
+
 	bool b = false;
-	for( unsigned int i = 0; i < 10; ++i )
+	for( unsigned int i = 0; i < NbSize; ++i )
 	{
 		Mesh *mesh = new MeshReadFile3DS( "Files/cub.3ds");
 
-		Vector3 pos(0, i * 7.0 ,0);
+		Vector3 pos(0, 10 + i * 7.0 , sin(i) * 2.0);
 
 		Matrix4 matrix;
 		matrix.setToIdentity();
@@ -102,6 +123,15 @@ bool UnitSceneDrawMesh::Init()
 		mesh->setTexture( mTexture[2] );
 
 		mMeshes.push_back( meshTest = mesh );
+
+
+		UltimatePhysicsBody *body1 = world->createRigidBody( mesh->getTransformMatrix() );
+		mesh->setToIdentity();
+		body1->addCollisionGeometry_ConvexHull( mesh ,mesh->getTransformMatrix() , 15 );
+
+		body1->setType( (i > 0)? real_physics::BodyType::DYNAMIC : real_physics::BodyType::STATIC );
+
+		bodies[i] = body1;
 	}
 
 
@@ -119,10 +149,17 @@ bool UnitSceneDrawMesh::Init()
 void UnitSceneDrawMesh::Render(float FrameTime)
 {
 
+
+    if(mPause) world->updateFixedStep(FrameTime);
+
+
 	mViewer->beginLookCameara();
 
 	glViewport(0, 0, mViewer->getWidth() , mViewer->getHeight());
 
+
+//
+//	glutSolidCube(5.0);
 
 //	glMatrixMode(GL_PROJECTION);
 //	glLoadMatrixf(&mViewer->getProjectionMatrix().getTranspose());
@@ -160,8 +197,10 @@ void UnitSceneDrawMesh::Render(float FrameTime)
 	mShaderProgram.setUniformValue( "Texturing" , 1);
 
 	/// Position camera and position light object
-	mShaderProgram.setUniformValue( "cameraWorldPosition" , mViewer->getCamera().getOrigin());
+	mShaderProgram.setUniformValue( "cameraWorldPosition" , mViewer->getCamera().getPosEye());
 	mShaderProgram.setUniformValue(  "lightWorldPosition" , mLight0.getOrigin());
+
+
 
 
 	/// Light
@@ -229,6 +268,7 @@ void UnitSceneDrawMesh::Render(float FrameTime)
 
 
 	mShaderProgram.unbind();
+
 
 
 }

@@ -206,7 +206,8 @@ void Viewer::keyboard(unsigned char key, int x, int y)
         default:   break;
     }
 
-    mCamera.setTransformMatrix( Matrix4::translationMatrix(cameraValue.mEyePosition) );
+    mCamera.setToIdentity();
+    mCamera.setTransformMatrix( mCamera.getTransformMatrix() * Matrix4::translationMatrix(cameraValue.mEyePosition) );
 
 }
 
