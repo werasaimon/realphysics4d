@@ -32,6 +32,19 @@ rpContactManifold::rpContactManifold(rpProxyShape* shape1, rpProxyShape* shape2 
 rpContactManifold::~rpContactManifold()
 {
 	clear();
+
+   mFrictionVector1 =  Vector3::ZERO;
+   mFrictionVector2 =  Vector3::ZERO;
+
+
+   mFrictionImpulse1 = 0;
+   mFrictionImpulse2 = 0;
+
+   mFrictionTwistImpulse = 0;
+
+   mRollingResistanceImpulse =   Vector3::ZERO;
+
+   mExtremalPenetration;
 }
 
 // Add a contact point in the manifold
@@ -109,6 +122,8 @@ void rpContactManifold::update(const Transform &transform1, const Transform &tra
 {
 
     if (mNbContactPoints == 0) return;
+
+
 
     // Update the world coordinates and penetration depth of the contact points in the manifold
     for (uint i=0; i<mNbContactPoints; i++)

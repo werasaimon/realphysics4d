@@ -8,6 +8,12 @@
 #include "rpGenerationContactManiflodSet.h"
 #include <iostream>
 
+#include <GL/freeglut.h>
+
+#include "../../../UI-engine/Mesh/Mesh.h"
+#include "../../../UI-engine/Mesh/Primitive/MeshBox.h"
+
+
 using namespace std;
 
 namespace real_physics
@@ -61,7 +67,10 @@ namespace
 
 rpGenerationContactManiflodSet::rpGenerationContactManiflodSet( const rpProxyShape* shape1, const rpProxyShape* shape2,
 		                                                        const Vector3& Axis) :
-mShape1(shape1), mShape2(shape2), mSeparatonAxis(Axis), mNbContacts(0)
+mShape1(shape1),
+mShape2(shape2),
+mSeparatonAxis(Axis),
+mNbContacts(0)
 {
 	mSeparatonAxis.normalize();
 }
@@ -147,15 +156,15 @@ SIMD_INLINE void rpGenerationContactManiflodSet::CollidePolygonContacts(const Ve
 		                                                                const Vector3* Clipper, int iClipperSize)
 {
 
-	real_physics::rpPolygonClipping polyClipping(Poly, iPolySize, Clipper,iClipperSize);
-	if (polyClipping.isComputeClippingToPoly())
+    rpQuickClippingPolygons *polyClipping = new rpQuickClippingPolygons(Poly, iPolySize, Clipper,iClipperSize);
+    if (polyClipping->isComputeClippingToPoly())
 	{
 		Vector3 ClipperNormal = Vector3::planeNormal(Poly[0], Poly[1], Poly[2]);
 		scalar clipper_d = Poly[0].dot(ClipperNormal);
 
-		for (int i = 0; i < polyClipping.getSizeClipVertices(); i++)
+        for (int i = 0; i < polyClipping->getSizeClipVertices(); i++)
 		{
-			Vector3 PB = polyClipping[i];
+            Vector3 PB = polyClipping->getOutClippingPoint(i);
 			scalar dist = (PB.dot(ClipperNormal)) - clipper_d;
 
 			if ((dist) <= 0)
@@ -165,12 +174,13 @@ SIMD_INLINE void rpGenerationContactManiflodSet::CollidePolygonContacts(const Ve
 				scalar penetration = (A - B).dot(mSeparatonAxis);
 				//scalar penetration = (A - B).dot(ClipperNormal);
 
-				rpContactPointInfo info(mSeparatonAxis, penetration = dist , A, B);
-				addInfoContact(info);
+                rpContactPointInfo infoNewContact(mSeparatonAxis, penetration = dist , A, B);
+                addInfoContact(infoNewContact);
 
 			}
 		}
 	}
+    delete polyClipping;
 }
 
 //==============================================================================//
@@ -180,8 +190,8 @@ SIMD_INLINE bool rpGenerationContactManiflodSet::ConvertSupportPointsToContacts(
 
 {
 
-	if (iNumVertsA == 0 || iNumVertsB == 0)
-		return false;
+  if (iNumVertsA == 0 || iNumVertsB == 0)
+      return false;
 
 	mNbContacts = 0;
 
@@ -252,13 +262,16 @@ SIMD_INLINE bool rpGenerationContactManiflodSet::ConvertSupportPointsToContacts(
 
 			//Swap(angleA , angleB);
 
+            // invert project cliping
 			if (angleA <= angleB)
 			{
+                // A,B clipping polygons
 				CollidePolygonContacts(SupportVertA, iNumVertsA, SupportVertB,iNumVertsB);
 
 			}
 			else
 			{
+                // B,A clipping polygons
 				CollidePolygonContacts(SupportVertB, iNumVertsB, SupportVertA,iNumVertsA);
 			}
 
@@ -269,6 +282,10 @@ SIMD_INLINE bool rpGenerationContactManiflodSet::ConvertSupportPointsToContacts(
 
 }
 
+
+
+
+
 void rpGenerationContactManiflodSet::computeContacteManiflodSet( rpContactManifoldSet& maniflodSet , bool approximationCorretion )
 {
 
@@ -277,21 +294,44 @@ void rpGenerationContactManiflodSet::computeContacteManiflodSet( rpContactManifo
 	uint iNumVertsA = 0;
 	uint iNumVertsB = 0;
 
-	Vector3* SupportVertA = mShape1->getAxisPeturberationPoints( Normal, iNumVertsA);
-	Vector3* SupportVertB = mShape2->getAxisPeturberationPoints(-Normal, iNumVertsB);
+    Vector3* SupportVertA = mShape1->getAxisPeturberationPoints( Normal, iNumVertsA);
+    Vector3* SupportVertB = mShape2->getAxisPeturberationPoints(-Normal, iNumVertsB);
 
 	bool isOutside = ConvertSupportPointsToContacts(SupportVertA, iNumVertsA,
 			                                        SupportVertB, iNumVertsB);
 
-	free(SupportVertA);
-	free(SupportVertB);
+    free(SupportVertA);
+    free(SupportVertB);
+
+
+/**
+    for (int i = 0; i < iNumVertsA; ++i)
+    {
+        const Vector3& v = SupportVertA[i];
+        utility_engine::Mesh* mesh = new utility_engine::MeshBox( utility_engine::Vector3(1,1,1) );
+        mesh->translateWorld( utility_engine::Vector3(v.x,v.y,v.z) );
+        utility_engine::UtilityOpenGL::DrawMesh(mesh);
+        delete mesh;
+    }
+
+
+    for (int i = 0; i < iNumVertsB; ++i)
+    {
+        const Vector3& v = SupportVertB[i];
+        utility_engine::Mesh* mesh = new utility_engine::MeshBox( utility_engine::Vector3(1,1,1) );
+        mesh->translateWorld( utility_engine::Vector3(v.x,v.y,v.z) );
+        utility_engine::UtilityOpenGL::DrawMesh(mesh);
+        delete mesh;
+    }
+/**/
 
 
 
-	if (isOutside)
+
+    if ( isOutside || true )
 	{
 
-        maniflodSet.update();
+        maniflodSet.clear();
 		for (uint i = 0; i < mNbContacts; ++i)
 		{
 
@@ -312,6 +352,9 @@ void rpGenerationContactManiflodSet::computeContacteManiflodSet( rpContactManifo
 			rpContactPoint* contact = new rpContactPoint(mInfoContacts[i]);
 			maniflodSet.addContactPoint(contact);
 		}
+
+      /// not stabil function
+      // maniflodSet.update();
 
 	}
 

@@ -153,11 +153,21 @@ class rpContactManifold
         ~rpContactManifold();
 
 
-                //        /// Return a pointer to the first body of the contact manifold
-                //        CollisionBody* getBody1() const;
+        /// Return a pointer to the first body of the contact manifold
+        rpCollisionBody* getBody1() const;
 
-                //        /// Return a pointer to the second body of the contact manifold
-                //        CollisionBody* getBody2() const;
+        /// Return a pointer to the second body of the contact manifold
+        rpCollisionBody* getBody2() const;
+
+
+        /// Return a pointer to the first proxy shape of the contact manifold
+        rpProxyShape* getShape1() const;
+
+        /// Return a pointer to the second proxy shape of the contact manifold
+        rpProxyShape* getShape2() const;
+
+
+
 
         /// Return the normal direction Id
         short int getNormalDirectionId() const;
@@ -249,20 +259,11 @@ class rpContactManifold
 
 
 
-		const rpProxyShape* getShape1() const
-		{
-			return mShape1;
-		}
 
-		const rpProxyShape* getShape2() const
-		{
-			return mShape2;
-		}
 
         // -------------------- Friendship -------------------- //
 
-        friend class rpSequentialImpulseObjectSolver;
-        friend class rpContactSolverSequentialImpulse;
+        friend class rpContactSolverSequentialImpulseObject;
         friend class rpContactManifoldSet;
         friend class rpDynamicsWorld;
         friend class rpIsland;
@@ -272,25 +273,29 @@ class rpContactManifold
 
 
 
-//// Return a pointer to the first proxy shape of the contact
-//SIMD_INLINE rpProxyShape *ContactManifold::vgetShape1() const {
-//    return mShape1;
-//}
-//
-//// Return a pointer to the second proxy shape of the contact
-//SIMD_INLINE rpProxyShape *ContactManifold::getShape2() const {
-//    return mShape2;
-//}
+// Return a pointer to the first proxy shape of the contact
+SIMD_INLINE rpProxyShape *rpContactManifold::getShape1() const
+{
+    return mShape1;
+}
 
-            //// Return a pointer to the first body of the contact manifold
-            //SIMD_INLINE CollisionBody* ContactManifold::getBody1() const {
-            //    return mShape1->getBody();
-            //}
+// Return a pointer to the second proxy shape of the contact
+SIMD_INLINE rpProxyShape *rpContactManifold::getShape2() const
+{
+    return mShape2;
+}
 
-            //// Return a pointer to the second body of the contact manifold
-            //SIMD_INLINE CollisionBody* ContactManifold::getBody2() const {
-            //    return mShape2->getBody();
-            //}
+// Return a pointer to the first body of the contact manifold
+SIMD_INLINE rpCollisionBody* rpContactManifold::getBody1() const
+{
+    return mShape1->getBody();
+}
+
+// Return a pointer to the second body of the contact manifold
+SIMD_INLINE rpCollisionBody* rpContactManifold::getBody2() const
+{
+    return mShape2->getBody();
+}
 
 
 

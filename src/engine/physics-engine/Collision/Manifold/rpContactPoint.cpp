@@ -18,17 +18,17 @@ rpContactPoint::rpContactPoint(rpContactPointInfo& contactInfo)
   mLocalPointOnBody2(contactInfo.localPoint2),
   mWorldPointOnBody1((contactInfo.localPoint1)),
   mWorldPointOnBody2( contactInfo.localPoint2),
-  mIsRestingContact(false)
+  mIsRestingContact(true)
 {
+    //    mFrictionVectors[0] = Vector3(0, 0, 0);
+    //	mFrictionVectors[1] = Vector3(0, 0, 0);
 
-//	mFrictionVectors[0] = Vector3(0, 0, 0);
-//	mFrictionVectors[1] = Vector3(0, 0, 0);
+    //    mLocalPointOnBody1 = Vector3::ZERO;
+    //    mLocalPointOnBody2 = Vector3::ZERO;
 
-//    mLocalPointOnBody1 = Vector3::ZERO;
-//    mLocalPointOnBody2 = Vector3::ZERO;
+    //    mWorldPointOnBody1 = Vector3::ZERO;
+    //    mWorldPointOnBody2 = Vector3::ZERO;
 
-//    mWorldPointOnBody1 = Vector3::ZERO;
-//    mWorldPointOnBody2 = Vector3::ZERO;
 
     //assert(mPenetrationDepth > 0.0);
 }
@@ -37,6 +37,17 @@ rpContactPoint::rpContactPoint(rpContactPointInfo& contactInfo)
 rpContactPoint::~rpContactPoint()
 {
 
+    mFrictionVectors[0] = Vector3(0, 0, 0);
+    mFrictionVectors[1] = Vector3(0, 0, 0);
+
+    mLocalPointOnBody1 = Vector3::ZERO;
+    mLocalPointOnBody2 = Vector3::ZERO;
+
+    mWorldPointOnBody1 = Vector3::ZERO;
+    mWorldPointOnBody2 = Vector3::ZERO;
+
 }
+
+
 
 } /* namespace real_physics */

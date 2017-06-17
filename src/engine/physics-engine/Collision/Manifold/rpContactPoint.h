@@ -100,26 +100,26 @@ class rpContactPoint
         bool mIsRestingContact;
 
         /// Two orthogonal vectors that span the tangential friction plane
-//        Vector3 mFrictionVectors[2];
+        Vector3 mFrictionVectors[2];
 
-//        /// Cached penetration impulse
-//        scalar mPenetrationImpulse;
-//
-//        /// Cached first friction impulse
-//        scalar mFrictionImpulse1;
-//
-//        /// Cached second friction impulse
-//        scalar mFrictionImpulse2;
-//
-//        /// Cached rolling resistance impulse
-//        Vector3 mRollingResistanceImpulse;
+        /// Cached penetration impulse
+        scalar mPenetrationImpulse;
+
+        /// Cached first friction impulse
+        scalar mFrictionImpulse1;
+
+        /// Cached second friction impulse
+        scalar mFrictionImpulse2;
+
+        /// Cached rolling resistance impulse
+        Vector3 mRollingResistanceImpulse;
 
         // -------------------- Methods -------------------- //
 
-//         // Private copy-constructor
+        // Private copy-constructor
         rpContactPoint(const rpContactPoint& contact);
 
-////         // Private assignment operator
+        // Private assignment operator
         rpContactPoint& operator=(const rpContactPoint& contact);
 
     public :
@@ -128,7 +128,7 @@ class rpContactPoint
 
        // rpContactPoint(){}
         /// Constructor
-        rpContactPoint(rpContactPointInfo& contactInfo);
+         rpContactPoint(rpContactPointInfo& contactInfo);
 
         /// Destructor
         ~rpContactPoint();
@@ -208,9 +208,10 @@ class rpContactPoint
         size_t getSizeInBytes() const;
 
 
-        // -------------------- Friendships -------------------- //
+        //-------------------- Friendships --------------------//
 
         friend class rpSequentialImpulseObjectSolver;
+
 
 };
 
@@ -252,53 +253,53 @@ SIMD_INLINE Vector3 rpContactPoint::getWorldPointOnBody2() const
     return mWorldPointOnBody2;
 }
 
-//// Return the cached penetration impulse
-//SIMD_INLINE scalar rpContactPoint::getPenetrationImpulse() const
-//{
-//    return mPenetrationImpulse;
-//}
-//
-//// Return the cached first friction impulse
-//SIMD_INLINE scalar rpContactPoint::getFrictionImpulse1() const
-//{
-//    return mFrictionImpulse1;
-//}
-//
-//// Return the cached second friction impulse
-//SIMD_INLINE scalar rpContactPoint::getFrictionImpulse2() const
-//{
-//    return mFrictionImpulse2;
-//}
-//
-//// Return the cached rolling resistance impulse
-//SIMD_INLINE Vector3 rpContactPoint::getRollingResistanceImpulse() const
-//{
-//    return mRollingResistanceImpulse;
-//}
-//
-//// Set the cached penetration impulse
-//SIMD_INLINE void rpContactPoint::setPenetrationImpulse(scalar impulse)
-//{
-//    mPenetrationImpulse = impulse;
-//}
-//
-//// Set the first cached friction impulse
-//SIMD_INLINE void rpContactPoint::setFrictionImpulse1(scalar impulse)
-//{
-//    mFrictionImpulse1 = impulse;
-//}
-//
-//// Set the second cached friction impulse
-//SIMD_INLINE void rpContactPoint::setFrictionImpulse2(scalar impulse)
-//{
-//    mFrictionImpulse2 = impulse;
-//}
-//
-//// Set the cached rolling resistance impulse
-//SIMD_INLINE void rpContactPoint::setRollingResistanceImpulse(const Vector3& impulse)
-//{
-//    mRollingResistanceImpulse = impulse;
-//}
+// Return the cached penetration impulse
+SIMD_INLINE scalar rpContactPoint::getPenetrationImpulse() const
+{
+    return mPenetrationImpulse;
+}
+
+// Return the cached first friction impulse
+SIMD_INLINE scalar rpContactPoint::getFrictionImpulse1() const
+{
+    return mFrictionImpulse1;
+}
+
+// Return the cached second friction impulse
+SIMD_INLINE scalar rpContactPoint::getFrictionImpulse2() const
+{
+    return mFrictionImpulse2;
+}
+
+// Return the cached rolling resistance impulse
+SIMD_INLINE Vector3 rpContactPoint::getRollingResistanceImpulse() const
+{
+    return mRollingResistanceImpulse;
+}
+
+// Set the cached penetration impulse
+SIMD_INLINE void rpContactPoint::setPenetrationImpulse(scalar impulse)
+{
+    mPenetrationImpulse = impulse;
+}
+
+// Set the first cached friction impulse
+SIMD_INLINE void rpContactPoint::setFrictionImpulse1(scalar impulse)
+{
+    mFrictionImpulse1 = impulse;
+}
+
+// Set the second cached friction impulse
+SIMD_INLINE void rpContactPoint::setFrictionImpulse2(scalar impulse)
+{
+    mFrictionImpulse2 = impulse;
+}
+
+// Set the cached rolling resistance impulse
+SIMD_INLINE void rpContactPoint::setRollingResistanceImpulse(const Vector3& impulse)
+{
+    mRollingResistanceImpulse = impulse;
+}
 
 // Set the contact world point on body 1
 SIMD_INLINE void rpContactPoint::setWorldPointOnBody1(const Vector3& worldPoint)
@@ -324,29 +325,29 @@ SIMD_INLINE void rpContactPoint::setIsRestingContact(bool isRestingContact)
     mIsRestingContact = isRestingContact;
 }
 
-//// Get the first friction vector
-//SIMD_INLINE Vector3 rpContactPoint::getFrictionVector1() const
-//{
-//    return mFrictionVectors[0];
-//}
-//
-//// Set the first friction vector
-//SIMD_INLINE void rpContactPoint::setFrictionVector1(const Vector3& frictionVector1)
-//{
-//    mFrictionVectors[0] = frictionVector1;
-//}
-//
-//// Get the second friction vector
-//SIMD_INLINE Vector3 rpContactPoint::getFrictionVector2() const
-//{
-//    return mFrictionVectors[1];
-//}
-//
-//// Set the second friction vector
-//SIMD_INLINE void rpContactPoint::setFrictionVector2(const Vector3& frictionVector2)
-//{
-//    mFrictionVectors[1] = frictionVector2;
-//}
+// Get the first friction vector
+SIMD_INLINE Vector3 rpContactPoint::getFrictionVector1() const
+{
+    return mFrictionVectors[0];
+}
+
+// Set the first friction vector
+SIMD_INLINE void rpContactPoint::setFrictionVector1(const Vector3& frictionVector1)
+{
+    mFrictionVectors[0] = frictionVector1;
+}
+
+// Get the second friction vector
+SIMD_INLINE Vector3 rpContactPoint::getFrictionVector2() const
+{
+    return mFrictionVectors[1];
+}
+
+// Set the second friction vector
+SIMD_INLINE void rpContactPoint::setFrictionVector2(const Vector3& frictionVector2)
+{
+    mFrictionVectors[1] = frictionVector2;
+}
 
 // Return the penetration depth of the contact
 SIMD_INLINE scalar rpContactPoint::getPenetrationDepth() const
