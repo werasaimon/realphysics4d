@@ -8,13 +8,16 @@
 #ifndef CONVEXHULL_HPP_
 #define CONVEXHULL_HPP_
 
-#include <vector>
-#include <unordered_map>
+#include <stddef.h>
+#include <cassert>
 #include <fstream>
-#include <memory>
-#include "../../Geometry/QuickHull/Structs/Mesh.hpp"
-#include "../../Geometry/QuickHull/Structs/Vector3.hpp"
-#include "../../Geometry/QuickHull/Structs/VertexDataSource.hpp"
+#include <iterator>
+#include <string>
+#include <vector>
+
+#include "Structs/Mesh.hpp"
+#include "Structs/Vector3.hpp"
+#include "Structs/VertexDataSource.hpp"
 
 
 

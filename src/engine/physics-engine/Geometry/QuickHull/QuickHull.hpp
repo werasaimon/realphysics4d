@@ -8,17 +8,19 @@
 #ifndef QUICKHULL_HPP_
 #define QUICKHULL_HPP_
 
+#include <stddef.h>
 #include <vector>
-#include <array>
-#include <limits>
 
-#include "../../Geometry/QuickHull/ConvexHull.hpp"
-#include "../../Geometry/QuickHull/HalfEdgeMesh.hpp"
-#include "../../Geometry/QuickHull/MathUtils.hpp"
-#include "../../Geometry/QuickHull/Structs/Mesh.hpp"
-#include "../../Geometry/QuickHull/Structs/Plane.hpp"
-#include "../../Geometry/QuickHull/Structs/Pool.hpp"
-#include "../../Geometry/QuickHull/Structs/Vector3.hpp"
+#include "../../LinearMaths/rpLinearMtah.h"
+#include "ConvexHull.hpp"
+#include "HalfEdgeMesh.hpp"
+#include "Structs/Mesh.hpp"
+#include "Structs/Pool.hpp"
+#include "Structs/Vector3.hpp"
+#include "Structs/VertexDataSource.hpp"
+#include "Types.hpp"
+#include "MathUtils.hpp"
+
 
 
 /*

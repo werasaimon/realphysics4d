@@ -144,14 +144,15 @@ namespace real_physics
         	  Vector3 OldPoint;
 
 
-        	  Vector3* result = NULL;
-        	  uint &num_element = _NbPoints;
+
+              Vector3* result = NULL;
+              uint &num_element = _NbPoints;
         	  for( uint i = 0; i < NbCount; i++ )
         	  {
                   scalar ang = (2.0f * Pi() / scalar(float(NbCount))) * scalar(float(i));
 
-        		  Vector3 auxAxis = (axis + n0 * Cos(ang) * epsilon
-        				                  + n1 * Sin(ang) * epsilon);
+                  Vector3 auxAxis = (axis + n0 * Cos(ang) * epsilon
+                                          + n1 * Sin(ang) * epsilon);
 
 
         		  /***************************************************************/
@@ -166,18 +167,18 @@ namespace real_physics
         			  if ((spVertex - startPoint).length2() < OFF_SET_COLLISION_CONTACT && num_element > 0 ) break;
 
 
-        			  /***************************************/
-        			  num_element++;
-        			  Vector3* array = (Vector3*) realloc(result , num_element * sizeof(Vector3));
-        			  if (array != NULL)
-        			  {
-        				  result = array;
-        				  result[num_element - 1] = spVertex;
-        			  }
-        			  else
-        			  {
-        				  free(result);
-        			  }
+                      /***************************************/
+                      num_element++;
+                      Vector3* array = (Vector3*) realloc(result , num_element * sizeof(Vector3));
+                      if (array != NULL)
+                      {
+                          result = array;
+                          result[num_element - 1] = spVertex;
+                      }
+                      else
+                      {
+                          free(result);
+                      }
 
         			  /***************************************/
 
@@ -187,8 +188,7 @@ namespace real_physics
         		  /*-----------------------------------------------------*/
         	  }
 
-        	  //return resultVertices;
-        	  return result;
+              return result;
           }
 
 

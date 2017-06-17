@@ -7,7 +7,7 @@
 
 #include "rpOverlappingPair.h"
 
-#include "ContactManiflod/rpContactManifoldSet.h"
+#include "Manifold/rpContactManifoldSet.h"
 
 namespace real_physics
 {

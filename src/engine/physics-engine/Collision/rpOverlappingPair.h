@@ -12,7 +12,7 @@
 
 #include "../LinearMaths/mathematics.h"
 #include "../Memory/memory.h"
-#include "ContactManiflod/rpContactManifoldSet.h"
+#include "Manifold/rpContactManifoldSet.h"
 #include  "rpProxyShape.h"
 #include  "Shapes/rpCollisionShape.h"
 

@@ -14,7 +14,7 @@
 #include "../Body/Material/rpPhysicsMaterial.h"
 #include "../Memory/memory.h"
 
-#include "../Dynamics/Solver/rpSequentialImpulseObjectSolver.h"
+#include "../Dynamics/Solver/rpContactSolverSequentialImpulseObject.h"
 #include "../Body/rpPhysicsBody.h"
 #include "../Body/rpPhysicsObject.h"
 #include "../Body/rpRigidPhysicsBody.h"
@@ -27,7 +27,9 @@
 #include "Joint/rpSliderJoint.h"
 
 #include "rpTimer.h"
+#include "rpIsland.h"
 
+#include "../Memory/MemoryAllocator.h"
 
 using namespace std;
 
@@ -89,6 +91,7 @@ class rpDynamicsWorld : public rpCollisionWorld
 
 	// -------------------- Attributes -------------------- //
 
+
     /// Update time step correctly interval
     rpTimer mTimer;
 
@@ -113,6 +116,23 @@ class rpDynamicsWorld : public rpCollisionWorld
 	std::map< overlappingpairid , rpContactSolver* > mContactSolvers;
 
 
+
+    /// Current allocated capacity for the bodies
+    uint mNbBodiesCapacity;
+
+    /// Current allocated capacity for the islands
+    uint mNbIslandsCapacity;
+
+
+
+    /// Number of islands in the world
+    uint mNbIslands;
+
+    /// Array with all the islands of awaken bodies
+    rpIsland** mIslands;
+
+
+
     // -------------------- Methods -------------------- //
 
 
@@ -127,7 +147,7 @@ class rpDynamicsWorld : public rpCollisionWorld
     void Collision();
 
     /// Compute physics for all collision pairs
-    void Dynamics( scalar timeStep );
+    void solve( scalar timeStep );
 
 	/// Integrate the garvity
 	void integrateGravity( scalar timeStep );
@@ -142,8 +162,14 @@ class rpDynamicsWorld : public rpCollisionWorld
 	void updateSleepingBodies(scalar timeStep);
 
 
+
+    //// Compute the islands of awake bodies.
+    void computeIslands();
+
+
+
 	//// Add Collision New contact Solver
-	void addChekCollisionPair( overlappingpairid keyPair , rpContactManifold* maniflod );
+    void addChekCollisionPair( rpContactManifold* maniflod );
 
 
 

@@ -20,8 +20,11 @@ class Camera : public Object3D
         Matrix4 getProjectionMatrix() const;
         Matrix4 getViewMatrix() const;
 
+        Vector3 getPosEye() const;
+
 protected:
 
+        Vector3 mPosEye;
         Matrix4 mProjectionMatrix;
 };
 

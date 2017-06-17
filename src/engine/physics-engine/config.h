@@ -73,16 +73,11 @@ const scalar LIGHT_MAX_VELOCITY_C = scalar(3000.0);
 
 
 
-
 /// Smallest scalar value (negative)
 const scalar SCALAR_SMALLEST = - std::numeric_limits<scalar>::max();
 
 /// Maximum scalar value
 const scalar SCALAR_LARGEST = std::numeric_limits<scalar>::max();
-
-/// Machine epsilon
-//const scalar MACHINE_EPSILONE = std::numeric_limits<scalar>::epsilon();
-
 
 
 
@@ -147,7 +142,7 @@ const int NB_COLLISION_SHAPE_TYPES = 9;
 
 
 ///// Time (in seconds) that a body must stay still to be considered sleeping
-const float DEFAULT_TIME_BEFORE_SLEEP = 0.1;//1.0f;
+const float DEFAULT_TIME_BEFORE_SLEEP = 0.2;//1.0;
 
 ///// True if the spleeping technique is enabled
 const bool  SLEEPING_ENABLED = true;
@@ -158,14 +153,14 @@ const bool  SLEEPING_ENABLED = true;
 
 ///// A body with a linear velocity smaller than the sleep linear velocity (in m/s)
 ///// might enter sleeping mode.
-const scalar DEFAULT_SLEEP_LINEAR_VELOCITY = scalar(0.0005);
+const scalar DEFAULT_SLEEP_LINEAR_VELOCITY = scalar(0.01);
 
 ///// A body with angular velocity smaller than the sleep angular velocity (in rad/s)
 ///// might enter sleeping mode
 const scalar DEFAULT_SLEEP_ANGULAR_VELOCITY = scalar(3.0 * (PI / 180.0));
 
 ///// A body with minimum split
-const scalar DEFAULT_SLEEP_SPLIT   = scalar(0.0001);
+const scalar DEFAULT_SLEEP_SPLIT   = scalar(0.001);
 
 
 
@@ -175,7 +170,7 @@ const scalar DEFAULT_SLEEP_SPLIT   = scalar(0.0001);
 const scalar MINIMUM_FOR_DAPING = scalar(0.5);
 
 ///collision center point for the interpolation of (A+B) / 2.0
-const bool   INTERPOLATION_CONTACT_POINTS = true;
+const bool   INTERPOLATION_CONTACT_POINTS = false;
 
 
 

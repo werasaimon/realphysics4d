@@ -67,7 +67,9 @@ namespace utility_engine
     /// Update real-time physics simulate
     void DynamicsWorld::update( float timeStep )
     {
-        if( mDynamicsWorld != NULL ) mDynamicsWorld->update( timeStep );
+        assert( mDynamicsWorld );
+
+        mDynamicsWorld->update( timeStep );
 
         for(auto it = mBodies.begin(); it != mBodies.end(); ++it )
         {
@@ -79,7 +81,14 @@ namespace utility_engine
     /// Update real-time physics simulate (Fixed TimeStep)
     void DynamicsWorld::updateFixedStep(float timeStep)
     {
-       if( mDynamicsWorld != NULL ) mDynamicsWorld->updateFixedTime(timeStep);
+       assert( mDynamicsWorld );
+
+       mDynamicsWorld->updateFixedTime(timeStep);
+
+       for(auto it = mBodies.begin(); it != mBodies.end(); ++it )
+       {
+            (*it)->update();
+       }
     }
 
     /// Realase and a delete memory

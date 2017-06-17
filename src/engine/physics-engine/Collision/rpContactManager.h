@@ -20,17 +20,10 @@
 #include "../LinearMaths/mathematics.h"
 #include "../Memory/memory.h"
 #include "BroadPhase/rbBroadPhaseAlgorithm.h"
-#include "ContactManiflod/rpContactManifoldSet.h"
-#include "ContactManiflod/rpGenerationContactManiflodSet.h"
+#include "Manifold/rpContactManifoldSet.h"
+#include "Manifold/rpGenerationContactManiflodSet.h"
 #include "rpOverlappingPair.h"
 
-
-
-//#include "BroadPhase2/ISpatialCell.h"
-//#include "BroadPhase2/ISpatialObject.h"
-//#include "BroadPhase2/ISpatialStructure.h"
-//#include "BroadPhase2/rpBruteForce.h"
-//#include "BroadPhase2/rpSphereObject.h"
 
 
 
@@ -122,7 +115,7 @@ class rpContactManager
 
 
 
-        void computeCollisionDetection(  std::map<overlappingpairid, rpOverlappingPair*> &OverlappingPairs );
+        void computeCollisionDetectionAllPairs(  std::map<overlappingpairid, rpOverlappingPair*> &OverlappingPairs );
 
 
         /// Add a proxy collision shape to the collision detection

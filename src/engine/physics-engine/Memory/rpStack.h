@@ -8,7 +8,7 @@
 #ifndef MEMORY_RPSTACK_H_
 #define MEMORY_RPSTACK_H_
 
-#include <stdlib.h>
+#include <malloc.h>
 #include <cassert>
 #include <cstring>
 

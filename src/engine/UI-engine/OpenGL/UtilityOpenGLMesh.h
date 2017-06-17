@@ -45,7 +45,7 @@ class UtilityOpenGLMesh
 		//mPhongShader.setMatrix4x4Uniform("modelToWorldMatrix", meshe.getTransformMatrix());
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_NORMAL_ARRAY);
-		//if (meshe.hasTexture())
+		if (meshe->hasTexture())
 		{
 			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		}
@@ -53,7 +53,7 @@ class UtilityOpenGLMesh
 
 		glVertexPointer(3, GL_FLOAT, 0, meshe->getVerticesPointer());
 		glNormalPointer(GL_FLOAT, 0, meshe->getNormalsPointer());
-		//if(mMesh3.hasTexture())
+		if(meshe->hasTexture())
 		{
 			glTexCoordPointer(2, GL_FLOAT, 0, meshe->getUVTextureCoordinatesPointer());
 		}
@@ -66,7 +66,7 @@ class UtilityOpenGLMesh
 
 		glDisableClientState(GL_NORMAL_ARRAY);
 		glDisableClientState(GL_VERTEX_ARRAY);
-		//if (meshe.hasTexture())
+		if (meshe->hasTexture())
 		{
 			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		}

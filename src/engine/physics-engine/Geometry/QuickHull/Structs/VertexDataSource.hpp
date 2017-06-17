@@ -1,15 +1,12 @@
-//
-//  VertexDataSource.hpp
-//  QuickHull
-//
-//  Created by Antti Kuukka on 1/5/16.
-//  Copyright © 2016 Antti Kuukka. All rights reserved.
-//
-
 #ifndef VertexDataSource_h
 #define VertexDataSource_h
 
-#include "../../../Geometry/QuickHull/Structs/Vector3.hpp"
+#include <stddef.h>
+#include <vector>
+
+#include "Vector3.hpp"
+
+
 
 namespace real_physics
 {

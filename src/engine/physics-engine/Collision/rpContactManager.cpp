@@ -29,239 +29,13 @@
 #include "../Body/rpBody.h"
 #include "../Body/rpCollisionBody.h"
 
+
+
 using namespace std;
 
 
 namespace real_physics
 {
-
-
-/**
-bool m_bAllowIntersections = true;
-
-void GetInterval_CenExt( const rpProxyShape* shape , const Vector3& xAxis, float& cen, float& ext)
-{
-	float min, max;
-    shape->getIntervalWorld(xAxis, min, max);
-	ext = (max - min) * 0.5f;
-	cen = (max + min) * 0.5f;
-}
-
-
-void GetInterval_MinMax( const rpProxyShape* shape , const Vector3& xAxis, float& min, float& max)
-{
-	float cen, ext;
-	GetInterval_CenExt( shape , xAxis, cen, ext);
-	min = cen - ext;
-	max = cen + ext;
-}
-
-
-bool IntervalIntersects(const rpProxyShape* shapeA ,				    // A interval
-		                const rpProxyShape* shapeB ,				    // B interval
-						const Vector3& xAxis, 						// static parameters
-						const Vector3& xVel,				    	// dynamic parameters
-						bool& bValidMTD,
-						scalar& tfirst , scalar& tlast,
-						Vector3& Nfirst, Vector3& Nlast,	        // collision
-						Vector3& MTD)						   	    // intersection
-{
-
-	const scalar INVALID_FLOAT = 1.0E20f;
-	const scalar COLLISION_VELOCITY_THRESHOLD = 1.0E-7f;
-
-	//---------------------------------------------------
-	// projection calculations
-	//---------------------------------------------------
-	float minb, maxb;
-	float c, e;
-
-	// both intervals
-	GetInterval_CenExt( shapeA , xAxis, c, e);
-	GetInterval_MinMax( shapeB , xAxis, minb, maxb);
-
-	// reduce the problem of a single point versus a larger interval
-	minb -= e;
-	maxb += e;
-	//---------------------------------------------------
-	// intersection test calculations
-	//---------------------------------------------------
-	// the two potential overlaps
-	scalar d0 = minb - c;
-	scalar d1 = maxb - c;
-
-	// are the objects separated along that axis?
-	bool bIntersect = (d0 > 0.0f || d1 > 0.0f);
-
-
-	scalar fAxisLengthSquared = 1.0;//xAxis.lengthSquare();
-
-	// this mode deals with intersections
-	if (m_bAllowIntersections)
-	{
-		// if so, then we can have no potential interection
-		bValidMTD &= bIntersect;
-
-		// if the intersection is still potentially valid
-		if (bValidMTD)
-		{
-			// Find the MTD along that axis
-			// then update the global MTD with it if it is smaller.
-			Vector3 Sep = xAxis;
-
-			if (fabs(d0) < fabs(d1))
-			{
-				Sep *= -d0 / fAxisLengthSquared;
-			}
-			else
-			{
-				Sep *= -d1 / fAxisLengthSquared;
-			}
-
-			if (Sep.lengthSquare() < MTD.lengthSquare())
-			{
-				MTD = Sep;
-			}
-		}
-	}
-
-
-	//---------------------------------------------------
-	// collision test calculations
-	//---------------------------------------------------
-	scalar v = xVel.dot(xAxis);
-
-	// boxes virtual never move on that axis.
-	// it's worth continuing only if the box are not separated.
-	if (fabs(v) < 1.0E-6f)
-	{
-		return bIntersect;
-	}
-
-	//---------------------------------------------------
-	// time of intersection along that axis
-	//---------------------------------------------------
-	scalar t0 = -(minb - c) / v;
-	scalar t1 = -(maxb - c) / v;
-	scalar sign = -1.0f;
-
-	//---------------------------------------------------
-	// Update the overall times of collision
-	//---------------------------------------------------
-	// order the times of collision properly
-	if (t0 > t1)
-	{
-		Swap(t0, t1);
-		sign = 1.0f;
-	}
-
-	// make sure the axis intersection provides a valid intersection interval
-	// with the global intersection interval
-	if(tlast != INVALID_FLOAT && t0 > tlast)
-	{
-		return false;
-	}
-
-	if (tfirst != -INVALID_FLOAT && t1 < tfirst)
-	{
-		return false;
-	}
-
-	// then reduce the global intersection interval
-	if (t1 < tlast || tlast == INVALID_FLOAT)
-	{
-		tlast = t1;
-		Nlast = xAxis * sign;
-	}
-
-	if (t0 > tfirst || tfirst == -INVALID_FLOAT)
-	{
-		tfirst = t0;
-		Nfirst = xAxis * -sign;
-	}
-
-	return true;
-}
-
-
-
-bool  timeOfImpact( const rpProxyShape* shape_a ,
-		            const rpProxyShape* shape_b  ,
-		            const Vector3& xAxis , const Vector3& xVel ,
-					scalar tmax, scalar& tcoll, Vector3& Ncoll )
-{
-
-	Vector3 MTD;
-	bool bValidMTD = true;
-
-
-	const scalar INVALID_FLOAT = 0.0;
-
-	// Collision test. Calculate the min and max times of collisions of the objects
-	// could be negative (then the data returned will be an intersection MTD data).
-	tcoll = tmax;
-	scalar tfirst = -INVALID_FLOAT;
-	scalar tlast  =  INVALID_FLOAT;
-	Vector3 Nfirst = Vector3::ZERO;
-	Vector3 Nlast  = Vector3::ZERO;
-
-
-
-
-	if(!IntervalIntersects( shape_a , shape_b , xAxis, xVel, bValidMTD, tfirst, tlast, Nfirst, Nlast, MTD))
-	{
-		return false;
-	}
-
-
-	// boxes miss collision
-	if (tfirst > tmax || tlast < 0.0f)
-	{
-		return false;
-	}
-
-
-
-	// boxes are intersecting (or velocity too small)
-	if (m_bAllowIntersections)
-	{
-		if (tfirst <= 0.0f)
-		{
-			if (!bValidMTD)
-			{
-				return false;
-			}
-
-			tcoll = 0.0f;
-			Ncoll = MTD;
-			return true;
-		}
-		// boxes are colliding
-		else
-		{
-			tcoll = tfirst;
-			Ncoll = Nfirst;
-			return true;
-		}
-	}
-	else
-	{
-		if (fabs(tfirst) <= fabs(tlast))
-		{
-			tcoll = tfirst;
-			Ncoll = Nfirst;
-			return true;
-		}
-		else
-		{
-			tcoll = tlast;
-			Ncoll = Nlast;
-			return true;
-		}
-	}
-}
-
-/**/
 
 
 rpContactManager::rpContactManager()
@@ -271,7 +45,7 @@ rpContactManager::rpContactManager()
 }
 
 
-void rpContactManager::computeCollisionDetection( std::map<overlappingpairid, rpOverlappingPair*> &OverlappingPairs )
+void rpContactManager::computeCollisionDetectionAllPairs( std::map<overlappingpairid, rpOverlappingPair*> &OverlappingPairs )
 {
     // Compute the broad-phase collision detection
     computeBroadPhase();
@@ -338,7 +112,7 @@ void rpContactManager::computeNarrowPhase( std::map<overlappingpairid, rpOverlap
 	        // Check if the collision filtering allows collision between the two shapes and
 	        // that the two shapes are still overlapping. Otherwise, we destroy the
 	        // overlapping pair
-	        if (((shape1->getCollideWithMaskBits() & shape2->getCollisionCategoryBits()) == 0 ||
+            if (((shape1->getCollideWithMaskBits() & shape2->getCollisionCategoryBits()) == 0  ||
 	             (shape1->getCollisionCategoryBits() & shape2->getCollideWithMaskBits()) == 0) ||
 	             !mBroadPhaseAlgorithm.testOverlappingShapes(shape1, shape2))
 	        {
@@ -400,53 +174,25 @@ void rpContactManager::computeNarrowPhase( std::map<overlappingpairid, rpOverlap
                                              shape2->getCachedCollisionData());
 
 
-				//	        const Vector3 &p1 = shape1->getWorldTransform().getPosition();
-				//	        const Vector3 &p2 = shape2->getWorldTransform().getPosition();
-				//	        glPushMatrix();
-				//	        glColor3f(0, 0, 1);
-				//	        glLineWidth(2);
-				//	        glBegin(GL_LINES);
-				//	           glVertex3f(p1.x, p1.y, p1.z);
-				//	           glVertex3f(p2.x, p2.y, p2.z);
-				//	        glEnd();
-				//	        glPopMatrix();
-
 
 	        	// Use the narrow-phase collision detection algorithm to check
 	        	// if there really is a collision. If a collision occurs, the
 	        	// notifyContact() callback method will be called.
 	        	OutContactInfo infoContact;
                 bool testCollision = (narrowPhaseAlgorithm->testCollision( shape2Info , shape1Info , infoContact ));
-
-
-
-                /**
-                rpRigidPhysicsBody* physBdoy1 = static_cast<rpRigidPhysicsBody*>(body1);
-                rpRigidPhysicsBody* physBdoy2 = static_cast<rpRigidPhysicsBody*>(body2);
-                const Vector3& xVel = physBdoy1->getLinearVelocity() -
-                                      physBdoy2->getLinearVelocity();
-
-                scalar  dt = scalar(1.0/60.0);
-                scalar  tcoll;
-                Vector3 Ncoll;
-                Vector3 Axis = infoContact.m_normal;
-                bool collideSweep = (timeOfImpact(shape1, shape2 , Axis , xVel , dt , tcoll , Ncoll));
-                /**/
-
-
                 if(testCollision)
 	        	{
 
-	        		Vector3 normal = infoContact.m_normal.getUnit();
+                    Vector3 normal = infoContact.m_normal.getUnit();
 	        		scalar  penetration = infoContact.m_penetrationDepth;
 
 
-	        		const int maxContacts = 1;
+                    const int maxContacts = 2;
 	        		overlappingpairid pairId = rpOverlappingPair::computeID(shape1,  shape2);
 	        		ContactOverlappingPairs[pairId] = new rpOverlappingPair(shape1,shape2, maxContacts);
 
 
-	        		rpGenerationContactManiflodSet generatorManiflod( shape1 , shape2 , normal );
+                    rpGenerationContactManiflodSet generatorManiflod( shape1 , shape2 , normal );
 	        		generatorManiflod.computeContacteManiflodSet(ContactOverlappingPairs[pairId]->mContactManifoldSet);
 
 	        		//ContactOverlappingPairs[pairId]->mContactManifoldSet.setPairIndex(IdIndexCollid2 , IdIndexCollid1);
@@ -513,7 +259,7 @@ void rpContactManager::addContactManifoldToBody(rpOverlappingPair *pair)
 }
 
 void rpContactManager::broadPhaseNotifyOverlappingPair( rpProxyShape* shape1 ,
-		                                                    rpProxyShape* shape2 )
+                                                        rpProxyShape* shape2 )
 {
 
 

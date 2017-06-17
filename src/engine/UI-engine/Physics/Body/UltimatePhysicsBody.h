@@ -99,7 +99,7 @@ namespace utility_engine
             //--------------------- Method -------------------------//
 
             /// Add collision geometry for physics simulate real-time
-            void addCollisionGeometry( real_physics::rpCollisionShape *shape , const Matrix4& transform  , float massa ,  Mesh *mesh = NULL )
+            void addCollisionGeometry( real_physics::rpCollisionShape *shape  , const Matrix4& transform  , float massa ,  Mesh *mesh = NULL )
             {
                 assert( shape && massa >= 1.0 );
                 if( shape != NULL )  mPhysicsBody->addCollisionShape( shape , massa , Matrix4ConvertToTransform(transform) );

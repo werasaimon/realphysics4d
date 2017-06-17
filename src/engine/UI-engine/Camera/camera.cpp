@@ -20,7 +20,7 @@ namespace utility_engine
     void Camera::LookAt(const Vector3 &eye, const Vector3 &center, const Vector3 &up)
     {
         mTransformMatrix.setToIdentity();
-        mTransformMatrix = Matrix4::Look( eye , center , up );
+        mTransformMatrix = Matrix4::Look( mPosEye = eye , center , up );
     }
 
     Matrix4 Camera::getProjectionMatrix() const
@@ -32,4 +32,11 @@ namespace utility_engine
     {
         return mTransformMatrix;
     }
+
+    Vector3 Camera::getPosEye() const
+    {
+    	return mPosEye;
+    }
+
 }
+

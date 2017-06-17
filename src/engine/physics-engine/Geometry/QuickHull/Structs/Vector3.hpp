@@ -1,10 +1,12 @@
 #ifndef QuickHull_Vector3_hpp
 #define QuickHull_Vector3_hpp
 
-#include <cmath>
 #include <iostream>
 
-#include "../../../LinearMaths/mathematics.h"
+#include "../../../LinearMaths/rpLinearMtah.h"
+#include "../../../LinearMaths/rpVector3D.h"
+
+
 
 namespace real_physics
 {
