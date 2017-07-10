@@ -60,8 +60,8 @@ struct rpEdge
 
     bool isPointOutsideLine( const Vector3 &point )
     {
-        if( (point - mA).lengthSquare() <= scalar(0.001 * 0.001) ) return true;
-        if( (point - mB).lengthSquare() <= scalar(0.001 * 0.001) ) return true;
+        //if( (point - mA).lengthSquare() <= scalar(0.001 * 0.001) ) return true;
+        //if( (point - mB).lengthSquare() <= scalar(0.001 * 0.001) ) return true;
 
         if ((point - mA).dot(point - mB) > 0)  return false;
         return true;
@@ -230,13 +230,14 @@ class rpQuickClippingPolygons
 
 private:
 
+    /// input
     int             mCountPolygonVertices;
     const Vector3  *mPolygonVertices = nullptr;
 
     int             mCountClipVertices;
     const Vector3  *mClipVertices = nullptr;
 
-
+    /// output
     int                           mOutCountVertices;
     std::vector<Vector3>          mOutVertices;
     //*************************************************************//
@@ -257,6 +258,8 @@ public:
           mClipVertices(ClipVertices) , mCountClipVertices(CountClipVertices) ,
           mOutCountVertices(0)
     {
+        assert(mPolygonVertices != NULL);
+        assert(mClipVertices != NULL );
     }
 
 
@@ -280,9 +283,12 @@ public:
 
     }
 
-    //***************************************************************//
+    //******************  Compute clipping **************************//
 
     bool isComputeClippingToPoly();
+
+
+
 
     //***************************************************************//
 

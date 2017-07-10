@@ -27,7 +27,7 @@ namespace real_physics
 
 
 // Declarations
-class rpContactManager;
+class rpCollisionManager;
 class rpBroadPhaseAlgorithm;
 
 // Structure BroadPhasePair
@@ -167,7 +167,7 @@ class rpBroadPhaseAlgorithm
         uint mNbAllocatedPotentialPairs;
 
         /// Reference to the collision detection object
-        rpContactManager *mCollisionDetection;
+        rpCollisionManager *mCollisionDetection;
 
         // -------------------- Methods -------------------- //
 
@@ -182,7 +182,7 @@ class rpBroadPhaseAlgorithm
         // -------------------- Methods -------------------- //
 
         /// Constructor
-        rpBroadPhaseAlgorithm(rpContactManager *collisionDetection);
+        rpBroadPhaseAlgorithm(rpCollisionManager *collisionDetection);
 
         /// Destructor
         ~rpBroadPhaseAlgorithm();

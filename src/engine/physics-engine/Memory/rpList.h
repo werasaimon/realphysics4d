@@ -23,9 +23,10 @@ class  rpListElement
     {
     }
 
-    rpListElement(rpListElement *next, rpListElement *prev)
+    rpListElement( T* element ,rpListElement *next, rpListElement *prev)
     : m_next(next),
-      m_prev(prev)
+      m_prev(prev),
+      m_pointer(element)
     {
     }
 

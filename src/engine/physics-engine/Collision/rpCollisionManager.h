@@ -1,12 +1,12 @@
 /*
- * rpContactManager.h
+ * rpCollisionManager.h
  *
  *  Created on: 23 нояб. 2016 г.
  *      Author: wera
  */
 
-#ifndef SOURCE_ENGIE_COLLISION_RPCONTACTMANAGER_H_
-#define SOURCE_ENGIE_COLLISION_RPCONTACTMANAGER_H_
+#ifndef SOURCE_ENGIE_COLLISION_RPCOLLISIONMANAGER_H_
+#define SOURCE_ENGIE_COLLISION_RPCOLLISIONMANAGER_H_
 
 
 
@@ -21,7 +21,7 @@
 #include "../Memory/memory.h"
 #include "BroadPhase/rbBroadPhaseAlgorithm.h"
 #include "Manifold/rpContactManifoldSet.h"
-#include "Manifold/rpGenerationContactManiflodSet.h"
+#include "Manifold/rpContactGeneration.h"
 #include "rpOverlappingPair.h"
 
 
@@ -36,8 +36,6 @@ namespace real_physics
 // Declarations
 class rpBroadPhaseAlgorithm;
 class rpCollisionWorld;
-class CollisionCallback;
-
 
 
 
@@ -48,7 +46,7 @@ class CollisionCallback;
  * collide and then we run a narrow-phase algorithm to compute the
  * collision contacts between bodies.
  */
-class rpContactManager
+class rpCollisionManager
 {
 
     private :
@@ -61,7 +59,8 @@ class rpContactManager
 		std::set<bodyindexpair> mNoCollisionPairs;
 
 		/// Broad-phase overlapping pairs
-		std::map<overlappingpairid, rpOverlappingPair*> mOverlappingPairs;
+        std::map<overlappingpairid, rpOverlappingPair*> mOverlappingPairs;
+        std::map<overlappingpairid, rpOverlappingPair*> mContactOverlappingPairs;
 
 
 		/// Broad-phase algorithm
@@ -76,23 +75,23 @@ class rpContactManager
         // -------------------- Methods -------------------- //
 
         /// Private copy-constructor
-        rpContactManager(const rpContactManager& collisionDetection);
+        rpCollisionManager(const rpCollisionManager& collisionDetection);
 
         /// Private assignment operator
-        rpContactManager& operator=(const rpContactManager& collisionDetection);
+        rpCollisionManager& operator=(const rpCollisionManager& collisionDetection);
 
         /// Compute the broad-phase collision detection
         void computeBroadPhase();
 
         /// Compute the narrow-phase collision detection
-        void computeNarrowPhase( std::map<overlappingpairid, rpOverlappingPair*>& ContactOverlappingPairs );
+        void computeNarrowPhase();
 
         /// Add a contact manifold to the linked list of contact manifolds of the two bodies
         /// involed in the corresponding contact.
         void addContactManifoldToBody(rpOverlappingPair* pair);
 
         /// Add all the contact manifold of colliding pairs to their bodies
-        void addAllContactManifoldsToBodies(std::map<overlappingpairid, rpOverlappingPair *> &ContactOverlappingPairs);
+        void addAllContactManifoldsToBodies();
 
 
 	    void broadPhaseNotifyOverlappingPair( rpProxyShape* shape1 ,
@@ -106,16 +105,18 @@ class rpContactManager
         // -------------------- Methods -------------------- //
 
         /// Constructor
-         rpContactManager();
+         rpCollisionManager();
 
         /// Destructor
-        ~rpContactManager();
+        ~rpCollisionManager();
 
 
 
+        void createContact(rpOverlappingPair* overlappingPair , const rpContactPointInfo& contactInfo);
+        void createContact(rpOverlappingPair* overlappingPair , rpContactPoint* contact);
 
 
-        void computeCollisionDetectionAllPairs(  std::map<overlappingpairid, rpOverlappingPair*> &OverlappingPairs );
+        void computeCollisionDetectionAllPairs();
 
 
         /// Add a proxy collision shape to the collision detection
@@ -140,6 +141,9 @@ class rpContactManager
         void askForBroadPhaseCollisionCheck(rpProxyShape* shape);
 
 
+        /// Delete all the contact points in the currently overlapping pairs
+        void clearContactPoints();
+
         /// Ray casting method
         void raycast(RaycastCallback* raycastCallback, const Ray& ray,
                        unsigned short raycastWithCategoryMaskBits) const;
@@ -147,6 +151,7 @@ class rpContactManager
         // -------------------- Friendships -------------------- //
 
         friend class rpDynamicsWorld;
+        friend class rpCollisionWorld;
         friend class rpConvexShape;
         friend class rpBroadPhaseAlgorithm;
 
@@ -160,4 +165,4 @@ class rpContactManager
 
 } /* namespace real_physics */
 
-#endif /* SOURCE_ENGIE_COLLISION_RPCONTACTMANAGER_H_ */
+#endif /* SOURCE_ENGIE_COLLISION_RPCOLLISIONMANAGER_H_ */

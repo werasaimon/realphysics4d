@@ -18,45 +18,16 @@ namespace real_physics
 
 
 
-enum JointType { BALLSOCKETJOINT, SLIDERJOINT, HINGEJOINT, FIXEDJOINT , DISTANCEJOINT };
+enum JointType { BALLSOCKETJOINT,
+                 SLIDERJOINT,
+                 HINGEJOINT ,
+                 FIXEDJOINT ,
+                 DISTANCEJOINT };
 
 
 // Class declarations
 struct ConstraintSolverData;
 class  rpJoint;
-
-// Structure JointListElement
-/**
- * This structure represents a single element of a linked list of joints
- */
-struct rpJointListElement
-{
-
-    public:
-
-        // -------------------- Attributes -------------------- //
-
-        /// Pointer to the actual joint
-        rpJoint* joint;
-
-        /// Next element of the list
-        rpJointListElement* next;
-
-
-
-        // -------------------- Methods -------------------- //
-
-        /// Constructor
-        rpJointListElement(rpJoint* initJoint, rpJointListElement* initNext)
-         :joint(initJoint), next(initNext)
-        {
-
-        }
-
-
-};
-
-
 
 
 struct rpJointInfo
@@ -116,6 +87,8 @@ class rpJoint
 
       public:
 
+
+        uint mIndex = 0;
         // -------------------- Attributes -------------------- //
 
         /// Pointer to the first body of the rpJoint
@@ -208,7 +181,7 @@ class rpJoint
 
         // -------------------- Friendship -------------------- //
         friend class rpDynamicsWorld;
-        friend class Island;
+        friend class rpIsland;
         friend class rpConstraintSolver;
 
 
@@ -242,9 +215,8 @@ SIMD_INLINE rpPhysicsBody* rpJoint::getBody2() const
  */
 SIMD_INLINE bool rpJoint::isActive() const
 {
-//    return (mBody1->isActive() &&
-//            mBody2->isActive());
-    return true;
+    return (mBody1->isActive() &&
+            mBody2->isActive());
 }
 
 // Return the type of the rpJoint

@@ -31,10 +31,12 @@ typedef std::pair<uint, uint> overlappingpairid;
  * overlap anymore. This class contains a contact manifold that
  * store all the contact points between the two bodies.
  */
-class rpOverlappingPair
+class rpOverlappingPair : public BlockAlloc<rpOverlappingPair>
 {
 
     private:
+
+        bool isFakeCollision;
 
         // -------------------- Attributes -------------------- //
 
@@ -73,11 +75,15 @@ class rpOverlappingPair
         rpProxyShape* getShape2() const;
 
 
-		//        /// Add a contact to the contact cache
-		//        void addContact(ContactPoint* contact);
-		//
-		//        /// Update the contact cache
-		//        void update();
+        /// Add a contact to the contact cache
+        void addContact(rpContactPoint* contact);
+
+        /// Update the contact cache
+        void update();
+
+
+        /// Clear the contact points of the contact manifold
+        void clearContactPoints();
 
 
 
@@ -90,21 +96,31 @@ class rpOverlappingPair
 
 
         /// Return the number of contacts in the cache
-        int getNbContactPoints() const;
+        int getNbContactManifolds() const;
 
         /// Return the a reference to the contact manifold set
         const rpContactManifoldSet& getContactManifoldSet() const;
 
 
 
-        rpContactManifoldSet getContactManifoldSet2() const
+        rpContactManifoldSet getContactManifoldSet2()// const
         {
         	return mContactManifoldSet;
         }
 
 
-		//        /// Clear the contact points of the contact manifold
-		//        void clearContactPoints();
+        void getAllContacts( std::vector< rpContactPoint* >& contacts )
+        {
+            for (int j = 0; j < mContactManifoldSet.getNbContactManifolds(); ++j)
+            {
+                 rpContactManifold* manifold = mContactManifoldSet.getContactManifold(j);
+                 for (int i = 0; i < manifold->getNbContactPoints(); ++i)
+                 {
+                    contacts.push_back( manifold->getContactPoint(i) );
+                 }
+            }
+        }
+
 
 
         /// Return the pair of bodies index
@@ -117,9 +133,10 @@ class rpOverlappingPair
 
         // -------------------- Friendship -------------------- //
 
-        friend class rpContactManager;
+        friend class rpCollisionManager;
         friend class rpCollisionWorld;
         friend class rpDynamicsWorld;
+
 
 };
 
@@ -151,7 +168,7 @@ SIMD_INLINE  void rpOverlappingPair::setCachedSeparatingAxis(const Vector3& axis
 
 
 
-SIMD_INLINE int rpOverlappingPair::getNbContactPoints() const
+SIMD_INLINE int rpOverlappingPair::getNbContactManifolds() const
 {
 	return mContactManifoldSet.getNbContactManifolds();
 }

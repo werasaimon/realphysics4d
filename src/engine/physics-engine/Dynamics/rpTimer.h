@@ -177,7 +177,7 @@ SIMD_INLINE void rpTimer::update()
     // Compute the delta display time between two display frames
     mDeltaTime = currentTime - mLastUpdateTime;
 
-    mDeltaTime = ( mDeltaTime > (mTimeStep * 12.0) )?  (mTimeStep * 12.0) : mDeltaTime;
+    /**/ mDeltaTime = ( mDeltaTime > (mTimeStep * 10.0) )?  (mTimeStep * 10.0) : mDeltaTime; /**/
 
     // Update the current display time
     mLastUpdateTime = currentTime;

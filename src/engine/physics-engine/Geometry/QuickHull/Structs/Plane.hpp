@@ -10,8 +10,6 @@
 
 #include "Vector3.hpp"
 
-
-
 namespace real_physics
 {
 

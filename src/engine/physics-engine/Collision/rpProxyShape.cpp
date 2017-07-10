@@ -50,11 +50,6 @@ namespace real_physics
       {
 	         free(mCachedCollisionData);
       }
-
-	//      if(mCollisionShape != NULL)
-	//      {
-	//    	  delete mCollisionShape;
-	//      }
   }
 
   // Return true if a point is inside the collision shape
@@ -80,7 +75,7 @@ namespace real_physics
   {
 
       // If the corresponding body is not active, it cannot be hit by rays
-      //if (!mBody->isActive()) return false;
+      if (!mBody->isActive()) return false;
 
       // Convert the ray into the local-space of the collision shape
       const Transform localToWorldTransform = getWorldTransform();

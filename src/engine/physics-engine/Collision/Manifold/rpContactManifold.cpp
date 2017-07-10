@@ -32,19 +32,6 @@ rpContactManifold::rpContactManifold(rpProxyShape* shape1, rpProxyShape* shape2 
 rpContactManifold::~rpContactManifold()
 {
 	clear();
-
-   mFrictionVector1 =  Vector3::ZERO;
-   mFrictionVector2 =  Vector3::ZERO;
-
-
-   mFrictionImpulse1 = 0;
-   mFrictionImpulse2 = 0;
-
-   mFrictionTwistImpulse = 0;
-
-   mRollingResistanceImpulse =   Vector3::ZERO;
-
-   mExtremalPenetration;
 }
 
 // Add a contact point in the manifold
@@ -124,49 +111,48 @@ void rpContactManifold::update(const Transform &transform1, const Transform &tra
     if (mNbContactPoints == 0) return;
 
 
-
     // Update the world coordinates and penetration depth of the contact points in the manifold
     for (uint i=0; i<mNbContactPoints; i++)
     {
-        mContactPoints[i]->setWorldPointOnBody1(/*transform1 * */mContactPoints[i]->getLocalPointOnBody1());
-        mContactPoints[i]->setWorldPointOnBody2(/*transform2 **/ mContactPoints[i]->getLocalPointOnBody2());
+        mContactPoints[i]->setWorldPointOnBody1(transform1 * mContactPoints[i]->getLocalPointOnBody1());
+        mContactPoints[i]->setWorldPointOnBody2(transform2 * mContactPoints[i]->getLocalPointOnBody2());
         mContactPoints[i]->setPenetrationDepth((mContactPoints[i]->getWorldPointOnBody2() -
                                                 mContactPoints[i]->getWorldPointOnBody1()).dot(mContactPoints[i]->getNormal()));
     }
 
 
-    const scalar squarePersistentContactThreshold = PERSISTENT_CONTACT_DIST_THRESHOLD *
-                                             		PERSISTENT_CONTACT_DIST_THRESHOLD;
+        //    const scalar squarePersistentContactThreshold = 0.0001;// PERSISTENT_CONTACT_DIST_THRESHOLD *
+        //    // PERSISTENT_CONTACT_DIST_THRESHOLD;
 
 
-    // Remove the contact points that don't represent very well the contact manifold
-    for (int i=static_cast<int>(mNbContactPoints)-1; i>=0; i--)
-    {
-    	assert(i < static_cast<int>(mNbContactPoints));
+        //    // Remove the contact points that don't represent very well the contact manifold
+        //    for (int i=static_cast<int>(mNbContactPoints)-1; i>=0; i--)
+        //    {
+        //        assert(i < static_cast<int>(mNbContactPoints));
 
-    	// Compute the distance between contact points in the normal direction
-    	scalar distanceNormal = -mContactPoints[i]->getPenetrationDepth();
+        //        // Compute the distance between contact points in the normal direction
+        //        scalar distanceNormal = mContactPoints[i]->getPenetrationDepth();
 
-    	// If the contacts points are too far from each other in the normal direction
-    	if (distanceNormal > squarePersistentContactThreshold)
-    	{
-    		removeContactPoint(i);
-    	}
-    	else
-    	{
-    		// Compute the distance of the two contact points in the plane
-    		// orthogonal to the contact normal
-    		Vector3 projOfPoint1 = mContactPoints[i]->getWorldPointOnBody1() + mContactPoints[i]->getNormal() * distanceNormal;
-    		Vector3 projDifference = mContactPoints[i]->getWorldPointOnBody2() - projOfPoint1;
+        //        // If the contacts points are too far from each other in the normal direction
+        //        if (distanceNormal > squarePersistentContactThreshold)
+        //        {
+        //            removeContactPoint(i);
+        //        }
+        //        else
+        //        {
+        //            // Compute the distance of the two contact points in the plane
+        //            // orthogonal to the contact normal
+        //            Vector3 projOfPoint1 = mContactPoints[i]->getWorldPointOnBody1() + mContactPoints[i]->getNormal() * distanceNormal;
+        //            Vector3 projDifference = mContactPoints[i]->getWorldPointOnBody2() - projOfPoint1;
 
-    		// If the orthogonal distance is larger than the valid distance
-    		// threshold, we remove the contact
-    		if (projDifference.lengthSquare() > squarePersistentContactThreshold)
-    		{
-    			removeContactPoint(i);
-    		}
-    	}
-    }
+        //            // If the orthogonal distance is larger than the valid distance
+        //            // threshold, we remove the contact
+        //            if (projDifference.lengthSquare() > squarePersistentContactThreshold)
+        //            {
+        //                removeContactPoint(i);
+        //            }
+        //        }
+        //    }
 }
 
 // Return the index of the contact point with the larger penetration depth.

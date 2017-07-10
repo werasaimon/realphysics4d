@@ -18,7 +18,7 @@
 #include "../Body/rpCollisionBody.h"
 #include "rpRaycastInfo.h"
 #include "rpOverlappingPair.h"
-#include "rpContactManager.h"
+#include "rpCollisionManager.h"
 
 
 namespace real_physics
@@ -37,10 +37,10 @@ class rpCollisionWorld
 
     protected:
 
-		// -------------------- Attributes -------------------- //
+        //----------------- Attributes ------------------//
 
 		/// Reference to the collision detection
-        rpContactManager       mCollisionDetection;
+        rpCollisionManager         mCollisionDetection;
 
 		/// All the bodies (rigid and soft) of the world
 		std::set<rpCollisionBody*> mBodies;
@@ -51,10 +51,8 @@ class rpCollisionWorld
 		/// List of free ID for rigid bodies
 		std::vector<luint>         mFreeBodiesIDs;
 
-		/// Overlapping pairs in contact (during the current Narrow-phase collision detection)
-	    std::map<overlappingpairid, rpOverlappingPair*> mCollisionContactOverlappingPairs;
 
-        // -------------------- Methods -------------------- //
+        //-------------------- Methods ------------------//
 
         /// Private copy-constructor
         rpCollisionWorld(const rpCollisionWorld& world);
@@ -62,12 +60,13 @@ class rpCollisionWorld
         /// Private assignment operator
         rpCollisionWorld& operator=(const rpCollisionWorld& world);
 
+
+
         /// Return the next available body ID
         bodyindex computeNextAvailableBodyID();
 
         /// Reset all the contact manifolds linked list of each body
         void resetContactManifoldListsOfBodies();
-
 
 
     public:
@@ -114,10 +113,14 @@ class rpCollisionWorld
             mCollisionDetection.addNoCollisionPair( body1 , body2 );
         }
 
+
+        //// Add Collision New contact Solver
+        virtual void addChekCollisionPair( rpContactManifold* maniflod ) {}
+
         // -------------------- Friendship -------------------- //
 
         friend class rpDynamicsWorld;
-        friend class rpContactManager;
+        friend class rpCollisionManager;
         friend class rpCollisionBody;
         friend class rpRigidPhysicsBody;
         friend class rpConvexMeshShape;

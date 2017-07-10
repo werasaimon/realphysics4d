@@ -13,6 +13,8 @@
 #include <vector>
 #include <iostream>
 
+#include "../../Memory/rpList.h"
+
 #include "../rpProxyShape.h"
 #include "rpContactPoint.h"
 using namespace std;
@@ -22,39 +24,6 @@ namespace real_physics
 
 // Constants
 const uint MAX_CONTACT_POINTS_IN_MANIFOLD = 32;   // Maximum number of contacts in the manifold
-
-// Class declarations
-class rpContactManifold;
-
-// Structure ContactManifoldListElement
-/**
- * This structure represents a single element of a linked list of contact manifolds
- */
-struct rpContactManifoldListElement
-{
-
-    public:
-
-        // -------------------- Attributes -------------------- //
-
-        /// Pointer to the actual contact manifold
-        rpContactManifold* contactManifold;
-
-        /// Next element of the list
-        rpContactManifoldListElement* next;
-
-        // -------------------- Methods -------------------- //
-
-        /// Constructor
-        rpContactManifoldListElement(rpContactManifold* initContactManifold, rpContactManifoldListElement* initNext)
-        :contactManifold(initContactManifold), next(initNext)
-        {
-
-        }
-};
-
-
-
 
 
 class rpContactManifold
@@ -66,6 +35,7 @@ class rpContactManifold
 //	    uint mIdIndex1;
 //	    uint mIdIndex2;
 
+        bool mIsInitCollision = false;
 
         // -------------------- Attributes -------------------- //
 
@@ -143,7 +113,7 @@ class rpContactManifold
 
         // -------------------- Methods -------------------- //
 
-        rpContactManifold(void){}
+        //rpContactManifold(void){}
 
         /// Constructor
         rpContactManifold( rpProxyShape* shape1, rpProxyShape* shape2 ,
@@ -263,6 +233,7 @@ class rpContactManifold
 
         // -------------------- Friendship -------------------- //
 
+        friend class rpContactSolverSequential;
         friend class rpContactSolverSequentialImpulseObject;
         friend class rpContactManifoldSet;
         friend class rpDynamicsWorld;

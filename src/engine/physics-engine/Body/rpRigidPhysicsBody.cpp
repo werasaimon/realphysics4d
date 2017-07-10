@@ -33,7 +33,7 @@ namespace real_physics
 
 
 
-rpRigidPhysicsBody::rpRigidPhysicsBody(const Transform& transform, rpContactManager* CollideWorld, bodyindex id)
+rpRigidPhysicsBody::rpRigidPhysicsBody(const Transform& transform, rpCollisionManager *CollideWorld, bodyindex id)
 :rpPhysicsBody(transform, CollideWorld, id),
  mInitMass(scalar(1.0)),
  mCenterOfMassLocal(0, 0, 0),

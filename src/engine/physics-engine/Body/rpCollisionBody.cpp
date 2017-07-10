@@ -11,7 +11,7 @@
 #include "../Collision/rpRaycastInfo.h"
 #include "../Collision/Shapes/rpAABB.h"
 #include "../Collision/Shapes/rpCollisionShape.h"
-#include "../Collision/rpContactManager.h"
+#include "../Collision/rpCollisionManager.h"
 #include "../Geometry/QuickHull/Structs/Ray.hpp"
 #include "rpBody.h"
 
@@ -25,9 +25,14 @@ namespace real_physics
  * @param world The physics world where the body is created
  * @param id ID of the body
  */
-rpCollisionBody::rpCollisionBody(const Transform& transform, rpContactManager* collideWorld , bodyindex id)
-              : rpBody(id), mType(DYNAMIC), mTransform(transform), mProxyCollisionShapes(NULL),
-                mNbCollisionShapes(0) , mCollisionDetection(collideWorld) , mContactManifoldsList(NULL) //, mWorld(world)
+rpCollisionBody::rpCollisionBody(const Transform& transform, rpCollisionManager* collideWorld , bodyindex id)
+    : rpBody(id),
+      mType(DYNAMIC),
+      mTransform(transform),
+      mProxyCollisionShapes(NULL),
+      mNbCollisionShapes(0) ,
+      mCollisionDetection(collideWorld) ,
+      mContactManifoldsList(NULL)  //, mWorld(world)
 {
 
 }
@@ -188,10 +193,10 @@ void rpCollisionBody::removeAllCollisionShapes()
 void rpCollisionBody::resetContactManifoldsList()
 {
     // Delete the linked list of contact manifolds of that body
-    rpContactManifoldListElement* currentElement = mContactManifoldsList;
+    ContactManifoldListElement* currentElement = mContactManifoldsList;
     while (currentElement != NULL)
     {
-        rpContactManifoldListElement* nextElement = currentElement->next;
+        ContactManifoldListElement* nextElement = currentElement->getNext();
 
         // Delete the current element
         delete currentElement;
@@ -300,11 +305,11 @@ int rpCollisionBody::resetIsAlreadyInIslandAndCountManifolds()
     // Reset the mIsAlreadyInIsland variable of the contact manifolds for
     // this body
     int nbManifolds = 0;
-    rpContactManifoldListElement* currentElement = mContactManifoldsList;
+    ContactManifoldListElement* currentElement = mContactManifoldsList;
     while (currentElement != NULL)
     {
-        currentElement->contactManifold->mIsAlreadyInIsland = false;
-        currentElement = currentElement->next;
+        currentElement->getPointer()->mIsAlreadyInIsland = false;
+        currentElement = currentElement->getNext();
         nbManifolds++;
     }
     return nbManifolds;

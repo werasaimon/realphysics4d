@@ -27,7 +27,7 @@
 #include  "NarrowPhase/GJK_EPA/rpGjkCollisionDescription.h"
 #include  "NarrowPhase/GJK_EPA/rpGjkEpa.h"
 #include  "NarrowPhase/MPR/rpMPRAlgorithm.h"
-#include  "rpContactManager.h"
+#include  "rpCollisionManager.h"
 #include  "rpCollisionWorld.h"
 
 #endif /* SOURCE_ENGIE_COLLISION_COLLISION_H_ */

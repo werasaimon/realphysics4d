@@ -327,23 +327,25 @@ void rpBallAndSocketJoint::solvePositionConstraint()
     Body2->setWorldTransform(TransformUtil::integrateTransform( Body2->mTransform , v2 , w2 , 1.0  ));
 
 
+    /**
 
-    //    // Update the body center of mass and orientation of body 1
-    //    x1 += v1;
-    //    q1 += Quaternion(0, w1) * q1 * scalar(0.5);
-    //    q1.normalize();
-
-
-
-    //    // Update the body position/orientation of body 2
-    //    x2 += v2;
-    //    q2 += Quaternion(0, w2) * q2 * scalar(0.5);
-    //    q2.normalize();
+    // Update the body center of mass and orientation of body 1
+    x1 += v1;
+    q1 += Quaternion(0, w1) * q1 * scalar(0.5);
+    q1.normalize();
 
 
-    //    Body1->setWorldTransform(Transform(x1,q1));
-    //    Body2->setWorldTransform(Transform(x2,q2));
 
+    // Update the body position/orientation of body 2
+    x2 += v2;
+    q2 += Quaternion(0, w2) * q2 * scalar(0.5);
+    q2.normalize();
+
+
+    Body1->setWorldTransform(Transform(x1,q1));
+    Body2->setWorldTransform(Transform(x2,q2));
+
+    /**/
 
 
 }

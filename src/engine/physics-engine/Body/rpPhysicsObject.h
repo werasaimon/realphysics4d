@@ -35,7 +35,7 @@ class rpPhysicsObject : public rpCollisionBody
 
     public:
 
-        rpPhysicsObject(const Transform& transform, rpContactManager *CollideWorld, bodyindex id );
+        rpPhysicsObject(const Transform& transform, rpCollisionManager *CollideWorld, bodyindex id );
 
 
 		virtual ~rpPhysicsObject();

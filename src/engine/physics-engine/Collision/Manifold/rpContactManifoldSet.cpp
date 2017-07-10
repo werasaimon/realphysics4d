@@ -29,6 +29,18 @@ rpContactManifoldSet::~rpContactManifoldSet()
     clear();
 }
 
+void rpContactManifoldSet::setAllContacts( std::vector<rpContactPoint*> &mContacts )
+{
+    for (int j = 0; j < mNbManifolds; ++j)
+    {
+        rpContactManifold*  Maniflod = getContactManifold(j);
+        for (int i = 0; i < Maniflod->getNbContactPoints(); ++i)
+        {
+            mContacts.push_back( Maniflod->getContactPoint(i) );
+        }
+    }
+}
+
 // Add a contact point to the manifold set
 void rpContactManifoldSet::addContactPoint(rpContactPoint* contact)
 {
@@ -193,14 +205,14 @@ void rpContactManifoldSet::update()
     {
 
         // Update the contact manifold
-        mManifolds[i]->update(mShape1->getBody()->getTransform() * mShape1->getLocalToBodyTransform(),
-                              mShape2->getBody()->getTransform() * mShape2->getLocalToBodyTransform());
+        mManifolds[i]->update(mShape1->getWorldTransform(),
+                              mShape2->getWorldTransform());
 
-        // Remove the contact manifold if has no contact points anymore
-        if (mManifolds[i]->getNbContactPoints() == 0)
-        {
-            removeManifold(i);
-        }
+//        // Remove the contact manifold if has no contact points anymore
+//        if (mManifolds[i]->getNbContactPoints() == 0)
+//        {
+//            removeManifold(i);
+//        }
     }
 }
 

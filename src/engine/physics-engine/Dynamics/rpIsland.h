@@ -6,6 +6,8 @@
 #include "Solver/rpContactSolverSequentialImpulseObject.h"
 #include "../Collision/Manifold/rpContactManifold.h"
 
+#include "Joint/rpJoint.h"
+#include "Joint/rpBallAndSocketJoint.h"
 
 namespace real_physics
 {
@@ -21,9 +23,7 @@ namespace real_physics
 
          /// Array with all the contact manifolds between bodies of the island
          rpContactManifold** mContactManifolds;
-
-         /// Array with all the joints between bodies of the island
-         rpJoint** mJoints;
+         overlappingpairid*  mContactMapIndexesPair;
 
          /// Current number of bodies in the island
          uint mNbBodies;
@@ -31,10 +31,8 @@ namespace real_physics
          /// Current number of contact manifold in the island
          uint mNbContactManifolds;
 
-         /// Current number of joints in the island
-         uint mNbJoints;
-
-
+         /// array map contacts solver
+         std::map< overlappingpairid , rpContactSolver* > &mContactSolvers;
 
 
          //-------------------- Methods -------------------//
@@ -52,7 +50,8 @@ namespace real_physics
         //-------------------- Methods --------------------//
 
          /// Constructor
-          rpIsland(uint nbMaxBodies, uint nbMaxContactManifolds, uint nbMaxJoints);
+          rpIsland(uint nbMaxBodies , uint nbMaxContactManifolds ,
+                   std::map<overlappingpairid, rpContactSolver* > &_ContactSolvers );
 
          /// Destructor
          ~rpIsland();
@@ -65,9 +64,6 @@ namespace real_physics
          /// Add a contact manifold into the island
          void addContactManifold(rpContactManifold* contactManifold);
 
-         /// Add a joint into the island
-         void addJoint(rpJoint* joint);
-
 
 
          /// Return the number of bodies in the island
@@ -75,9 +71,6 @@ namespace real_physics
 
          /// Return the number of contact manifolds in the island
          uint getNbContactManifolds() const;
-
-         /// Return the number of joints in the island
-         uint getNbJoints() const;
 
 
 
@@ -87,16 +80,49 @@ namespace real_physics
          /// Return a pointer to the array of contact manifolds
          rpContactManifold** getContactManifold();
 
-         /// Return a pointer to the array of joints
-         rpJoint** getJoints();
 
 
 
+         ///-----------------------------------------------------///
+         void warmStart( scalar timeStep )
+         {
+             for( uint i = 0; i < mNbContactManifolds; i++ )
+             {
+                 mContactSolvers[mContactMapIndexesPair[i]]->initializeForIsland(timeStep);
+                 mContactSolvers[mContactMapIndexesPair[i]]->warmStart();
+             }
+         }
+
+         ///-----------------------------------------------------///
+         void solveVelocityConstraint()
+         {
+             for( uint i = 0; i < mNbContactManifolds; i++ )
+             {
+                 mContactSolvers[mContactMapIndexesPair[i]]->solveVelocityConstraint();
+             }
+         }
+
+         ///-----------------------------------------------------///
+         void solvePositionConstraint()
+         {
+             for( uint i = 0; i < mNbContactManifolds; i++ )
+             {
+                 mContactSolvers[mContactMapIndexesPair[i]]->solvePositionConstraint();
+             }
+         }
+
+
+         ///-----------------------------------------------------///
+//         void storeImpulses()
+//         {
+//             for( uint i = 0; i < mNbContactManifolds; i++ )
+//             {
+//                 mContactSolvers[mContactMapIndexesPair[i]]->storeImpulses();
+//             }
+//         }
 
          //-------------------- Friendship --------------------//
-
          friend class rpDynamicsWorld;
-
 
     };
 
@@ -112,16 +138,14 @@ namespace real_physics
     // Add a contact manifold into the island
     SIMD_INLINE void rpIsland::addContactManifold(rpContactManifold* contactManifold)
     {
+        overlappingpairid ContactKeyPairManifold = rpOverlappingPair::computeID( contactManifold->mShape1 ,
+                                                                                 contactManifold->mShape2 );
+
+        mContactMapIndexesPair[mNbContactManifolds] = ContactKeyPairManifold;
         mContactManifolds[mNbContactManifolds] = contactManifold;
         mNbContactManifolds++;
     }
 
-    // Add a joint into the island
-    SIMD_INLINE void rpIsland::addJoint(rpJoint* joint)
-    {
-        mJoints[mNbJoints] = joint;
-        mNbJoints++;
-    }
 
     // Return the number of bodies in the island
     SIMD_INLINE uint rpIsland::getNbBodies() const
@@ -133,12 +157,6 @@ namespace real_physics
     SIMD_INLINE uint rpIsland::getNbContactManifolds() const
     {
         return mNbContactManifolds;
-    }
-
-    // Return the number of joints in the island
-    SIMD_INLINE uint rpIsland::getNbJoints() const
-    {
-        return mNbJoints;
     }
 
 
@@ -154,11 +172,7 @@ namespace real_physics
         return mContactManifolds;
     }
 
-    // Return a pointer to the array of joints
-    SIMD_INLINE rpJoint** rpIsland::getJoints()
-    {
-        return mJoints;
-    }
+
 
 }
 

@@ -275,7 +275,7 @@ namespace real_physics
           friend class rpCollisionBody;
           friend class rpBroadPhaseAlgorithm;
           friend class rpDynamicAABBTree;
-          friend class rpContactManager;
+          friend class rpCollisionManager;
           friend class rpCollisionWorld;
           friend class rpDynamicsWorld;
           friend class rpConvexMeshShape;

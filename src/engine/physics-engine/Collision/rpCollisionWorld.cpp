@@ -133,12 +133,13 @@ void rpCollisionWorld::UpdateCollision()
 	/**/
 
 
-    mCollisionDetection.computeCollisionDetectionAllPairs(mCollisionContactOverlappingPairs);
+    mCollisionDetection.computeCollisionDetectionAllPairs();
+
 
 
 
 	/********************************************************************/
-	for( auto pair : mCollisionContactOverlappingPairs )
+    for( auto pair : mCollisionDetection.mContactOverlappingPairs )
 	{
         const int NbSize =  pair.second->getContactManifoldSet().getNbContactManifolds();
 
