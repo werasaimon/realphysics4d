@@ -98,7 +98,6 @@ SOURCES += main.cpp\
     engine/physics-engine/Collision/Manifold/rpContactManifold.cpp \
     engine/physics-engine/Collision/Manifold/rpContactManifoldSet.cpp \
     engine/physics-engine/Collision/Manifold/rpContactPoint.cpp \
-    engine/physics-engine/Collision/Manifold/rpGenerationContactManiflodSet.cpp \
     engine/physics-engine/Collision/NarrowPhase/GJK_EPA/rpGjkEpa.cpp \
     engine/physics-engine/Collision/NarrowPhase/rpNarrowPhaseCollisionAlgorithm.cpp \
     engine/physics-engine/Collision/Shapes/rpAABB.cpp \
@@ -206,11 +205,13 @@ SOURCES += main.cpp\
     engine/physics-engine/Body/rpPhysicsBody.cpp \
     engine/physics-engine/Body/rpPhysicsObject.cpp \
     engine/physics-engine/Body/rpRigidPhysicsBody.cpp \
-    engine/physics-engine/Collision/rpContactManager.cpp \
     engine/physics-engine/Dynamics/rpIsland.cpp \
     engine/physics-engine/Memory/MemoryAllocator.cpp \
     engine/physics-engine/Dynamics/Solver/rpContactSolverSequentialImpulseObject.cpp \
-    engine/physics-engine/Geometry/QuickClipping/rpQuickClippingPolygons.cpp
+    engine/physics-engine/Geometry/QuickClipping/rpQuickClippingPolygons.cpp \
+    engine/physics-engine/Memory/SmartAllocator.cpp \
+    engine/physics-engine/Collision/rpCollisionManager.cpp \
+    engine/physics-engine/Collision/Manifold/rpContactGeneration.cpp
 
 HEADERS  += widget.h \
     glwidget.h \
@@ -351,7 +352,6 @@ HEADERS  += widget.h \
     engine/physics-engine/Collision/Manifold/rpContactManifold.h \
     engine/physics-engine/Collision/Manifold/rpContactManifoldSet.h \
     engine/physics-engine/Collision/Manifold/rpContactPoint.h \
-    engine/physics-engine/Collision/Manifold/rpGenerationContactManiflodSet.h \
     engine/physics-engine/Collision/NarrowPhase/GJK_EPA/rpComputeGjkEpaPenetration.h \
     engine/physics-engine/Collision/NarrowPhase/GJK_EPA/rpGjkCollisionDescription.h \
     engine/physics-engine/Collision/NarrowPhase/GJK_EPA/rpGjkEpa.h \
@@ -462,12 +462,14 @@ HEADERS  += widget.h \
     engine/physics-engine/Body/rpPhysicsBody.h \
     engine/physics-engine/Body/rpPhysicsObject.h \
     engine/physics-engine/Body/rpRigidPhysicsBody.h \
-    engine/physics-engine/Collision/rpContactManager.h \
     engine/physics-engine/Dynamics/rpIsland.h \
     engine/physics-engine/Memory/MemoryAllocator.h \
-    engine/physics-engine/Dynamics/Solver/rpContactSolverSequentialImpulseObject.h \
     engine/physics-engine/Geometry/QuickClipping/rpQuickClippingPolygons.h \
-    engine/physics-engine/Collision/Manifold/manifold.h
+    engine/physics-engine/Collision/Manifold/manifold.h \
+    engine/physics-engine/Memory/SmartAllocator.h \
+    engine/physics-engine/Collision/rpCollisionManager.h \
+    engine/physics-engine/Dynamics/Solver/rpContactSolverSequentialImpulseObject.h \
+    engine/physics-engine/Collision/Manifold/rpContactGeneration.h
 
 FORMS    += widget.ui \
     formrunscript.ui
