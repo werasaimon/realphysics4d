@@ -208,7 +208,7 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
     /// Meneger systems collisions
     importToScope( luabind::namespace_("physics")
                          [
-                            luabind::class_<real_physics::rpContactManager>("collid_meneger")
+                            luabind::class_<real_physics::rpCollisionManager>("collid_meneger")
                              // constructor
                             .def(luabind::constructor<>())
                          ]);
@@ -228,7 +228,7 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
                          [
                                 luabind::class_<real_physics::rpCollisionBody , luabind::bases<real_physics::rpBody>>("collid_body")
                                 // constructor
-                                .def(luabind::constructor<const real_physics::Transform& , real_physics::rpContactManager* , real_physics::bodyindex>())
+                                .def(luabind::constructor<const real_physics::Transform& , real_physics::rpCollisionManager* , real_physics::bodyindex>())
                                 .def( "transform" , &real_physics::rpCollisionBody::getTransform )
                                 .enum_("BodyType")
                                 [
@@ -263,7 +263,7 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
                           [
                               luabind::class_<real_physics::rpPhysicsObject , luabind::bases<real_physics::rpCollisionBody> >("physics_object")
                               // constructor
-                              .def(luabind::constructor<const real_physics::Transform& , real_physics::rpContactManager* , real_physics::bodyindex>())
+                              .def(luabind::constructor<const real_physics::Transform& , real_physics::rpCollisionManager* , real_physics::bodyindex>())
                               .enum_("BodyType")
                               [
                                 luabind::value("static"    ,real_physics::BodyType::STATIC),
@@ -279,7 +279,7 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
                          [
                             luabind::class_<real_physics::rpPhysicsBody , luabind::bases<real_physics::rpPhysicsObject , real_physics::rpCollisionBody> >("physics_body")
                             // constructor
-                            .def(luabind::constructor<const real_physics::Transform& , real_physics::rpContactManager* , real_physics::bodyindex>())
+                            .def(luabind::constructor<const real_physics::Transform& , real_physics::rpCollisionManager* , real_physics::bodyindex>())
                             .def( "integrate"           ,  &real_physics::rpPhysicsBody::Integrate)
                             .def( "applyGravity"        ,  &real_physics::rpPhysicsBody::applyGravity)
                             .def( "applyImpulseLinear"  ,  &real_physics::rpPhysicsBody::applyImpulseLinear)
@@ -296,7 +296,7 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
                          [
                             luabind::class_<real_physics::rpRigidPhysicsBody , luabind::bases<real_physics::rpPhysicsBody,real_physics::rpPhysicsObject,real_physics::rpCollisionBody>>("rigid_body")
                             // constructor
-                            .def(luabind::constructor<const real_physics::Transform& , real_physics::rpContactManager* , real_physics::bodyindex>())
+                            .def(luabind::constructor<const real_physics::Transform& , real_physics::rpCollisionManager* , real_physics::bodyindex>())
                             .def( "changeToFrameOfReference" , &real_physics::rpRigidPhysicsBody::changeToFrameOfReference )
                          ]);
 
