@@ -23,6 +23,7 @@
 *                                                                               *
 ********************************************************************************/
 
+
 // Uniform variables
 uniform vec3 cameraWorldPosition;           // World position of the camera
 uniform vec3 lightWorldPosition;            // World position of the light
@@ -36,7 +37,7 @@ uniform sampler2D texture;
 uniform sampler2D ShadowMap;
 
 
-uniform bool Texturing;                     // True if we need to use the texture
+uniform int Texturing;                     // True if we need to use the texture
 
 varying vec4 ShadowMapTexCoord;             // Texture shadow coordinates 4d
 varying vec2 texCoords;                     // Texture coordinates 2d
@@ -47,63 +48,77 @@ varying vec3 worldPosition;                 // World position of the vertex
 varying vec3 worldNormal;                   // World surface normalWorld
 
 
-vec2 poissonDisk[4] = vec2[]
-(
-  vec2( -0.94201624, -0.39906216  ),
-  vec2( 0.94558609, -0.76890725   ),
-  vec2( -0.094184101, -0.92938870 ),
-  vec2( 0.34495938, 0.29387760    )
-);
+
+
 
 void main()
 {
 
+
+
+	
 	//--------------------- Light mapping ------------------------------//
+
 
     // Compute the ambient term
     vec3 ambient = lightAmbientColor;
 
     // Get the texture color
     vec3 textureColor = vec3(1);
-    if (Texturing) textureColor = texture2D(texture, texCoords).rgb;
+    if (Texturing > 0) textureColor = texture2D(texture, texCoords).rgb;
 
     // Compute the diffuse term
-    vec3 L = normalize(lightWorldPosition - worldPosition);
+    vec3 L = normalize((lightWorldPosition - worldPosition));
     vec3 N = normalize(worldNormal);
 
     vec3 diffuse = lightDiffuseColor * max(dot(N, L), 0.0) * textureColor;
 
     // Compute the specular term
-    vec3 V = normalize(cameraWorldPosition - worldPosition);
+    vec3 V = normalize((cameraWorldPosition - worldPosition));
     vec3 H = normalize(V + L);
 
-    vec3 specular = lightSpecularColor * pow(max(dot(N, H), 0), shininess);
+    vec3 R = reflect ( -V, N );
+
+    vec3 specular = lightSpecularColor * pow(max(dot(L,R), 0), shininess);
+
+
 
 
 
 
     //--------------------- Shadow mapping  ------------------------------//
+    
+	vec2 poissonDisk[4];
+	poissonDisk[0] =  vec2( -0.94201624 , -0.39906216 );
+	poissonDisk[1] =  vec2(  0.94558609 , -0.76890725 );
+	poissonDisk[2] =  vec2( -0.094184101, -0.92938870 );
+	poissonDisk[3] =  vec2(  0.34495938 ,  0.29387760 );
+    
+    
     float intensive = 1.0;
 
 	float bias = 0.005*tan(acos(dot(N, L)));
 	bias = clamp(bias, 0.0 , 0.01);
+	
 
 	if(ShadowMapTexCoord.w > 0.0 )
 	{
-		vec3 ShadowMapTexCoordProj = ShadowMapTexCoord.xyz / ShadowMapTexCoord.w;
+	
+	vec3 ShadowMapTexCoordProj = ShadowMapTexCoord.xyz / ShadowMapTexCoord.w;
 
 		if(ShadowMapTexCoordProj.x >= 0.0 && ShadowMapTexCoordProj.x < 1.0 &&
 		   ShadowMapTexCoordProj.y >= 0.0 && ShadowMapTexCoordProj.y < 1.0 &&
 		   ShadowMapTexCoordProj.z >= 0.0 && ShadowMapTexCoordProj.z < 1.0)
-		{
+		{	
 			for (int i=0;i<4;i++)
 			{
 				if ( texture2D(ShadowMap, ShadowMapTexCoordProj.xy + poissonDisk[i]/700.0 ).r  < ShadowMapTexCoordProj.z-bias )
-				{
-					intensive -= 0.24444;
+                {
+					intensive -= (0.25 - bias);
 				}
 			}
 		}
+	
 	}
 
 

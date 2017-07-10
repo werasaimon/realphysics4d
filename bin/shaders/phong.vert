@@ -24,11 +24,11 @@
 ********************************************************************************/
 
 // Uniform variables
-uniform mat4x4 modelToWorldMatrix;      // Model too world coordinates matrix
-uniform mat4x4 worldToViewMatrix;       // World to camera coordinates matrix
-uniform mat4x4 projectionMatrix;        // Projection matrix
+uniform mat4 modelToWorldMatrix;        // Model too world coordinates matrix
+uniform mat4 worldToViewMatrix;         // World to camera coordinates matrix
+uniform mat4 projectionMatrix;          // Projection matrix
 
-uniform mat4x4 ShadowMatrix;       // Shadow to coordinates matrix
+uniform mat4 ShadowMatrix;              // Shadow to coordinates matrix
 
 
 
@@ -39,7 +39,6 @@ varying vec3 worldNormal;               // World surface normalWorld
 
 varying vec4   ShadowMapTexCoord;       // Texture shadow coordinates 4d
 varying vec2   texCoords;               // Texture coordinates 2d
-
 
 
 void main() 
@@ -59,6 +58,8 @@ void main()
     // Compute the shadow
     ShadowMapTexCoord = ShadowMatrix * worldPos;
 
+
+    
     // Compute the clip-space vertex coordinates
-    gl_Position = projectionMatrix * worldToViewMatrix * worldPos;
+    gl_Position =  projectionMatrix * worldToViewMatrix * worldPos;
 }
