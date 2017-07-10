@@ -32,7 +32,7 @@ namespace real_physics
 #define EPA_ACCURACY		((scalar)0.0001)
 #define EPA_FALLBACK		(10*EPA_ACCURACY)
 #define EPA_PLANE_EPS		((scalar)0.0003)
-#define EPA_INSIDE_EPS		((scalar)0.01)
+#define EPA_INSIDE_EPS	    ((scalar)0.002)
 
 
 
@@ -157,13 +157,13 @@ struct	MinkowskiDiff
 
     SIMD_INLINE Vector3		Support0( const Vector3& dir ) const
     {
-        return m_world0 * m_convexAPtr->getLocalSupportPointWithMargin(m_world0.getOrientation().getInverse() * dir );
+        return m_world0 * m_convexAPtr->getLocalSupportPointWithMargin( m_world0.getOrientation().getInverse() * dir );
     }
 
     SIMD_INLINE Vector3		Support1( const Vector3& dir ) const
     {
 
-       return  m_world1 * m_convexBPtr->getLocalSupportPointWithMargin(m_world1.getOrientation().getInverse() * dir );
+       return  m_world1 * m_convexBPtr->getLocalSupportPointWithMargin( m_world1.getOrientation().getInverse() * dir );
     }
 
 

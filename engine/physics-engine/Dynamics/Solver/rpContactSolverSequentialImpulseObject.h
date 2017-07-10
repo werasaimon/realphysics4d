@@ -21,7 +21,7 @@ namespace real_physics
 
 
 
-class rpContactSolverSequentialImpulseObject : public rpContactSolver
+class rpContactSolverSequentialImpulseObject : public rpContactSolver //, public BlockAlloc<rpContactSolverSequentialImpulseObject>
 {
 
 
@@ -230,17 +230,16 @@ class rpContactSolverSequentialImpulseObject : public rpContactSolver
         Vector3 oldFrictionVector2;
 
         /// First friction direction impulse at manifold center
-        scalar AccumulatedFriction1Impulse;
+        scalar  AccumulatedFriction1Impulse;
 
         /// Second friction direction impulse at manifold center
-        scalar AccumulatedFriction2Impulse;
+        scalar  AccumulatedFriction2Impulse;
 
         /// Twist friction impulse at contact manifold center
-        scalar AccumulatedFrictionTwistImpulse;
+        scalar  AccumulatedFrictionTwistImpulse;
 
         /// Rolling resistance impulse
         Vector3 AccumulatedRollingResistanceImpulse;
-
 
         /// Rolling resistance split impulse
         Vector3 AccumulatedRollingResistanceSplitImpulse;
@@ -264,11 +263,11 @@ class rpContactSolverSequentialImpulseObject : public rpContactSolver
 
 
 
-    uint                    mNbContactManifolds;
-    ContactManifoldSolver  *mContactConstraints;
+    //uint                    mNbContactManifolds;
+    //uint                    mNbManiflods;
 
-    uint                    mNbManiflods;
-    rpContactManifold*      mContactManifolds;
+    ContactManifoldSolver*  mContactConstraints = nullptr;
+    rpContactManifold*      mContactManifolds = nullptr;
 
 
 
@@ -318,25 +317,32 @@ class rpContactSolverSequentialImpulseObject : public rpContactSolver
 
 
 public:
-    rpContactSolverSequentialImpulseObject( rpRigidPhysicsBody* body1 ,
-                                            rpRigidPhysicsBody* body2 );
+             rpContactSolverSequentialImpulseObject( rpRigidPhysicsBody* body1 ,
+                                                     rpRigidPhysicsBody* body2 );
     virtual ~rpContactSolverSequentialImpulseObject();
 
 
 
     void  initManiflod( rpContactManifold * manilod );
 
+    /// Initilization solver
     void  initializeForIsland( scalar dt );
     void  initializeContactConstraints();
 
     /// Warm start the solver.
     void warmStart();
+
+    /// Solver velocity
     void solveVelocityConstraint();
+
+    /// Solver position and orientation
     void solvePositionConstraint();
 
+    /// Store the computed impulses to use them to
+    /// warm start the solver at the next iteration
+    void storeImpulses();
 
-
-    /**/
+    /******************************************************/
 
     /// Return true if the split impulses position correction technique is used for contacts
     bool isSplitImpulseActive() const;
@@ -348,16 +354,11 @@ public:
     /// the contact manifold instead of solving them at each contact point
     void setIsSolveFrictionAtContactManifoldCenterActive(bool isActive);
 
+     /// Return true if the warmstart impulses
+    bool isIsWarmStartingActive() const;
 
-    bool isIsWarmStartingActive() const
-    {
-        return mIsWarmStartingActive;
-    }
-
-    void setIsWarmStartingActive(bool isWarmStartingActive)
-    {
-        mIsWarmStartingActive = isWarmStartingActive;
-    }
+     /// Activate or Deactivate the warmstart impulses
+    void setIsWarmStartingActive(bool isWarmStartingActive);
 
     //-------------------- Friendship --------------------//
 
@@ -386,6 +387,18 @@ SIMD_INLINE  void rpContactSolverSequentialImpulseObject::setIsSplitImpulseActiv
 SIMD_INLINE  void rpContactSolverSequentialImpulseObject::setIsSolveFrictionAtContactManifoldCenterActive(bool isActive)
 {
     mIsSolveFrictionAtContactManifoldCenterActive = isActive;
+}
+
+// /// Return true if the warmstart impulses
+SIMD_INLINE  bool rpContactSolverSequentialImpulseObject::isIsWarmStartingActive() const
+{
+    return mIsWarmStartingActive;
+}
+
+// Activate or Deactivate the warmstart impulses
+SIMD_INLINE  void rpContactSolverSequentialImpulseObject::setIsWarmStartingActive(bool isWarmStartingActive)
+{
+    mIsWarmStartingActive = isWarmStartingActive;
 }
 
 } /* namespace real_physics */

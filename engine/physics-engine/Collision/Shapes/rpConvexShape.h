@@ -14,7 +14,7 @@ namespace real_physics
 {
 
 	/// Object margin for collision detection in meters (for the GJK-EPA Algorithm)
-    const scalar OBJECT_MARGIN = scalar(0.001);
+    const scalar OBJECT_MARGIN = scalar(0.002);
 
   // Class ConvexShape
   /**
@@ -78,9 +78,6 @@ namespace real_physics
           virtual bool isConvex() const;
 
           // -------------------- Friendship -------------------- //
-
-          friend class GJKAlgorithm;
-          friend class EPAAlgorithm;
 
           friend class  rpCollisionBody;
   };

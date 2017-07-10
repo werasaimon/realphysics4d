@@ -26,11 +26,12 @@ namespace real_physics
 {
 
 // Class declarations
-struct rpContactManifoldListElement;
-class  rpProxyShape;
-class  rpCollisionWorld;
-class  rpContactManager;
+class   rpProxyShape;
+class   rpCollisionWorld;
+class   rpCollisionManager;
+class   rpContactManifold;
 
+typedef rpListElement<rpContactManifold> ContactManifoldListElement;
 
 /// Enumeration for the type of a body
 /// STATIC : A static body has infinite mass, zero velocity but the position can be
@@ -61,26 +62,24 @@ class rpCollisionBody : public rpBody
 
 
         /// World relativity body
-        LorentzContraction    mRelativityMotion;
+        LorentzContraction      mRelativityMotion;
 
         /// Position and orientation of the body
-        Transform             mTransform;
+        Transform               mTransform;
 
         /// First element of the linked list of proxy collision shapes of this body
-        rpProxyShape*         mProxyCollisionShapes;
+        rpProxyShape*           mProxyCollisionShapes;
 
         /// Number of collision shapes
-        uint                  mNbCollisionShapes;
+        uint                    mNbCollisionShapes;
 
         /// Collision detection object
-        rpContactManager  *mCollisionDetection;
+        rpCollisionManager     *mCollisionDetection;
 
 
         /// First element of the linked list of contact manifolds involving this body
-        rpContactManifoldListElement* mContactManifoldsList = NULL;
+        ContactManifoldListElement* mContactManifoldsList = NULL;
 
-//        /// Reference to the world the body belongs to
-//        CollisionWorld& mWorld;
 
         // -------------------- Methods -------------------- //
 
@@ -115,16 +114,16 @@ class rpCollisionBody : public rpBody
 
 
         /// Tensor covariant component velocity metrices
-        void updateDisplacementRelativityVelocity( const Vector3& displecementVelocity )
+        void updateDisplacementRelativityVelocity( const Vector3& Velocity )
         {
-            mRelativityMotion.updateDisplacementBoost(displecementVelocity);
+            mRelativityMotion.updateDisplacementBoost( Velocity );
         }
 
 
         // -------------------- Methods -------------------- //
 
         /// Constructor
-        rpCollisionBody(const Transform& transform, real_physics::rpContactManager *CollideWorld, bodyindex id);
+        rpCollisionBody(const Transform& transform, real_physics::rpCollisionManager *CollideWorld, bodyindex id );
 
         /// Destructor
         virtual ~rpCollisionBody();
@@ -152,7 +151,7 @@ class rpCollisionBody : public rpBody
         virtual void removeCollisionShapee(const rpProxyShape* proxyShape);
 
         /// Return the first element of the linked list of contact manifolds involving this body
-        const rpContactManifoldListElement* getContactManifoldsList() const;
+        const ContactManifoldListElement* getContactManifoldsList() const;
 
         /// Return true if a point is inside the collision body
         bool testPointInside(const Vector3& worldPoint) const;
@@ -188,7 +187,7 @@ class rpCollisionBody : public rpBody
         //-------------------- Friendship --------------------//
         friend class rpCollisionWorld;
         friend class rpDynamicsWorld;
-        friend class rpContactManager;
+        friend class rpCollisionManager;
         friend class rpBroadPhaseAlgorithm;
         friend class rpConvexMeshShape;
         friend class rpProxyShape;
@@ -259,7 +258,7 @@ SIMD_INLINE void rpCollisionBody::setTransform(const Transform& transform)
  * @return A pointer to the first element of the linked-list with the contact
  *         manifolds of this body
  */
-SIMD_INLINE const rpContactManifoldListElement* rpCollisionBody::getContactManifoldsList() const
+SIMD_INLINE const ContactManifoldListElement* rpCollisionBody::getContactManifoldsList() const
 {
     return mContactManifoldsList;
 }

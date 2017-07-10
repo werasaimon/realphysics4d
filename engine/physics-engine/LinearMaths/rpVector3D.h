@@ -545,7 +545,7 @@ namespace real_physics
 	  T dotProduct = Vector1.dot(Vector2);
 	  T vectorsMagnitude = (Vector1.length()) * (Vector2.length());
 	  T angle = acos(dotProduct / vectorsMagnitude);
-     // if( __isnan(angle)) return 0;
+      if( __isnan(angle)) return 0;
 	  return (angle);
   }
 

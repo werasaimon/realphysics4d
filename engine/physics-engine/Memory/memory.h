@@ -8,10 +8,9 @@
 #ifndef SOURCE_ENGIE_MEMORY_MEMORY_H_
 #define SOURCE_ENGIE_MEMORY_MEMORY_H_
 
-
+#include "rpList.h"
 #include "rpStack.h"
 #include "MemoryAllocator.h"
-#include "rpList.h"
-
+#include "SmartAllocator.h"
 
 #endif /* SOURCE_ENGIE_MEMORY_MEMORY_H_ */

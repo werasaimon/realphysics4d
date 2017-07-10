@@ -18,9 +18,6 @@ const scalar rpContactSolverSequentialImpulseObject::BETA_SPLIT_IMPULSE = scalar
 const scalar rpContactSolverSequentialImpulseObject::SLOP= scalar(0.01);
 
 
-const scalar OFFSET_SLOP = scalar(0.03);
-
-
 
 rpContactSolverSequentialImpulseObject::rpContactSolverSequentialImpulseObject( rpRigidPhysicsBody* body1 ,
                                                                                 rpRigidPhysicsBody* body2)
@@ -31,9 +28,9 @@ rpContactSolverSequentialImpulseObject::rpContactSolverSequentialImpulseObject( 
  mIsSolveFrictionAtContactManifoldCenterActive(true)
 {
 
-    // new memory For contct Constrait
-    mContactConstraints = new ContactManifoldSolver;
     //mContactManifolds = new rpContactManifold;
+    mContactConstraints = new ContactManifoldSolver;
+
 
     for (uint i = 0; i < MAX_CONTACT_POINTS_IN_MANIFOLD; ++i)
     {
@@ -70,7 +67,7 @@ rpContactSolverSequentialImpulseObject::~rpContactSolverSequentialImpulseObject(
 
 
 
-void rpContactSolverSequentialImpulseObject::initManiflod(rpContactManifold* manilod)
+SIMD_INLINE void rpContactSolverSequentialImpulseObject::initManiflod(rpContactManifold* manilod)
 {
     mContactManifolds = manilod;
 }
@@ -99,7 +96,8 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::initializeForIsland(sca
 
     mTimeStep = dt;
 
-    mNbContactManifolds = 1;
+    //mNbContactManifolds = 1;
+
     rpContactManifold* externalManifold = mContactManifolds;
     ContactManifoldSolver* internalManifold = mContactConstraints;
 
@@ -150,10 +148,6 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::initializeForIsland(sca
         rpContactPoint* externalContact = externalManifold->getContactPoint(c);
 
 
-        externalContact->setWorldPointOnBody1(externalContact->getLocalPointOnBody1());
-        externalContact->setWorldPointOnBody2(externalContact->getLocalPointOnBody2());
-
-
         // Get the contact point on the two bodies
         Vector3 p1 = externalContact->getWorldPointOnBody1();
         Vector3 p2 = externalContact->getWorldPointOnBody2();
@@ -163,8 +157,8 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::initializeForIsland(sca
         contactPoint.r1 = p1 - x1;
         contactPoint.r2 = p2 - x2;
         contactPoint.penetrationDepth = externalContact->getPenetrationDepth();
-        contactPoint.isRestingContact = externalContact->getIsRestingContact();
-        externalContact->setIsRestingContact(true);
+        contactPoint.isRestingContact = true;//externalContact->getIsRestingContact();
+        //externalContact->setIsRestingContact(true);
         contactPoint.oldFrictionVector1 = externalContact->getFrictionVector1();
         contactPoint.oldFrictionVector2 = externalContact->getFrictionVector2();
 
@@ -199,10 +193,10 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::initializeForIsland(sca
         if (mIsWarmStartingActive)
         {
 
-            //			// Initialize the accumulated impulses with the previous step accumulated impulses
-            //			internalManifold.friction1Impulse = externalManifold->getFrictionImpulse1();
-            //			internalManifold.friction2Impulse = externalManifold->getFrictionImpulse2();
-            //			internalManifold.frictionTwistImpulse = externalManifold->getFrictionTwistImpulse();
+                //                        // Initialize the accumulated impulses with the previous step accumulated impulses
+                //                        internalManifold->AccumulatedFriction1Impulse = externalManifold->getFrictionImpulse1();
+                //                        internalManifold->AccumulatedFriction2Impulse = externalManifold->getFrictionImpulse2();
+                //                        internalManifold->AccumulatedFrictionTwistImpulse = externalManifold->getFrictionTwistImpulse();
         }
         else
         {
@@ -255,7 +249,7 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::initializeContactConstr
     {
 
         ContactPointSolver& contactPoint = manifold->contacts[i];
-        //ContactPoint* externalContact = contactPoint.externalContact;
+        rpContactPoint* externalContact = contactPoint.externalContact;
 
         // Compute the velocity difference
           Vector3 deltaV = v2 + w2.cross(contactPoint.r2) -
@@ -274,8 +268,6 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::initializeContactConstr
         // If we do not solve the friction constraints at the center of the contact manifold
         if (!mIsSolveFrictionAtContactManifoldCenterActive)
         {
-
-
 
             // Compute the friction vectors
             computeFrictionVectors(deltaV, contactPoint);
@@ -326,18 +318,25 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::initializeContactConstr
         // If the warm starting of the contact solver is active
         if (mIsWarmStartingActive)
         {
-            //			// Get the cached accumulated impulses from the previous step
-            //			contactPoint.AccumulatedPenetrationImpulse = externalContact->getPenetrationImpulse();
-            //			contactPoint.AccumulatedFriction1Impulse = externalContact->getFrictionImpulse1();
-            //			contactPoint.AccumulatedFriction2Impulse = externalContact->getFrictionImpulse2();
-            //			contactPoint.AccumulatedRollingResistanceImpulse = externalContact->getRollingResistanceImpulse();
+            //            // Get the cached accumulated impulses from the previous step
+            //            contactPoint.AccumulatedPenetrationImpulse = externalContact->getPenetrationImpulse();
+            //            contactPoint.AccumulatedFriction1Impulse = externalContact->getFrictionImpulse1();
+            //            contactPoint.AccumulatedFriction2Impulse = externalContact->getFrictionImpulse2();
+            //            contactPoint.AccumulatedRollingResistanceImpulse = externalContact->getRollingResistanceImpulse();
 
+        }
+        else
+        {
+            // Get the cached accumulated impulses from the previous step
+            contactPoint.AccumulatedPenetrationImpulse = 0.0;
+            contactPoint.AccumulatedFriction1Impulse = 0.0;
+            contactPoint.AccumulatedFriction2Impulse = 0.0;
+            contactPoint.AccumulatedRollingResistanceImpulse = Vector3::ZERO;
         }
 
         // Initialize the split impulses to zero
         contactPoint.AccumulatedPenetrationSplitImpulse = 0.0;
         contactPoint.AccumulatedRollingResistanceSplitImpulse = Vector3::ZERO;
-
 
         // If we solve the friction constraints at the center of the contact manifold
         if (mIsSolveFrictionAtContactManifoldCenterActive)
@@ -411,6 +410,8 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::warmStart()
         rpRigidPhysicsBody*  body2 = (rpRigidPhysicsBody* )(mBody2);
 
 
+       atLeastOneRestingContactPoint = false;
+
        ContactManifoldSolver& contactManifold = *mContactConstraints;
 
         for (uint i = 0; i < contactManifold.nbContacts; ++i)
@@ -427,70 +428,74 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::warmStart()
             scalar  &_accumulaterImpulsFriction1               =  contactPoint.AccumulatedFriction1Impulse;
             scalar  &_accumulaterImpulsFriction2               =  contactPoint.AccumulatedFriction2Impulse;
             Vector3 &_accumulaterRollingResistanceImpulse      =  contactPoint.AccumulatedRollingResistanceImpulse;
-            Vector3 &_accumulaterRollingResistanceImpulseDelta =  contactPoint.AccumulatedRollingResistanceSplitImpulse;
-
-
-
-
-         // Project the old friction impulses (with old friction vectors) into
-         // the new friction vectors to get the new friction impulses
-            contactManifold.oldFrictionVector1 = contactManifold.frictionVector1;
-            contactManifold.oldFrictionVector2 = contactManifold.frictionVector2;
-            Vector3 oldFrictionImpulse = _accumulaterImpulsFriction1 * contactPoint.oldFrictionVector1 +
-                                         _accumulaterImpulsFriction2 * contactPoint.oldFrictionVector2;
-
-            _accumulaterImpulsFriction1 = oldFrictionImpulse.dot(contactPoint.frictionVector1);
-            _accumulaterImpulsFriction2 = oldFrictionImpulse.dot(contactPoint.frictionVector2);
-
-
-
+            Vector3 &_accumulaterRollingResistanceSplitImpulse =  contactPoint.AccumulatedRollingResistanceSplitImpulse;
 
 
             /****************************************************************************/
-
             /// Penetration Distance
             scalar beta = mIsSplitImpulseActive ? BETA_SPLIT_IMPULSE : BETA;
             scalar sepp = -Abs( cp->getPenetrationDepth() );
-            cp->setPenetrationDepth( -(beta/mTimeStep) * Min( scalar(0), sepp + OFFSET_SLOP ));
+            cp->setPenetrationDepth( -(beta/mTimeStep) * Min( scalar(0), sepp + SLOP ));
             /****************************************************************************/
 
 
 
-
-            //------------------------  accumulation impulse -----------------------------//
-
-            body1->applyImpulse(-contactPoint.normal * _accumulaterImpuls , ContactPointA );
-            body2->applyImpulse( contactPoint.normal * _accumulaterImpuls , ContactPointB );
-
-
-
-
-            if (!mIsSolveFrictionAtContactManifoldCenterActive)
+            if(contactPoint.isRestingContact)
             {
-                //------------------------ friction accumulation impulse -----------------------------//
+                atLeastOneRestingContactPoint = true;
 
-                body1->applyImpulse(-contactPoint.frictionVector1 * _accumulaterImpulsFriction1 , ContactPointA);
-                body2->applyImpulse( contactPoint.frictionVector1 * _accumulaterImpulsFriction1 , ContactPointB);
+    //         // Project the old friction impulses (with old friction vectors) into
+    //         // the new friction vectors to get the new friction impulses
+                contactManifold.oldFrictionVector1 = contactManifold.frictionVector1;
+                contactManifold.oldFrictionVector2 = contactManifold.frictionVector2;
+                Vector3 oldFrictionImpulse = _accumulaterImpulsFriction1 * contactPoint.oldFrictionVector1 +
+                                             _accumulaterImpulsFriction2 * contactPoint.oldFrictionVector2;
 
-                body1->applyImpulse(-contactPoint.frictionVector2 * _accumulaterImpulsFriction2 , ContactPointA);
-                body2->applyImpulse( contactPoint.frictionVector2 * _accumulaterImpulsFriction2 , ContactPointB);
+                _accumulaterImpulsFriction1 = oldFrictionImpulse.dot(contactPoint.frictionVector1);
+                _accumulaterImpulsFriction2 = oldFrictionImpulse.dot(contactPoint.frictionVector2);
+
+                //------------------------  accumulation impulse -----------------------------//
+                body1->applyImpulse(-contactPoint.normal * _accumulaterImpuls , ContactPointA );
+                body2->applyImpulse( contactPoint.normal * _accumulaterImpuls , ContactPointB );
 
 
 
-
-                //------------------------------ Rolling resistance accumulate impulse --------------------------//
-
-                if (contactManifold.rollingResistanceFactor > 0)
+                if (!mIsSolveFrictionAtContactManifoldCenterActive)
                 {
-                    body1->applyImpulseAngular(-_accumulaterRollingResistanceImpulse);
-                    body2->applyImpulseAngular( _accumulaterRollingResistanceImpulse);
+                    //------------------------ friction accumulation impulse -----------------------------//
+
+                    body1->applyImpulse(-contactPoint.frictionVector1 * _accumulaterImpulsFriction1 , ContactPointA);
+                    body2->applyImpulse( contactPoint.frictionVector1 * _accumulaterImpulsFriction1 , ContactPointB);
+
+                    body1->applyImpulse(-contactPoint.frictionVector2 * _accumulaterImpulsFriction2 , ContactPointA);
+                    body2->applyImpulse( contactPoint.frictionVector2 * _accumulaterImpulsFriction2 , ContactPointB);
 
 
-                    body1->applySplitImpulseAngular(-_accumulaterRollingResistanceImpulseDelta);
-                    body2->applySplitImpulseAngular( _accumulaterRollingResistanceImpulseDelta);
+
+                    //------------------------------ Rolling resistance accumulate impulse --------------------------//
+
+                    if (contactManifold.rollingResistanceFactor > 0)
+                    {
+                        body1->applyImpulseAngular(-_accumulaterRollingResistanceImpulse);
+                        body2->applyImpulseAngular( _accumulaterRollingResistanceImpulse);
+
+
+                        body1->applySplitImpulseAngular(-_accumulaterRollingResistanceSplitImpulse);
+                        body2->applySplitImpulseAngular( _accumulaterRollingResistanceSplitImpulse);
+
+                    }
 
                 }
 
+            }
+            else
+            {
+                _accumulaterImpuls                        =  0;
+                _accumulaterImpulsFriction1               =  0;
+                _accumulaterImpulsFriction2               =  0;
+                _accumulaterRollingResistanceImpulse      =  Vector3::ZERO;
+                _accumulaterRollingResistanceSplitImpulse =  Vector3::ZERO;
+                contactPoint.isRestingContact = true;
 
             }
 
@@ -515,19 +520,19 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::warmStart()
             contactManifold.oldFrictionVector1 = contactManifold.frictionVector1;
             contactManifold.oldFrictionVector2 = contactManifold.frictionVector2;
             Vector3 oldFrictionImpulse =_accumulaterImpulsFriction1 * contactManifold.oldFrictionVector1 +
-                                         _accumulaterImpulsFriction2 * contactManifold.oldFrictionVector2;
-           _accumulaterImpulsFriction1  = oldFrictionImpulse.dot(contactManifold.frictionVector1);
-            _accumulaterImpulsFriction2 = oldFrictionImpulse.dot(contactManifold.frictionVector2);
+                                        _accumulaterImpulsFriction2 * contactManifold.oldFrictionVector2;
+            _accumulaterImpulsFriction1  = oldFrictionImpulse.dot(contactManifold.frictionVector1);
+            _accumulaterImpulsFriction2  = oldFrictionImpulse.dot(contactManifold.frictionVector2);
 
 
 
             // ------ First friction constraint at the center of the contact manifold ------ //
 
             // Compute the impulse P = J^T * lambda
-            Vector3 linearImpulseBody1 = -contactManifold.frictionVector1 *_accumulaterImpulsFriction1;
+            Vector3 linearImpulseBody1  = -contactManifold.frictionVector1 *_accumulaterImpulsFriction1;
             Vector3 angularImpulseBody1 = -contactManifold.r1CrossT1 *_accumulaterImpulsFriction1;
-            Vector3 linearImpulseBody2 = contactManifold.frictionVector1 *_accumulaterImpulsFriction1;
-            Vector3 angularImpulseBody2 = contactManifold.r2CrossT1 *_accumulaterImpulsFriction1;
+            Vector3 linearImpulseBody2  =  contactManifold.frictionVector1 *_accumulaterImpulsFriction1;
+            Vector3 angularImpulseBody2 =  contactManifold.r2CrossT1 *_accumulaterImpulsFriction1;
 
 
             body1->applyImpulseLinear(linearImpulseBody1);
@@ -559,9 +564,7 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::warmStart()
             // ------ Twist friction constraint at the center of the contact manifold ------ //
 
             // Compute the impulse P = J^T * lambda
-            linearImpulseBody1  =  Vector3::ZERO;
             angularImpulseBody1 = -contactManifold.normal * _accumulatedFrictionTwistImpulse;
-            linearImpulseBody2  =  Vector3::ZERO;
             angularImpulseBody2 =  contactManifold.normal * _accumulatedFrictionTwistImpulse;
 
 
@@ -577,6 +580,7 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::warmStart()
 
             body1->applyImpulseAngular(angularImpulseBody1);
             body2->applyImpulseAngular(angularImpulseBody2);
+
 
 
              // ------ Split Rolling resistance at the center of the contact manifold ------ /
@@ -748,7 +752,7 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::solveVelocityConstraint
 
 
            // --------- Rolling resistance constraint --------- //
-           if (contactManifold->rollingResistanceFactor > 0)
+           if ( !mIsSolveFrictionAtContactManifoldCenterActive && contactManifold->rollingResistanceFactor > 0)
            {
 
                // Compute J*v
@@ -798,10 +802,10 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::solveVelocityConstraint
        deltaLambda = _accumulaterImpulsFriction1 - lambdaTemp;
 
        // Compute the impulse P=J^T * lambda
-       Vector3 linearImpulseBody1 = -contactManifold->frictionVector1 * deltaLambda;
-       Vector3 angularImpulseBody1 = -contactManifold->r1CrossT1 * deltaLambda;
-       Vector3 linearImpulseBody2 = contactManifold->frictionVector1 * deltaLambda;
-       Vector3 angularImpulseBody2 = contactManifold->r2CrossT1 * deltaLambda;
+       Vector3 linearImpulseBody1  = -contactManifold->frictionVector1 * deltaLambda;
+       Vector3 angularImpulseBody1 = -contactManifold->r1CrossT1       * deltaLambda;
+       Vector3 linearImpulseBody2  =  contactManifold->frictionVector1 * deltaLambda;
+       Vector3 angularImpulseBody2 =  contactManifold->r2CrossT1       * deltaLambda;
 
 
        // Apply the impulses to the bodies of the constraint
@@ -869,8 +873,8 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::solveVelocityConstraint
        body2->applyImpulseAngular(angularImpulseBody2);
 
 
+       /**/
        // --------- Rolling resistance constraint at the center of the contact manifold --------- //
-
        if (contactManifold->rollingResistanceFactor > 0)
        {
 
@@ -894,6 +898,7 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::solveVelocityConstraint
            body2->applyImpulseAngular(angularImpulseBody2);
 
        }
+       /**/
    }
 
 
@@ -933,8 +938,8 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::solvePositionConstraint
         rpContactPoint *cp = contactPoint.externalContact;
 
 
-        scalar  &_accumulaterSplit = contactPoint.AccumulatedPenetrationSplitImpulse;
-        Vector3 &_accumulaterRollingResistanceImpulseDelta = contactPoint.AccumulatedRollingResistanceSplitImpulse;
+        scalar  &_accumulaterPenetrationSplit = contactPoint.AccumulatedPenetrationSplitImpulse;
+        Vector3 &_accumulaterRollingResistanceSplitImpulse = contactPoint.AccumulatedRollingResistanceSplitImpulse;
 
 
         // --------- Penetration --------- //
@@ -949,20 +954,20 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::solvePositionConstraint
         scalar biasPenetrationDepth = -cp->getPenetrationDepth();
         scalar deltaLambdaSplit = -(JvSplit + biasPenetrationDepth) * contactPoint.inversePenetrationMass;
 
-        scalar lambdaTempSplit = _accumulaterSplit;
-        _accumulaterSplit = Max( _accumulaterSplit + deltaLambdaSplit, scalar(0.0));
-        scalar deltaLambda = _accumulaterSplit - lambdaTempSplit;
+        scalar lambdaTempSplit = _accumulaterPenetrationSplit;
+        _accumulaterPenetrationSplit = Max( _accumulaterPenetrationSplit + deltaLambdaSplit, scalar(0.0));
+        scalar deltaLambda = _accumulaterPenetrationSplit - lambdaTempSplit;
 
 
-        sumPenetrationSplitImpulse += _accumulaterSplit;
+        sumPenetrationSplitImpulse += _accumulaterPenetrationSplit;
+
 
         body1->applySplitImpulse(-contactPoint.normal * deltaLambda , ContactPointA );
         body2->applySplitImpulse( contactPoint.normal * deltaLambda , ContactPointB );
 
 
-
         /**/
-        if (contactManifold->rollingResistanceFactor > 0)
+        if( !mIsSolveFrictionAtContactManifoldCenterActive && contactManifold->rollingResistanceFactor > 0)
         {
 
             // Compute J*v
@@ -970,10 +975,10 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::solvePositionConstraint
 
             // Compute the Lagrange multiplier lambda
             Vector3 deltaLambdaRolling = contactManifold->inverseRollingResistance * (-JvRolling);
-            scalar rollingLimit = contactManifold->rollingResistanceFactor * _accumulaterSplit;
-            Vector3 lambdaTempRolling = _accumulaterRollingResistanceImpulseDelta;
-            _accumulaterRollingResistanceImpulseDelta = Vector3::clamp(_accumulaterRollingResistanceImpulseDelta + deltaLambdaRolling, rollingLimit);
-            deltaLambdaRolling = _accumulaterRollingResistanceImpulseDelta - lambdaTempRolling;
+            scalar rollingLimit = contactManifold->rollingResistanceFactor * _accumulaterPenetrationSplit;
+            Vector3 lambdaTempRolling = _accumulaterRollingResistanceSplitImpulse;
+            _accumulaterRollingResistanceSplitImpulse = Vector3::clamp(_accumulaterRollingResistanceSplitImpulse + deltaLambdaRolling, rollingLimit);
+            deltaLambdaRolling = _accumulaterRollingResistanceSplitImpulse - lambdaTempRolling;
 
 
             ///Apply the pseudo impulses
@@ -984,17 +989,18 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::solvePositionConstraint
         }
         /**/
 
+
     }
 
 
+    /**/
     // If we solve the friction constraints at the center of the contact manifold
     if (mIsSolveFrictionAtContactManifoldCenterActive && contactManifold->nbContacts > 0)
     {
 
         Vector3 &_accumulaterRollingResistanceSplitImpulse = contactManifold->AccumulatedRollingResistanceSplitImpulse;
 
-        // --------- Rolling resistance constraint at the center of the contact manifold --------- //
-
+        //--------- Rolling resistance constraint at the center of the contact manifold ---------//
         if (contactManifold->rollingResistanceFactor > 0)
         {
 
@@ -1015,13 +1021,45 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::solvePositionConstraint
 
         }
     }
+    /**/
 
 }
+
+/**/
+SIMD_INLINE void rpContactSolverSequentialImpulseObject::storeImpulses()
+{
+
+
+        ContactManifoldSolver& manifold = *mContactConstraints;
+
+        for (uint i=0; i<manifold.nbContacts; i++)
+        {
+
+            ContactPointSolver& contactPoint = manifold.contacts[i];
+
+            contactPoint.externalContact->setPenetrationImpulse(contactPoint.AccumulatedPenetrationImpulse);
+            contactPoint.externalContact->setFrictionImpulse1(contactPoint.AccumulatedFriction1Impulse);
+            contactPoint.externalContact->setFrictionImpulse2(contactPoint.AccumulatedFriction1Impulse);
+            contactPoint.externalContact->setRollingResistanceImpulse(contactPoint.AccumulatedRollingResistanceSplitImpulse);
+            contactPoint.externalContact->setFrictionVector1(contactPoint.frictionVector1);
+            contactPoint.externalContact->setFrictionVector2(contactPoint.frictionVector2);
+
+        }
+
+        manifold.externalContactManifold->setFrictionImpulse1(manifold.AccumulatedFriction1Impulse);
+        manifold.externalContactManifold->setFrictionImpulse2(manifold.AccumulatedFriction2Impulse);
+        manifold.externalContactManifold->setFrictionTwistImpulse(manifold.AccumulatedFrictionTwistImpulse);
+        manifold.externalContactManifold->setRollingResistanceImpulse(manifold.AccumulatedRollingResistanceImpulse);
+        manifold.externalContactManifold->setFrictionVector1(manifold.frictionVector1);
+        manifold.externalContactManifold->setFrictionVector2(manifold.frictionVector2);
+
+}
+/**/
 
 
 /**********************************************************************************************/
 SIMD_INLINE scalar rpContactSolverSequentialImpulseObject::computeMixedRestitutionFactor( rpRigidPhysicsBody*  body1 ,
-                                                                                   rpRigidPhysicsBody*  body2) const
+                                                                                          rpRigidPhysicsBody*  body2) const
 {
     scalar restitution1 = body1->getMaterial().getBounciness();
     scalar restitution2 = body2->getMaterial().getBounciness();
@@ -1031,7 +1069,7 @@ SIMD_INLINE scalar rpContactSolverSequentialImpulseObject::computeMixedRestituti
 }
 
 SIMD_INLINE scalar rpContactSolverSequentialImpulseObject::computeMixedFrictionCoefficient( rpRigidPhysicsBody*  body1 ,
-                                                                                     rpRigidPhysicsBody*  body2) const
+                                                                                            rpRigidPhysicsBody*  body2) const
 {
     // Use the geometric mean to compute the mixed friction coefficient
     return SquareRoot(body1->getMaterial().getFrictionCoefficient() *
@@ -1039,7 +1077,7 @@ SIMD_INLINE scalar rpContactSolverSequentialImpulseObject::computeMixedFrictionC
 }
 
 SIMD_INLINE scalar rpContactSolverSequentialImpulseObject::computeMixedRollingResistance( rpRigidPhysicsBody*  body1 ,
-                                                                                   rpRigidPhysicsBody*  body2) const
+                                                                                          rpRigidPhysicsBody*  body2) const
 {
     return scalar(0.5f) * (body1->getMaterial().getRollingResistance() +
                            body2->getMaterial().getRollingResistance());

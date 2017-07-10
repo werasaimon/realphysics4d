@@ -95,11 +95,20 @@ class rpContactManifoldSet
 
         void setExtermalPenetration( scalar penetration )
         {
-        	for (int i = 0; i < mNbManifolds; ++i)
-        	{
-			    mManifolds[i]->mExtremalPenetration = penetration;
-			}
+            for (int i = 0; i < mNbManifolds; ++i)
+            {
+                mManifolds[i]->mExtremalPenetration = penetration;
+            }
         }
+
+
+        std::vector<rpContactPoint*> getAll() const
+        {
+              std::vector<rpContactPoint*> contacts;
+              return contacts;
+        }
+
+        void setAllContacts( std::vector<rpContactPoint*> &mContacts );
 
 
         /// Return the first proxy shape
@@ -113,7 +122,6 @@ class rpContactManifoldSet
 
         /// Update the contact manifolds
         void update();
-
 
         /// Clear the contact manifold set
         void clear();
@@ -129,7 +137,7 @@ class rpContactManifoldSet
 
         // -------------------- Friendships -------------------- //
 
-        friend class rpContactManager;
+        friend class rpCollisionManager;
 };
 
 

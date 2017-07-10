@@ -9,6 +9,7 @@
 #define SOURCE_ENGIE_COLLISION_CONTACTMANIFLOD_RPCONTACTPOINT_H_
 
 #include "../../LinearMaths/mathematics.h"
+#include "../../Memory/SmartAllocator.h"
 
 namespace real_physics
 {
@@ -26,12 +27,12 @@ struct rpContactPointInfo
 
     private:
 
-        // -------------------- Methods -------------------- //
+        //-------------------- Methods --------------------//
 
     public:
 
-        // -------------------- Attributes -------------------- //
 
+        //-------------------- Attributes -----------------//
 
         /// Normalized normal vector of the collision contact in world space
         Vector3 normal;
@@ -45,7 +46,7 @@ struct rpContactPointInfo
         /// Contact point of body 2 in local space of body 2
         Vector3 localPoint2;
 
-        // -------------------- Methods -------------------- //
+        //-------------------- Methods --------------------//
 
         rpContactPointInfo(void){}
 
@@ -70,7 +71,7 @@ struct rpContactPointInfo
  * This class represents a collision contact point between two
  * bodies in the physics engine.
  */
-class rpContactPoint
+class rpContactPoint : public BlockAlloc<rpContactPoint>
 {
 
     private :
@@ -80,9 +81,6 @@ class rpContactPoint
 
         /// Normalized normal vector of the contact (from body1 toward body2) in world space
         Vector3 mNormal;
-
-        /// Penetration depth
-        scalar mPenetrationDepth;
 
         /// Contact point on body 1 in local space of body 1
         Vector3 mLocalPointOnBody1;
@@ -103,16 +101,19 @@ class rpContactPoint
         Vector3 mFrictionVectors[2];
 
         /// Cached penetration impulse
-        scalar mPenetrationImpulse;
+        scalar  mPenetrationImpulse;
 
         /// Cached first friction impulse
-        scalar mFrictionImpulse1;
+        scalar  mFrictionImpulse1;
 
         /// Cached second friction impulse
-        scalar mFrictionImpulse2;
+        scalar  mFrictionImpulse2;
 
         /// Cached rolling resistance impulse
         Vector3 mRollingResistanceImpulse;
+
+        /// Penetration depth
+        scalar  mPenetrationDepth;
 
         // -------------------- Methods -------------------- //
 
@@ -126,13 +127,22 @@ class rpContactPoint
 
         // -------------------- Methods -------------------- //
 
-       // rpContactPoint(){}
         /// Constructor
-         rpContactPoint(rpContactPointInfo& contactInfo);
+         rpContactPoint(const rpContactPointInfo &contactInfo);
 
         /// Destructor
         ~rpContactPoint();
 
+
+         void setContactInfo( const rpContactPointInfo &contactInfo )
+         {
+              mNormal            = contactInfo.normal;
+              mPenetrationDepth  = contactInfo.penetrationDepth;
+              mLocalPointOnBody1 = contactInfo.localPoint1;
+              mLocalPointOnBody2 = contactInfo.localPoint2;
+              mWorldPointOnBody1 = contactInfo.localPoint1;
+              mWorldPointOnBody2 = contactInfo.localPoint2;
+         }
 
 
         /// Return the normal vector of the contact
@@ -209,9 +219,6 @@ class rpContactPoint
 
 
         //-------------------- Friendships --------------------//
-
-        friend class rpSequentialImpulseObjectSolver;
-
 
 };
 

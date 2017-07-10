@@ -66,14 +66,13 @@ namespace real_physics
 
 
 
-
-          // int the value for Axis Roattion Theorem
+          /// Max iterration peturbiration
           int    mNbMaxPeturberationIteration;
+          /// Eppsiolon in peturbiration
           scalar mEpsilonPeturberation;
 
 
           // -------------------- Methods -------------------- //
- ///**/public:
 
           /// Private copy-constructor
           rpCollisionShape(const rpCollisionShape& shape);

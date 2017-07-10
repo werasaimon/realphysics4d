@@ -12,7 +12,7 @@ namespace real_physics
 {
 
 
-rpPhysicsBody::rpPhysicsBody(const Transform& transform, rpContactManager* CollideWorld, bodyindex id)
+rpPhysicsBody::rpPhysicsBody(const Transform& transform, rpCollisionManager *CollideWorld, bodyindex id)
 :rpPhysicsObject(transform, CollideWorld, id) ,  mJointsList(NULL)
 {
 
@@ -31,25 +31,25 @@ void rpPhysicsBody::removeJointFromJointsList(const rpJoint *joint)
     assert(mJointsList != NULL);
 
     // Remove the joint from the linked list of the joints of the first body
-    if (mJointsList->joint == joint)
+    if (mJointsList->getPointer() == joint)
     {   // If the first element is the one to remove
-         rpJointListElement* elementToRemove = mJointsList;
-         mJointsList = elementToRemove->next;
+         JointListElement* elementToRemove = mJointsList;
+         mJointsList = elementToRemove->getNext();
          delete elementToRemove;
     }
     else
     {  // If the element to remove is not the first one in the list
-        rpJointListElement* currentElement = mJointsList;
-        while (currentElement->next != NULL)
+        JointListElement* currentElement = mJointsList;
+        while (currentElement->getNext() != NULL)
         {
-            if (currentElement->next->joint == joint)
+            if (currentElement->getNext()->getPointer() == joint)
             {
-                rpJointListElement* elementToRemove = currentElement->next;
-                currentElement->next = elementToRemove->next;
+                JointListElement* elementToRemove = currentElement->getNext();
+                currentElement/*->next */ = elementToRemove->getNext();
                 delete elementToRemove;
                 break;
             }
-            currentElement = currentElement->next;
+            currentElement = currentElement->getNext();
         }
     }
 

@@ -15,11 +15,14 @@ namespace real_physics
 {
 
 //// Class declarations
-struct rpJointListElement;
-class  rpJoint;
+class   rpJoint;
 
+///List element joint
+typedef rpListElement<rpJoint> JointListElement;
 
-enum PhysicsBodyType { RIGID_BODY ,  VELERT_BODY };
+/// type of body dynamics
+enum PhysicsBodyType { RIGID_BODY ,
+                       VELERT_BODY };
 
 
 
@@ -34,7 +37,7 @@ class rpPhysicsBody: public rpPhysicsObject
 
 
        /// First element of the linked list of joints involving this body
-       rpJointListElement*               mJointsList;
+       JointListElement*  mJointsList;
 
 
        /// Private copy-constructor
@@ -46,7 +49,7 @@ class rpPhysicsBody: public rpPhysicsObject
 
    public:
 
-             rpPhysicsBody(const Transform& transform, rpContactManager *CollideWorld, bodyindex id );
+             rpPhysicsBody(const Transform& transform, rpCollisionManager *CollideWorld, bodyindex id );
 	virtual ~rpPhysicsBody();
 
 

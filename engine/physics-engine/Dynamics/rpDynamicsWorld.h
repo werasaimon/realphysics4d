@@ -78,7 +78,11 @@ namespace real_physics
 //};
 
 
-
+struct InitStatus
+{
+    bool isFakeCollid = false;
+    bool isInitCollid = false;
+};
 
 
 
@@ -90,6 +94,7 @@ class rpDynamicsWorld : public rpCollisionWorld
 
 
 	// -------------------- Attributes -------------------- //
+
 
 
     /// Update time step correctly interval
@@ -104,7 +109,7 @@ class rpDynamicsWorld : public rpCollisionWorld
 	/// Number of iterations for the position solver of the Sequential Impulses technique
 	uint mNbPositionSolverIterations;
 
-	// Gravity vector for integrate gravity
+    /// Gravity vector3
 	Vector3 mGravity;
 
 
@@ -112,9 +117,8 @@ class rpDynamicsWorld : public rpCollisionWorld
     std::set<rpPhysicsBody*> mPhysicsBodies;
 
 
-	// array map contacts solver
-	std::map< overlappingpairid , rpContactSolver* > mContactSolvers;
-
+    /// array map contacts solver
+    std::map< overlappingpairid , rpContactSolver* > mContactSolvers;
 
 
     /// Current allocated capacity for the bodies
@@ -143,8 +147,9 @@ class rpDynamicsWorld : public rpCollisionWorld
     rpDynamicsWorld& operator=(const rpDynamicsWorld& world);
 
 
-    /// Detection for all collision pairs
-    void Collision();
+
+    /// Find all collision pairs
+    void updateFindContacts();
 
     /// Compute physics for all collision pairs
     void solve( scalar timeStep );
@@ -160,8 +165,6 @@ class rpDynamicsWorld : public rpCollisionWorld
 
 	 /// Put bodies to sleep if needed.
 	void updateSleepingBodies(scalar timeStep);
-
-
 
     //// Compute the islands of awake bodies.
     void computeIslands();
@@ -205,6 +208,7 @@ class rpDynamicsWorld : public rpCollisionWorld
     void addJointToBody(rpJoint* joint);
 
 	//***************************************************//
+
 
     ///  Update Physics simulation - Real-Time ( Semi-AntiFixed timestep )
     void update( scalar timeStep );

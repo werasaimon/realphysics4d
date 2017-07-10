@@ -41,7 +41,6 @@ namespace real_physics
 
 	  Transform transform = transform0 * transform1;
 
-	  //PROFILE("rpCollisionShape::computeAABB()");
 
       // Get the local bounds in x,y and z direction
       Vector3 minBounds;
@@ -79,6 +78,7 @@ namespace real_physics
 //	      glPopMatrix();
 
 
+      /// theory of reletivity to displacement boost matrix
       Vector3 position = transform0.getPosition() + (matrixBoost * (transform0.getBasis() * transform1.getPosition()));
 
 //				      glPushMatrix();

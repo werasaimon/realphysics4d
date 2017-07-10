@@ -28,24 +28,23 @@ rpOverlappingPair::~rpOverlappingPair()
 	mContactManifoldSet.clear();
 }
 
+/// Add new contact
+void rpOverlappingPair::addContact(rpContactPoint* contact)
+{
+     mContactManifoldSet.addContactPoint(contact);
+}
 
-//SIMD_INLINE void real_physics::rpOverlappingPair::addContact(ContactPoint* contact)
-//{
-//	 mContactManifoldSet->addContactPoint(contact);
-//}
-//
-//
-//SIMD_INLINE void real_physics::rpOverlappingPair::update()
-//{
-//	 mContactManifoldSet->update();
-//}
+/// Update of repair delete contact
+void rpOverlappingPair::update()
+{
+    mContactManifoldSet.update();
+}
 
-
-
-//SIMD_INLINE void real_physics::rpOverlappingPair::clearContactPoints()
-//{
-//	mContactManifoldSet->clear();
-//}
+///Clear all contact
+void rpOverlappingPair::clearContactPoints()
+{
+    mContactManifoldSet.clear();
+}
 
 
 

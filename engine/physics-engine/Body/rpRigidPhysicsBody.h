@@ -19,7 +19,7 @@ namespace real_physics
 
 //**********************************************************************************************//
 
-class rpRigidPhysicsBody: public rpPhysicsBody
+class rpRigidPhysicsBody: public rpPhysicsBody , public BlockAlloc<rpRigidPhysicsBody>
 {
 
 
@@ -137,7 +137,7 @@ class rpRigidPhysicsBody: public rpPhysicsBody
 	public:
 
 
-        rpRigidPhysicsBody(const Transform& transform, rpContactManager *CollideWorld, bodyindex id );
+        rpRigidPhysicsBody(const Transform& transform, rpCollisionManager *CollideWorld, bodyindex id );
 
 
 
@@ -244,6 +244,7 @@ class rpRigidPhysicsBody: public rpPhysicsBody
 		// -------------------- Friendships -------------------- //
 		friend class rpDynamicsWorld;
         friend class rpContactSolverSequentialImpulseObject;
+
 
 		friend class rpDistanceJoint;
 		friend class rpFixedJoint;

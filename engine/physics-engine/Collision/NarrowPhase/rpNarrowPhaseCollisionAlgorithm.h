@@ -9,11 +9,11 @@
 #define SOURCE_ENGIE_COLLISION_NARROWPHASE_RPNARROWPHASECOLLISIONALGORITHM_H_
 
 #include "../../LinearMaths/mathematics.h"
+#include "../../Memory/memory.h"
 
 namespace real_physics
 {
     struct rpCollisionShapeInfo;
-	class  OutContactInfo;
 	class  rpOverlappingPair;
 } /* namespace real_physics */
 
@@ -62,7 +62,7 @@ class OutContactInfo
  * detection algorithm. The goal of the narrow phase algorithm is to
  * compute information about the contact between two proxy shapes.
  */
-class rpNarrowPhaseCollisionAlgorithm
+class rpNarrowPhaseCollisionAlgorithm : public BlockAlloc<rpNarrowPhaseCollisionAlgorithm>
 {
 
     protected :

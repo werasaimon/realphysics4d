@@ -1,11 +1,13 @@
 /*
- * rpGenerationContactManiflodSet.cpp
+ * rpContactGeneration.cpp
  *
  *  Created on: 29 нояб. 2016 г.
  *      Author: wera
  */
 
-#include "rpGenerationContactManiflodSet.h"
+#include "rpContactGeneration.h"
+#include "../rpOverlappingPair.h"
+#include "../rpCollisionManager.h"
 #include <iostream>
 
 #include <GL/freeglut.h>
@@ -65,33 +67,38 @@ namespace
 
 }
 
-rpGenerationContactManiflodSet::rpGenerationContactManiflodSet( const rpProxyShape* shape1, const rpProxyShape* shape2,
-		                                                        const Vector3& Axis) :
+rpContactGeneration::rpContactGeneration( const rpProxyShape* shape1,
+                                          const rpProxyShape* shape2,
+                                          const Vector3& Axis) :
 mShape1(shape1),
 mShape2(shape2),
 mSeparatonAxis(Axis),
 mNbContacts(0)
 {
+    assert(mShape1 != NULL);
+    assert(mShape2 != NULL);
+
 	mSeparatonAxis.normalize();
 }
 
-rpGenerationContactManiflodSet::~rpGenerationContactManiflodSet()
+rpContactGeneration::~rpContactGeneration()
 {
 	// TODO Auto-generated destructor stub
 }
 
 //------------------------------------------------ method --------------------------------------------------------//
 
-SIMD_INLINE void rpGenerationContactManiflodSet::CollidePointPointContacts(const Vector3& A, const Vector3& B)
+SIMD_INLINE void rpContactGeneration::CollidePointPointContacts(const Vector3& A, const Vector3& B)
 {
 
 	scalar penetration = (A - B).dot(mSeparatonAxis);
-	rpContactPointInfo info(mSeparatonAxis, penetration, A, B);
+   // Vector3 point = (A+B) * 0.5;
+    rpContactPointInfo info(mSeparatonAxis , penetration , A , B);
 	//ContactPoint CollidPoint( info );
 	addInfoContact(info);
 }
 
-SIMD_INLINE void rpGenerationContactManiflodSet::CollidePointFaceContacts(const Vector3& A, const Vector3& xAxis, scalar bd)
+SIMD_INLINE void rpContactGeneration::CollidePointFaceContacts(const Vector3& A, const Vector3& xAxis, scalar bd)
 {
 	scalar dist = (A.dot(xAxis)) - bd;
 	Vector3 B = A - dist * xAxis;
@@ -102,7 +109,7 @@ SIMD_INLINE void rpGenerationContactManiflodSet::CollidePointFaceContacts(const 
 	addInfoContact(info);
 }
 
-SIMD_INLINE void rpGenerationContactManiflodSet::CollidePointEdgeContacts(const Vector3& A, const Vector3& B0, const Vector3& B1)
+SIMD_INLINE void rpContactGeneration::CollidePointEdgeContacts(const Vector3& A, const Vector3& B0, const Vector3& B1)
 {
 
 	Vector3 B0A = A - B0;
@@ -121,7 +128,7 @@ SIMD_INLINE void rpGenerationContactManiflodSet::CollidePointEdgeContacts(const 
 
 }
 
-SIMD_INLINE void rpGenerationContactManiflodSet::CollideEdgeEdgeContacts(const Vector3& A0, const Vector3& A1,
+SIMD_INLINE void rpContactGeneration::CollideEdgeEdgeContacts(const Vector3& A0, const Vector3& A1,
                                                                          const Vector3& B0, const Vector3& B1)
 {
 
@@ -144,7 +151,8 @@ SIMD_INLINE void rpGenerationContactManiflodSet::CollideEdgeEdgeContacts(const V
 	scalar penetration = (AA - BB).dot(mSeparatonAxis);
 	/**/
 
-	rpContactPointInfo info(mSeparatonAxis, penetration, AA, BB);
+    //Vector3 point = (AA + BB) * 0.5;
+    rpContactPointInfo info(mSeparatonAxis, penetration, AA , BB);
 	//ContactPoint CollidPoint( info );
 	addInfoContact(info);
 
@@ -152,7 +160,7 @@ SIMD_INLINE void rpGenerationContactManiflodSet::CollideEdgeEdgeContacts(const V
 
 //======================= Algoritm for Cliping ===================================//
 
-SIMD_INLINE void rpGenerationContactManiflodSet::CollidePolygonContacts(const Vector3* Poly   , int iPolySize,
+SIMD_INLINE void rpContactGeneration::CollidePolygonContacts(const Vector3* Poly   , int iPolySize,
 		                                                                const Vector3* Clipper, int iClipperSize)
 {
 
@@ -185,8 +193,8 @@ SIMD_INLINE void rpGenerationContactManiflodSet::CollidePolygonContacts(const Ve
 
 //==============================================================================//
 
-SIMD_INLINE bool rpGenerationContactManiflodSet::ConvertSupportPointsToContacts(const Vector3* SupportVertA, int iNumVertsA,
-		                                                                        const Vector3* SupportVertB, int iNumVertsB)
+SIMD_INLINE bool rpContactGeneration::ConvertSupportPointsToContacts(const Vector3* SupportVertA, int iNumVertsA,
+                                                                     const Vector3* SupportVertB, int iNumVertsB)
 
 {
 
@@ -220,7 +228,9 @@ SIMD_INLINE bool rpGenerationContactManiflodSet::ConvertSupportPointsToContacts(
 	{
 		if (iNumVertsB == 1)
 		{
-			CollidePointEdgeContacts(SupportVertB[0], SupportVertA[0], SupportVertA[1]);
+            CollidePointEdgeContacts(SupportVertB[0],
+                                     SupportVertA[0],
+                                     SupportVertA[1]);
 
 		}
 		else if (iNumVertsB == 2)
@@ -232,6 +242,13 @@ SIMD_INLINE bool rpGenerationContactManiflodSet::ConvertSupportPointsToContacts(
 		else
 		{
 			CollidePolygonContacts(SupportVertB, iNumVertsB, SupportVertA, iNumVertsA);
+            /**/
+            for (uint i = 0; i < mNbContacts; ++i)
+            {
+               Swap( mInfoContacts[i].localPoint1 ,
+                     mInfoContacts[i].localPoint2 );
+            }
+            /**/
 		}
 	}
 	else if (iNumVertsA >= 3)
@@ -239,17 +256,15 @@ SIMD_INLINE bool rpGenerationContactManiflodSet::ConvertSupportPointsToContacts(
 
 		if (iNumVertsB == 1)
 		{
-
-			Vector3 An = Vector3::planeNormal(SupportVertA[0], SupportVertA[1], SupportVertA[2]);
+            Vector3 An = Vector3::planeNormal(SupportVertA[0],
+                                              SupportVertA[1],
+                                              SupportVertA[2]);
 			scalar bd = An.dot(SupportVertA[0]);
-
 			CollidePointFaceContacts(SupportVertB[0], An, bd);
 		}
 		else if (iNumVertsB == 2)
 		{
-
 			CollidePolygonContacts(SupportVertA, iNumVertsA, SupportVertB,iNumVertsB);
-
 		}
 		else if (iNumVertsB >= 3)
 		{
@@ -266,100 +281,83 @@ SIMD_INLINE bool rpGenerationContactManiflodSet::ConvertSupportPointsToContacts(
 			if (angleA <= angleB)
 			{
                 // A,B clipping polygons
-				CollidePolygonContacts(SupportVertA, iNumVertsA, SupportVertB,iNumVertsB);
+                CollidePolygonContacts(SupportVertA, iNumVertsA, SupportVertB,iNumVertsB);
 
 			}
 			else
 			{
                 // B,A clipping polygons
 				CollidePolygonContacts(SupportVertB, iNumVertsB, SupportVertA,iNumVertsA);
+                /**/
+                for (uint i = 0; i < mNbContacts; ++i)
+                {
+                   Swap( mInfoContacts[i].localPoint1 ,
+                         mInfoContacts[i].localPoint2 );
+                }
+                /**/
 			}
 
 		}
 	}
 
 	return (mNbContacts > 0);
-
 }
 
 
 
-
-
-void rpGenerationContactManiflodSet::computeContacteManiflodSet( rpContactManifoldSet& maniflodSet , bool approximationCorretion )
+void rpContactGeneration::computeContacteOverlappingPair(rpOverlappingPair *OverlappingPair , rpCollisionManager *meneger , bool approximationCorretion )
 {
 
-	Vector3 Normal = mSeparatonAxis;
 
-	uint iNumVertsA = 0;
-	uint iNumVertsB = 0;
+    Vector3 Normal = mSeparatonAxis;
+
+    uint iNumVertsA = 0;
+    uint iNumVertsB = 0;
 
     Vector3* SupportVertA = mShape1->getAxisPeturberationPoints( Normal, iNumVertsA);
     Vector3* SupportVertB = mShape2->getAxisPeturberationPoints(-Normal, iNumVertsB);
 
-	bool isOutside = ConvertSupportPointsToContacts(SupportVertA, iNumVertsA,
-			                                        SupportVertB, iNumVertsB);
+    bool isOutside = ConvertSupportPointsToContacts(SupportVertA, iNumVertsA,
+                                                    SupportVertB, iNumVertsB);
 
     free(SupportVertA);
     free(SupportVertB);
 
+    Transform transform_1 = mShape1->getWorldTransform();
+    Transform transform_2 = mShape2->getWorldTransform();
 
-/**
-    for (int i = 0; i < iNumVertsA; ++i)
+
+//    std::vector< rpContactPoint* > OldContacts;
+//    OverlappingPair->getAllContacts(OldContacts);
+
+    OverlappingPair->clearContactPoints();
+    for (uint i = 0; i < mNbContacts && isOutside; ++i)
     {
-        const Vector3& v = SupportVertA[i];
-        utility_engine::Mesh* mesh = new utility_engine::MeshBox( utility_engine::Vector3(1,1,1) );
-        mesh->translateWorld( utility_engine::Vector3(v.x,v.y,v.z) );
-        utility_engine::UtilityOpenGL::DrawMesh(mesh);
-        delete mesh;
+        mInfoContacts[i].normal = -mInfoContacts[i].normal;
+
+        if( approximationCorretion )
+        {
+            Vector3 point1 = mInfoContacts[i].localPoint1;
+            Vector3 point2 = mInfoContacts[i].localPoint2;
+            Vector3 approximationPoint =  (point1 + point2) * scalar(0.5);
+            mInfoContacts[i].localPoint1 = approximationPoint;
+            mInfoContacts[i].localPoint2 = approximationPoint;
+        }
+
+
+        mInfoContacts[i].localPoint1 = ((transform_1.getInverse() * mInfoContacts[i].localPoint1));
+        mInfoContacts[i].localPoint2 = ((transform_2.getInverse() * mInfoContacts[i].localPoint2));
+
+       // rpContactPoint *contact = new rpContactPoint( mInfoContacts[i] );
+
+        meneger->createContact( OverlappingPair , mInfoContacts[i] );
     }
 
-
-    for (int i = 0; i < iNumVertsB; ++i)
-    {
-        const Vector3& v = SupportVertB[i];
-        utility_engine::Mesh* mesh = new utility_engine::MeshBox( utility_engine::Vector3(1,1,1) );
-        mesh->translateWorld( utility_engine::Vector3(v.x,v.y,v.z) );
-        utility_engine::UtilityOpenGL::DrawMesh(mesh);
-        delete mesh;
-    }
-/**/
-
-
-
-
-    if ( isOutside || true )
-	{
-
-        maniflodSet.clear();
-		for (uint i = 0; i < mNbContacts; ++i)
-		{
-
-			mInfoContacts[i].normal = -mInfoContacts[i].normal;
-
-			if( approximationCorretion )
-			{
-				Vector3 normal = mInfoContacts[i].normal;
-				Vector3 point1 = mInfoContacts[i].localPoint1;
-				Vector3 point2 = mInfoContacts[i].localPoint2;
-				//mInfoContacts[i].penetrationDepth = (point2 - point1).dot(normal);
-                Vector3 approximationPoint =  (point1 + point2) * scalar(0.5);
-				mInfoContacts[i].localPoint1 = approximationPoint;
-				mInfoContacts[i].localPoint2 = approximationPoint;
-			}
-
-
-			rpContactPoint* contact = new rpContactPoint(mInfoContacts[i]);
-			maniflodSet.addContactPoint(contact);
-		}
-
-      /// not stabil function
-      // maniflodSet.update();
-
-	}
-
+//    OldContacts.clear();
 
 }
+
+
 
 } /* namespace real_physics */
 

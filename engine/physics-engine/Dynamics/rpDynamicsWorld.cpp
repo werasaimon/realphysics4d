@@ -82,24 +82,23 @@ void rpDynamicsWorld::destroy()
 
 
     // Destroy all pair collisions that have not been removed
-    if(!mCollisionContactOverlappingPairs.empty())
+    if(!mCollisionDetection.mContactOverlappingPairs.empty())
     {
-        for( auto pair : mCollisionContactOverlappingPairs )
+        for( auto pair : mCollisionDetection.mContactOverlappingPairs )
         {
             delete pair.second;
         }
 
-        mCollisionContactOverlappingPairs.clear();
+        mCollisionDetection.mContactOverlappingPairs.clear();
     }
 
     assert(mPhysicsJoints.size() == 0);
     assert(mPhysicsBodies.size() == 0);
     assert(mContactSolvers.empty());
-    assert(mCollisionContactOverlappingPairs.empty());
+    assert(mCollisionDetection.mContactOverlappingPairs.empty());
 
 
 }
-
 
 
 void rpDynamicsWorld::update(scalar timeStep)
@@ -135,8 +134,8 @@ void rpDynamicsWorld::updateFixedTime(scalar timeStep)
     //Update state bodies of broad phase
     updateBodiesState(timeStep);
 
-    //Collision broad phase
-    Collision();
+    //Update BroadPhase
+    updateFindContacts();
 
     /****************************/
 
@@ -164,24 +163,52 @@ void rpDynamicsWorld::updateFixedTime(scalar timeStep)
 }
 
 
-void rpDynamicsWorld::Collision()
+void rpDynamicsWorld::updateFindContacts()
 {
 
-	/// delete overlapping pairs collision
-    if(!mCollisionContactOverlappingPairs.empty())
-	{
-		for( auto pair : mCollisionContactOverlappingPairs )
-		{
-			delete pair.second;
-		}
 
-		mCollisionContactOverlappingPairs.clear();
-	}
-
-	/// Overlapping pairs in contact (during the current Narrow-phase collision detection)
-    mCollisionDetection.computeCollisionDetectionAllPairs(mCollisionContactOverlappingPairs);
+//    /// delete overlapping pairs collision
+//    if(!mCollisionContactOverlappingPairs.empty())
+//    {
+//        for( auto pair : mCollisionContactOverlappingPairs )
+//        {
+//            delete pair.second;
+//        }
+//        mCollisionContactOverlappingPairs.clear();
+//    }
 
 
+
+    /// Candidate of delete
+    for( auto pair : mContactSolvers )
+    {
+        pair.second->isCandidateInDelete = false;
+    }
+
+
+    /// Overlapping pairs in contact (during the current Narrow-phase collision detection)
+    mCollisionDetection.computeCollisionDetectionAllPairs();
+
+
+
+    /// New collision pair
+    for( auto pair : mCollisionDetection.mContactOverlappingPairs )
+    {
+        for (int i = 0; i < pair.second->getContactManifoldSet().getNbContactManifolds(); ++i)
+        {
+            addChekCollisionPair( pair.second->getContactManifoldSet().getContactManifold(i) );
+        }
+    }
+
+    /// delete overlapping pairs collision
+    for( auto pair : mContactSolvers )
+    {
+        if( !pair.second->isCandidateInDelete )
+        {
+            delete pair.second;
+            mContactSolvers.erase(pair.first);
+        }
+    }
 }
 
 
@@ -199,45 +226,75 @@ void rpDynamicsWorld::solve( scalar timeStep )
 
     //---------------------------------------------------------------------//
 
-	for( auto pair : mContactSolvers )
-	{
+//    for( auto pair : mContactSolvers )
+//    {
+//        pair.second->initializeForIsland(timeStep);
+//        pair.second->warmStart();
+//    }
 
-		pair.second->initializeForIsland(timeStep);
-	    pair.second->warmStart();
 
-	}
+    // For each island of the world
+    for (uint islandIndex = 0; islandIndex < mNbIslands; islandIndex++)
+    {
+        mIslands[islandIndex]->warmStart( timeStep );
+    }
+
 
 	//---------------------------------------------------------------------//
 
 
-	for( uint i = 0; i < mNbVelocitySolverIterations; ++i)
-	{
+    for( uint i = 0; i < mNbVelocitySolverIterations; ++i)
+    {
         for( auto it = mPhysicsJoints.begin(); it != mPhysicsJoints.end(); ++it )
         {
             (*it)->solveVelocityConstraint();
         }
 
-		for( auto pair : mContactSolvers )
-		{
-			pair.second->solveVelocityConstraint();
-		}
-	}
+//        for( auto pair : mContactSolvers )
+//        {
+//            pair.second->solveVelocityConstraint();
+//        }
+
+        // For each island of the world
+        for (uint islandIndex = 0; islandIndex < mNbIslands; islandIndex++)
+        {
+            mIslands[islandIndex]->solveVelocityConstraint();
+        }
+    }
 
     //---------------------------------------------------------------------//
 
-	for( uint i = 0; i < mNbPositionSolverIterations; ++i)
-	{
+    for( uint i = 0; i < mNbPositionSolverIterations; ++i)
+    {
         for( auto it = mPhysicsJoints.begin(); it != mPhysicsJoints.end(); ++it )
         {
             (*it)->solvePositionConstraint();
         }
 
-		for( auto pair : mContactSolvers )
-		{
-			pair.second->solvePositionConstraint();
-		}
-	}
+//        for( auto pair : mContactSolvers )
+//        {
+//            pair.second->solvePositionConstraint();
+//        }
 
+        // For each island of the world
+        for (uint islandIndex = 0; islandIndex < mNbIslands; islandIndex++)
+        {
+            mIslands[islandIndex]->solvePositionConstraint();
+        }
+    }
+
+
+//    for( auto pair : mContactSolvers )
+//    {
+//        pair.second->storeImpulses();
+//    }
+
+
+    // For each island of the world
+    for (uint islandIndex = 0; islandIndex < mNbIslands; islandIndex++)
+    {
+        mIslands[islandIndex]->storeImpulses();
+    }
 
 }
 
@@ -356,12 +413,6 @@ void rpDynamicsWorld::computeIslands()
 
 
 
-    for( auto pair : mContactSolvers )
-    {
-        pair.second->isFakeCollid = false;
-    }
-
-
     uint nbBodies = mPhysicsBodies.size();
 
 
@@ -386,7 +437,6 @@ void rpDynamicsWorld::computeIslands()
     }
 
     mNbIslands = 0;
-
     int nbContactManifolds = 0;
 
     // Reset all the isAlreadyInIsland variables of bodies, joints and contact manifolds
@@ -435,7 +485,7 @@ void rpDynamicsWorld::computeIslands()
 
 
         // Create the new island
-        mIslands[mNbIslands] = new rpIsland( nbBodies , nbContactManifolds , mPhysicsJoints.size());
+        mIslands[mNbIslands] = new rpIsland( nbBodies , nbContactManifolds , mContactSolvers );
 
 
 
@@ -459,23 +509,21 @@ void rpDynamicsWorld::computeIslands()
             if (bodyToVisit->getType() == STATIC) continue;
 
             // For each contact manifold in which the current body is involded
-            rpContactManifoldListElement* contactElement;
-            for (contactElement = bodyToVisit->mContactManifoldsList; contactElement != NULL;  contactElement = contactElement->next)
+            ContactManifoldListElement* contactElement;
+            for (contactElement = bodyToVisit->mContactManifoldsList; contactElement != NULL;  contactElement = contactElement->getNext())
             {
-                rpContactManifold* contactManifold = contactElement->contactManifold;
+                rpContactManifold* contactManifold = contactElement->getPointer();
 
                 assert(contactManifold->getNbContactPoints() > 0);
 
                 // Check if the current contact manifold has already been added into an island
                 if (contactManifold->isAlreadyInIsland()) continue;
 
+
                 // Add the contact manifold into the island
-                //mIslands[mNbIslands]->addContactManifold(contactManifold);
+                mIslands[mNbIslands]->addContactManifold(contactManifold);
                 contactManifold->mIsAlreadyInIsland = true;
 
-
-                // Add the contact manifold
-                addChekCollisionPair(contactManifold);
 
                 // Get the other body of the contact manifold
                 rpRigidPhysicsBody* body1 = static_cast<rpRigidPhysicsBody*>(contactManifold->getBody1());
@@ -491,32 +539,34 @@ void rpDynamicsWorld::computeIslands()
                 otherBody->mIsAlreadyInIsland = true;
             }
 
-                //            // For each joint in which the current body is involved
-                //            rpJointListElement* jointElement;
-                //            for (jointElement = bodyToVisit->mJointsList; jointElement != NULL; jointElement = jointElement->next)
-                //            {
-                //                rpJoint* joint = jointElement->joint;
 
-                //                // Check if the current joint has already been added into an island
-                //                if (joint->isAlreadyInIsland()) continue;
 
-                //                // Add the joint into the island
-                //                mIslands[mNbIslands]->addJoint(joint);
-                //                joint->mIsAlreadyInIsland = true;
+            // For each joint in which the current body is involved
+            rpListElement<rpJoint>* jointElement;
+            for (jointElement = bodyToVisit->mJointsList; jointElement != NULL; jointElement = jointElement->getNext())
+            {
+                rpJoint* joint = jointElement->getPointer();
 
-                //                // Get the other body of the contact manifold
-                //                rpRigidPhysicsBody* body1 = static_cast<rpRigidPhysicsBody*>(joint->getBody1());
-                //                rpRigidPhysicsBody* body2 = static_cast<rpRigidPhysicsBody*>(joint->getBody2());
-                //                rpRigidPhysicsBody* otherBody = (body1->getID() == bodyToVisit->getID()) ? body2 : body1;
+                // Check if the current joint has already been added into an island
+                if (joint->isAlreadyInIsland()) continue;
 
-                //                // Check if the other body has already been added to the island
-                //                if (otherBody->mIsAlreadyInIsland) continue;
+                // Add the joint into the island
+                //mIslands[mNbIslands]->addJoint(joint);
+                joint->mIsAlreadyInIsland = true;
 
-                //                // Insert the other body into the stack of bodies to visit
-                //                stackBodiesToVisit[stackIndex] = otherBody;
-                //                stackIndex++;
-                //                otherBody->mIsAlreadyInIsland = true;
-                //            }
+                // Get the other body of the contact manifold
+                rpRigidPhysicsBody* body1 = static_cast<rpRigidPhysicsBody*>(joint->getBody1());
+                rpRigidPhysicsBody* body2 = static_cast<rpRigidPhysicsBody*>(joint->getBody2());
+                rpRigidPhysicsBody* otherBody = (body1->getID() == bodyToVisit->getID()) ? body2 : body1;
+
+                // Check if the other body has already been added to the island
+                if (otherBody->mIsAlreadyInIsland) continue;
+
+                // Insert the other body into the stack of bodies to visit
+                stackBodiesToVisit[stackIndex] = otherBody;
+                stackIndex++;
+                otherBody->mIsAlreadyInIsland = true;
+            }
         }
 
 
@@ -543,17 +593,6 @@ void rpDynamicsWorld::computeIslands()
 
 
 
-    /// delete overlapping pairs collision
-    for( auto pair : mContactSolvers )
-    {
-        if( !pair.second->isFakeCollid )
-        {
-            delete pair.second;
-            mContactSolvers.erase(pair.first);
-        }
-    }
-
-
 }
 
 
@@ -573,12 +612,12 @@ void rpDynamicsWorld::addChekCollisionPair( rpContactManifold* manifold )
 
 
         rpContactSolver *solverObject = new rpContactSolverSequentialImpulseObject( body1 , body2 );
-
 		mContactSolvers.insert( std::make_pair(keyPair, solverObject) );
 	}
 
-    mContactSolvers.find(keyPair)->second->initManiflod(manifold);
-	mContactSolvers.find(keyPair)->second->isFakeCollid = true;
+
+    mContactSolvers[keyPair]->initManiflod(manifold);
+    mContactSolvers[keyPair]->isCandidateInDelete = true;
 
 }
 
@@ -618,12 +657,12 @@ void rpDynamicsWorld::destroyBody(rpPhysicsBody* rigidBody)
 
 
     // Destroy all the joints in which the rigid body to be destroyed is involved
-    rpJointListElement* element;
+    JointListElement* element;
     if(rigidBody->mJointsList != NULL )
     {
-      for (element = rigidBody->mJointsList; element != NULL; element = element->next )
+      for (element = rigidBody->mJointsList; element != NULL; element = element->getNext() )
       {
-           destroyJoint(element->joint);
+           destroyJoint(element->getPointer());
            element = NULL;
       }
     }
@@ -758,14 +797,15 @@ void rpDynamicsWorld::addJointToBody(rpJoint *joint)
     assert(joint != NULL);
 
     // Add the joint at the beginning of the linked list of joints of the first body
-    rpJointListElement* jointListElement1 = new rpJointListElement(joint , joint->mBody1->mJointsList);
+    JointListElement* jointListElement1 = new JointListElement(joint , joint->mBody1->mJointsList , NULL );
     joint->mBody1->mJointsList = jointListElement1;
 
     // Add the joint at the beginning of the linked list of joints of the second body
-    rpJointListElement* jointListElement2 = new rpJointListElement(joint , joint->mBody2->mJointsList);
+    JointListElement* jointListElement2 = new JointListElement(joint , joint->mBody2->mJointsList , NULL );
     joint->mBody2->mJointsList = jointListElement2;
 
 }
+
 
 
 uint rpDynamicsWorld::getNbIterationsVelocitySolver() const
