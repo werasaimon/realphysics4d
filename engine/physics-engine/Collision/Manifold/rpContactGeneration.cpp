@@ -129,7 +129,7 @@ SIMD_INLINE void rpContactGeneration::CollidePointEdgeContacts(const Vector3& A,
 }
 
 SIMD_INLINE void rpContactGeneration::CollideEdgeEdgeContacts(const Vector3& A0, const Vector3& A1,
-                                                                         const Vector3& B0, const Vector3& B1)
+                                                              const Vector3& B0, const Vector3& B1)
 {
 
 	Vector3 AD = A1 - A0;
@@ -145,7 +145,7 @@ SIMD_INLINE void rpContactGeneration::CollideEdgeEdgeContacts(const Vector3& A0,
 	/**/
 	Vector3 AA = A0 + at * AD;
 
-	intersectionLineToLine(A0, A1, B0, B1, AA);
+    //intersectionLineToLine(A0, A1, B0, B1, AA);
 
 	Vector3 BB = ClosestPointOnLine(B0, B1, AA);
 	scalar penetration = (AA - BB).dot(mSeparatonAxis);
@@ -179,8 +179,8 @@ SIMD_INLINE void rpContactGeneration::CollidePolygonContacts(const Vector3* Poly
 			{
 				Vector3 A = PB;
 				Vector3 B = PB - ClipperNormal * dist;
-				scalar penetration = (A - B).dot(mSeparatonAxis);
-				//scalar penetration = (A - B).dot(ClipperNormal);
+                //scalar penetration = (A - B).dot(mSeparatonAxis);
+                scalar penetration = (A - B).dot(ClipperNormal);
 
                 rpContactPointInfo infoNewContact(mSeparatonAxis, penetration = dist , A, B);
                 addInfoContact(infoNewContact);

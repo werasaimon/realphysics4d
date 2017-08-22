@@ -23,6 +23,8 @@ namespace real_physics
 namespace
 {
 
+#define MIN_EPS 0.000001f
+
 enum { INDICATOR_EDGE_POLY , INDICATOR_EDGE_CLIP_POLY };
 enum { UNKNOWN = 10, P_IS_INSIDE, Q_IS_INSIDE };
 enum { LEFT = 30, RIGHT, BEHIND };
@@ -60,8 +62,8 @@ struct rpEdge
 
     bool isPointOutsideLine( const Vector3 &point )
     {
-        //if( (point - mA).lengthSquare() <= scalar(0.001 * 0.001) ) return true;
-        //if( (point - mB).lengthSquare() <= scalar(0.001 * 0.001) ) return true;
+        if( (point - mA).lengthSquare() <= scalar(MIN_EPS) ) return true;
+        if( (point - mB).lengthSquare() <= scalar(MIN_EPS) ) return true;
 
         if ((point - mA).dot(point - mB) > 0)  return false;
         return true;
@@ -232,10 +234,10 @@ private:
 
     /// input
     int             mCountPolygonVertices;
-    const Vector3  *mPolygonVertices = nullptr;
+    const Vector3  *mPolygonVertices;
 
     int             mCountClipVertices;
-    const Vector3  *mClipVertices = nullptr;
+    const Vector3  *mClipVertices;
 
     /// output
     int                           mOutCountVertices;

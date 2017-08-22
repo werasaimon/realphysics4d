@@ -144,9 +144,11 @@ namespace real_physics
 
     rpVector3D<T>  dot3( const rpVector3D<T> &v0, const rpVector3D<T> &v1, const rpVector3D<T> &v2 ) const;
 
-    /// Normalize the vector
+    /// Normalize this vector
     void normalize();
 
+    /// Normalize this vector
+    T normalise();
     //--------------------------------------------------------------------//
 
 
@@ -390,6 +392,22 @@ namespace real_physics
     z /= l;
   }
 
+
+  template<class T>
+  SIMD_INLINE T rpVector3D<T>::normalise()
+  {
+      T l = length();
+      if (l < MACHINE_EPSILON)
+      {
+          return 0.0;
+      }
+
+      x /= l;
+      y /= l;
+      z /= l;
+
+      return l;
+  }
 
   template<class T>
   SIMD_INLINE bool real_physics::rpVector3D<T>::operator ==( const rpVector3D<T>& vector) const

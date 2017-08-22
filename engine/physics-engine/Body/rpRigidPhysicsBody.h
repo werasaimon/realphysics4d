@@ -251,6 +251,7 @@ class rpRigidPhysicsBody: public rpPhysicsBody , public BlockAlloc<rpRigidPhysic
 		friend class rpBallAndSocketJoint;
 		friend class rpHingeJoint;
 		friend class rpSliderJoint;
+        friend class rpAngleAxisJoint;
 
 
 };

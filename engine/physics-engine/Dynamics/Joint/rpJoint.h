@@ -22,7 +22,8 @@ enum JointType { BALLSOCKETJOINT,
                  SLIDERJOINT,
                  HINGEJOINT ,
                  FIXEDJOINT ,
-                 DISTANCEJOINT };
+                 DISTANCEJOINT ,
+                 AXISJOINT};
 
 
 // Class declarations
