@@ -26,6 +26,9 @@ namespace real_physics
 namespace
 {
 
+#define EPS 0.0001f
+
+    /**/
 	static Vector3 ClosestPointOnLine(Vector3 vA, Vector3 vB, Vector3 vPoint)
 	{
 		Vector3 vVector1 = vPoint - vA;
@@ -42,6 +45,7 @@ namespace
 		return vClosestPoint;
 	}
 
+    /**
 	static bool intersectionLineToLine(Vector3 start1, Vector3 end1,
 									   Vector3 start2, Vector3 end2, Vector3 &ip)
 	{
@@ -63,6 +67,48 @@ namespace
 
 		return false;
 	}
+    /**/
+
+    static bool LineLineIntersect( Vector3  p1 , Vector3  p2,
+                                   Vector3  p3 , Vector3  p4,
+                                   Vector3 *pa , Vector3 *pb)
+    {
+
+       Vector3 p13 = p1 - p3;
+       Vector3 p43 = p4 - p3;
+       Vector3 p21 = p2 - p1;
+
+       if (Abs(p43.x) < EPS &&
+           Abs(p43.y) < EPS &&
+           Abs(p43.z) < EPS)
+          return false;
+
+
+       if (Abs(p21.x) < EPS &&
+           Abs(p21.y) < EPS &&
+           Abs(p21.z) < EPS)
+          return false;
+
+       scalar d1343 = p13.x * p43.x + p13.y * p43.y + p13.z * p43.z;
+       scalar d4321 = p43.x * p21.x + p43.y * p21.y + p43.z * p21.z;
+       scalar d1321 = p13.x * p21.x + p13.y * p21.y + p13.z * p21.z;
+       scalar d4343 = p43.x * p43.x + p43.y * p43.y + p43.z * p43.z;
+       scalar d2121 = p21.x * p21.x + p21.y * p21.y + p21.z * p21.z;
+
+       scalar denom = d2121 * d4343 - d4321 * d4321;
+
+       if (Abs(denom) < EPS)
+          return false;
+
+       scalar numer = d1343 * d4321 - d1321 * d4343;
+       scalar mua = numer / denom;
+       scalar mub = (d1343 + d4321 * (mua)) / d4343;
+
+       *pa = p1 + mua * p21;
+       *pb = p3 + mub * p43;
+
+       return true;
+    }
 
 
 }
@@ -132,24 +178,28 @@ SIMD_INLINE void rpContactGeneration::CollideEdgeEdgeContacts(const Vector3& A0,
                                                               const Vector3& B0, const Vector3& B1)
 {
 
-	Vector3 AD = A1 - A0;
-	Vector3 BD = B1 - B0;
-	Vector3 N = AD.cross(BD);
+//	Vector3 AD = A1 - A0;
+//	Vector3 BD = B1 - B0;
+//	Vector3 N = AD.cross(BD);
 
-	Vector3 M = N.cross(BD);
-	scalar md = M.dot(B0);
+//	Vector3 M = N.cross(BD);
+//	scalar md = M.dot(B0);
 
-	scalar at = (md - A0.dot(M)) / (AD.dot(M));
-    at = Clamp(at, scalar(0.f), scalar(1.f));
+//	scalar at = (md - A0.dot(M)) / (AD.dot(M));
+//    at = Clamp(at, scalar(0.f), scalar(1.f));
 
+//	/**/
+//	Vector3 AA = A0 + at * AD;
+
+//    //intersectionLineToLine(A0, A1, B0, B1, AA);
+
+//	Vector3 BB = ClosestPointOnLine(B0, B1, AA);
+//	scalar penetration = (AA - BB).dot(mSeparatonAxis);
 	/**/
-	Vector3 AA = A0 + at * AD;
 
-    //intersectionLineToLine(A0, A1, B0, B1, AA);
-
-	Vector3 BB = ClosestPointOnLine(B0, B1, AA);
-	scalar penetration = (AA - BB).dot(mSeparatonAxis);
-	/**/
+    Vector3 AA , BB;
+    LineLineIntersect( A0 , A1 , B0 , B1 , &AA , &BB );
+    scalar penetration = (AA - BB).length();
 
     //Vector3 point = (AA + BB) * 0.5;
     rpContactPointInfo info(mSeparatonAxis, penetration, AA , BB);
@@ -168,7 +218,7 @@ SIMD_INLINE void rpContactGeneration::CollidePolygonContacts(const Vector3* Poly
     if (polyClipping->isComputeClippingToPoly())
 	{
 		Vector3 ClipperNormal = Vector3::planeNormal(Poly[0], Poly[1], Poly[2]);
-		scalar clipper_d = Poly[0].dot(ClipperNormal);
+        scalar      clipper_d = Poly[0].dot(ClipperNormal);
 
         for (int i = 0; i < polyClipping->getSizeClipVertices(); i++)
 		{
