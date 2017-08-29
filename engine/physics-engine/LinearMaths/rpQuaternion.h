@@ -344,58 +344,47 @@ namespace real_physics
     }
 
 
-    rpVector3D<T> getEulerAngle(bool homogenous=true) const
+
+    rpVector3D<T> getEulerAngles() const
     {
-        rpVector3D<T> euler;
-        rpVector3D<T> V;
+        // Store the Euler angles in radians
+        rpVector3D<T> pitchYawRoll;
 
-        V.x = x;
-        V.y = y;
-        V.z = z;
-        T R = w;
+        rpQuaternion<T> q(*this);
 
-         if(homogenous)
-         {
-             euler.y   =  atan2(2*V.y*R - 2*V.x*V.z, 1 - 2*V.y*V.y - 2*V.z*V.z);
-             euler.x   =   asin(2*V.x*V.y + 2*V.z*R);
-             euler.z   =  atan2(2*V.x*R - 2*V.y*V.z, 1 - 2*V.x*V.x - 2*V.z*V.z);
-         }
-         else
-         {
-             euler.y = atan2(2 * V.y * R - 2 * V.x * V.z, R * R + V.x * V.x - V.y * V.y - V.z * V.z);
-             euler.x =  asin(2 * V.x * V.y + 2 * V.z * R );
-             euler.z = atan2(2*V.x*R - 2*V.y*V.z, R * R + V.y*V.y  - V.x*V.x - V.z*V.z);
-         }
-         return euler;
-    }
+        T sqw = q.w * q.w;
+        T sqx = q.x * q.x;
+        T sqy = q.y * q.y;
+        T sqz = q.z * q.z;
 
+        // If quaternion is normalised the unit is one, otherwise it is the correction factor
+        T unit = sqx + sqy + sqz + sqw;
+        T test = q.x * q.y + q.z * q.w;
 
-
-    //! returns the euler angles from a rotation quaternion
-    rpVector3D<T> euler_angles(bool homogenous=true) const
-    {
-        T s = w;
-        rpVector3D<T> v(x,y,z);
-
-        float sqw = s*s;
-        float sqx = v.x*v.x;
-        float sqy = v.y*v.y;
-        float sqz = v.z*v.z;
-
-        rpVector3D<T> euler;
-        if (homogenous)
+        if (test > 0.4999f * unit)                                // 0.4999f OR 0.5f - EPSILON
         {
-            euler.x = atan2f(2.f * (v.x*v.y + v.z*s), sqx - sqy - sqz + sqw);
-            euler.y = asinf(-2.f * (v.x*v.z - v.y*s));
-            euler.z = atan2f(2.f * (v.y*v.z + v.x*s), -sqx - sqy + sqz + sqw);
+            // Singularity at north pole
+            pitchYawRoll.y = 2.f * atan2(q.x, q.w);               // Yaw
+            pitchYawRoll.x = Pi() * 0.5f;                         // Pitch
+            pitchYawRoll.z = 0.f;                                 // Roll
+            return pitchYawRoll;
+        }
+        else if (test < -0.4999f * unit)                          // -0.4999f OR -0.5f + EPSILON
+        {
+            // Singularity at south pole
+            pitchYawRoll.y = -2.f * atan2(q.x, q.w);              // Yaw
+            pitchYawRoll.x = -Pi() * 0.5f;                        // Pitch
+            pitchYawRoll.z = 0.f;                                 // Roll
+            return pitchYawRoll;
         }
         else
         {
-            euler.x = atan2f(2.f * (v.z*v.y + v.x*s), 1 - 2*(sqx + sqy));
-            euler.y = asinf(-2.f * (v.x*v.z - v.y*s));
-            euler.z = atan2f(2.f * (v.x*v.y + v.z*s), 1 - 2*(sqy + sqz));
+            pitchYawRoll.y = atan2(2.f * q.y * q.w - 2.f * q.x * q.z,  sqx - sqy - sqz + sqw);      // Yaw
+            pitchYawRoll.x =  asin(2.f * test / unit);                                              // Pitch
+            pitchYawRoll.z = atan2(2.f * q.x * q.w - 2.f * q.y * q.z, -sqx + sqy - sqz + sqw);      // Roll
         }
-        return euler;
+
+        return pitchYawRoll;
     }
 
 
@@ -634,47 +623,60 @@ namespace real_physics
   template<class T>
   SIMD_INLINE void rpQuaternion<T>::orientateBetweenAngleAxis( const rpVector3D<T>& NormStartVec, const rpVector3D<T>& NormEndVec)
   {
-	  scalar CosTheta = NormStartVec.dot(NormEndVec);
 
-	  scalar CosTd2Sq = (CosTheta + 1.0f) * 0.5f;
-	  scalar CosTd2 = SquareRoot(CosTd2Sq);
-	  scalar SinTd2 = SquareRoot(1.0f - CosTd2Sq);
+      scalar CosTheta = NormStartVec.dot(NormEndVec);
 
-	  rpVector3D<T> RotAxis;
+      scalar CosTd2Sq = (CosTheta + 1.0f) * 0.5f;
+      scalar CosTd2 = SquareRoot(CosTd2Sq);
+      scalar SinTd2 = SquareRoot(1.0f - CosTd2Sq);
 
-	  if (CosTheta < -0.999f)								//very nearly opposite
-	  {
-		  rpVector3D<T> NonParraVec(0.0f, 1.0f, 0.0f);//Get a wsVector3 thats not aligned with the startvec
+      rpVector3D<T> RotAxis;
 
-		  RotAxis = NonParraVec.cross(NormStartVec);
+      if (CosTheta < -1 + 0.001f)								//very nearly opposite
+      {
+          rpVector3D<T> NonParraVec(0.0f, 0.0f, 1.0f);//Get a wsVector3 thats not aligned with the startvec
 
-		  if (RotAxis.lengthSquare() < 0.001f)		//Still aligned
-		  {
-			  NonParraVec = rpVector3D<T>(1.0f, 0.0f, 0.0f);//This one must be OK then
-			  RotAxis = NonParraVec.cross(NormStartVec);
-		  }
-	  }
-	  else
-	  {
-		  RotAxis = NormStartVec.cross(NormEndVec);
-	  }
+          RotAxis = NonParraVec.cross(NormStartVec);
 
-	  if (SinTd2 < 0.0004f)			//wsVector3s lined up, no need for an axis
-	  {
-		  RotAxis = rpVector3D<T>(0.0f, 0.0f, 0.0f);	//No axis needed if no rotation
-	  }
-	  else
-	  {
-		  RotAxis.normalize();
+          if (RotAxis.length2() < 0.01f)		//Still aligned
+          {
+              NonParraVec = rpVector3D<T>(1.0f, 0.0f, 0.0f);//This one must be OK then
+              RotAxis = NonParraVec.cross(NormStartVec);
+          }
 
-	  }
+          RotAxis.normalize();
+          createRotation(RotAxis,T(180.0f));
+      }
+      else
+      {
+          RotAxis = NormStartVec.cross(NormEndVec);
+      }
 
-	  w = CosTd2;
-	  x = (SinTd2 * RotAxis).x;
-	  y = (SinTd2 * RotAxis).y;
-	  z = (SinTd2 * RotAxis).z;
+      if (SinTd2 < 0.00004f)			//wsVector3s lined up, no need for an axis
+      {
+          RotAxis = rpVector3D<T>(0.0f, 0.0f, 0.0f);	//No axis needed if no rotation
+      }
+      else
+      {
+          RotAxis.normalize();
+
+      }
+
+      w = CosTd2;
+      x = (RotAxis).x;
+      y = (RotAxis).y;
+      z = (RotAxis).z;
+
+//      T s = CosTd2Sq;
+//      T invs = 1.0 / s;
+
+//      w = s * 0.5f;
+//      x = RotAxis.x * invs;
+//      y = RotAxis.y * invs;
+//      z = RotAxis.z * invs;
+
+
   }
-
 
 
   /// The angle between the vectors is simple to find: the dot product gives its cosine.
@@ -683,19 +685,19 @@ namespace real_physics
   SIMD_INLINE  rpQuaternion<T> rpQuaternion<T>::rotationBetweenVectors(  rpVector3D<T> start ,  rpVector3D<T> dest )
   {
 
-      start.normalize();
-      dest.normalize();
+      //start.normalize();
+      //dest.normalize();
 
       T cosTheta = start.dot(dest);
       rpVector3D<T> rotationAxis;
 
-      if (cosTheta < -1 + 0.001f)
+      if (cosTheta < -1 + 0.0001f)
       {
           // special case when vectors in opposite directions:
           // there is no "ideal" rotation axis
           // So guess one; any will do as long as it's perpendicular to start
           rotationAxis = rpVector3D<T>::Z.cross(start);
-          if (rotationAxis.length2() < 0.01 )
+          if (rotationAxis.length2() < T(0.0001) )
           {
               // bad luck, they were parallel, try again!
               rotationAxis = rpVector3D<T>::X.cross(start);
@@ -709,15 +711,17 @@ namespace real_physics
       rotationAxis = start.cross(dest);
       //rotationAxis = rotationAxis.normalize();
 
+
+
       T s = Sqrt( (1+cosTheta)*2 );
-      T invs = 1 / s;
+      T invs = 1.0 / s;
 
       return rpQuaternion<T>
       (
-        s * 0.5f,
         rotationAxis.x * invs,
         rotationAxis.y * invs,
-        rotationAxis.z * invs
+        rotationAxis.z * invs,
+        s * 0.5f
       );
 
   }

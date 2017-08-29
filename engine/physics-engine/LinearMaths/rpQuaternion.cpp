@@ -124,8 +124,6 @@ SIMD_INLINE void real_physics::rpQuaternion<T>::getRotationAngleAxis(T& angle, r
 
 
 
-
-
 template<class T>
 SIMD_INLINE rpQuaternion<T> real_physics::rpQuaternion<T>::slerp( const rpQuaternion<T>& quaternion1,
 		                                                          const rpQuaternion<T>& quaternion2,

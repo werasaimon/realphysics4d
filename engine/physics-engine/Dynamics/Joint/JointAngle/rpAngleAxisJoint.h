@@ -100,8 +100,8 @@ class rpAngleAxisJoint : public rpJoint
                 mLocalConstrAxis1 = Vector3(1, 0, 0) ^ mLocalAxis1;
 
             mLocalConstrAxis2 = mLocalAxis1 ^ mLocalConstrAxis1;
-            mLocalConstrAxis1.normalise();
-            mLocalConstrAxis2.normalise();
+            mLocalConstrAxis1.normalize();
+            mLocalConstrAxis2.normalize();
 
         }
 

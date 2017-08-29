@@ -149,14 +149,6 @@ template<class T> class  rpMinkowskiVector4
 	}
 
 
-    rpMinkowskiVector4<T> cross( const rpMinkowskiVector4<T>& vector) const
-	{
-		return rpMinkowskiVector4<T>(t * vector.t ,
-				                     y * vector.z - z * vector.y,
-				                     z * vector.x - x * vector.z,
-				                     x * vector.y - y * vector.x);
-	}
-
 
     rpMinkowskiVector4<T> cross(const rpMinkowskiVector4<T>& b , const rpMinkowskiVector4<T>& c)
     {
