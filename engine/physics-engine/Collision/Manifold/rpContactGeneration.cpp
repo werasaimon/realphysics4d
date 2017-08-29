@@ -26,7 +26,7 @@ namespace real_physics
 namespace
 {
 
-#define EPS 0.0001f
+#define EPS 0.00001f
 
     /**
 	static Vector3 ClosestPointOnLine(Vector3 vA, Vector3 vB, Vector3 vPoint)
@@ -106,6 +106,8 @@ namespace
 
        *pa = p1 + mua * p21;
        *pb = p3 + mub * p43;
+
+       std::swap( *pa , *pb );
 
        return true;
     }
