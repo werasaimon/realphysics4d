@@ -105,7 +105,7 @@ bool UnitSceneDrawMesh::Init()
 
 
 
-    const int NbSize = 100;
+    const int NbSize = 200;
     UltimatePhysicsBody *bodies[NbSize];
 
 	bool b = false;
@@ -210,7 +210,7 @@ void UnitSceneDrawMesh::Render(float FrameTime)
 	mShaderProgram.setUniformValue(   "lightDiffuseColor"   , Vector3(diffCol.r, diffCol.g, diffCol.b) * 0.99f);
 	mShaderProgram.setUniformValue(   "lightSpecularColor"  , Vector3(specCol.r, specCol.g, specCol.b) * 0.99f);
 
-	mShaderProgram.setUniformValue( "shininess", 60.0f );
+	mShaderProgram.setUniformValue( "shininess", 10.0f );
 
 
 
