@@ -17,7 +17,7 @@ namespace real_physics
 
 
 
-class OverlappingPair;
+class rpOverlappingPair;
 
 
 // Class rpCollisionShapeInfo
@@ -31,7 +31,7 @@ struct rpCollisionShapeInfo
     public:
 
     /// Broadphase overlapping pair
-    //OverlappingPair* overlappingPair;
+    //rpOverlappingPair* overlappingPair;
 
     /// Proxy shape
     //rpProxyShape* proxyShape;

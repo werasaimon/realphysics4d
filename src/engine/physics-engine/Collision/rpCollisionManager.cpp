@@ -347,16 +347,16 @@ void rpCollisionManager::createContact(rpOverlappingPair *overlappingPair , cons
 
 
 
-void rpCollisionManager::createContact(rpOverlappingPair *overlappingPair,  rpContactPoint *contact )
-{
-    // Add the contact to the contact manifold set of the corresponding overlapping pair
-    overlappingPair->addContact(contact);
+//void rpCollisionManager::createContact(rpOverlappingPair *overlappingPair,  rpContactPoint *contact )
+//{
+//    // Add the contact to the contact manifold set of the corresponding overlapping pair
+//    overlappingPair->addContact(contact);
 
-    // Add the overlapping pair into the set of pairs in contact during narrow-phase
-    overlappingpairid pairId = rpOverlappingPair::computeID(overlappingPair->getShape1(),
-                                                            overlappingPair->getShape2());
-    mContactOverlappingPairs[pairId] = overlappingPair;
-}
+//    // Add the overlapping pair into the set of pairs in contact during narrow-phase
+//    overlappingpairid pairId = rpOverlappingPair::computeID(overlappingPair->getShape1(),
+//                                                            overlappingPair->getShape2());
+//    mContactOverlappingPairs[pairId] = overlappingPair;
+//}
 
 
 

@@ -113,7 +113,7 @@ class rpCollisionManager
 
 
         void createContact(rpOverlappingPair* overlappingPair , const rpContactPointInfo& contactInfo);
-        void createContact(rpOverlappingPair* overlappingPair , rpContactPoint* contact);
+        //void createContact(rpOverlappingPair* overlappingPair , rpContactPoint* contact);
 
 
         void computeCollisionDetectionAllPairs();

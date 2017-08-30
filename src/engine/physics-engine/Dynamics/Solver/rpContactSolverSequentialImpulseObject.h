@@ -230,17 +230,16 @@ class rpContactSolverSequentialImpulseObject : public rpContactSolver //, public
         Vector3 oldFrictionVector2;
 
         /// First friction direction impulse at manifold center
-        scalar AccumulatedFriction1Impulse;
+        scalar  AccumulatedFriction1Impulse;
 
         /// Second friction direction impulse at manifold center
-        scalar AccumulatedFriction2Impulse;
+        scalar  AccumulatedFriction2Impulse;
 
         /// Twist friction impulse at contact manifold center
-        scalar AccumulatedFrictionTwistImpulse;
+        scalar  AccumulatedFrictionTwistImpulse;
 
         /// Rolling resistance impulse
         Vector3 AccumulatedRollingResistanceImpulse;
-
 
         /// Rolling resistance split impulse
         Vector3 AccumulatedRollingResistanceSplitImpulse;
@@ -318,8 +317,8 @@ class rpContactSolverSequentialImpulseObject : public rpContactSolver //, public
 
 
 public:
-    rpContactSolverSequentialImpulseObject( rpRigidPhysicsBody* body1 ,
-                                            rpRigidPhysicsBody* body2 );
+             rpContactSolverSequentialImpulseObject( rpRigidPhysicsBody* body1 ,
+                                                     rpRigidPhysicsBody* body2 );
     virtual ~rpContactSolverSequentialImpulseObject();
 
 
@@ -339,10 +338,9 @@ public:
     /// Solver position and orientation
     void solvePositionConstraint();
 
-
     /// Store the computed impulses to use them to
     /// warm start the solver at the next iteration
-    //void storeImpulses();
+    void storeImpulses();
 
     /******************************************************/
 

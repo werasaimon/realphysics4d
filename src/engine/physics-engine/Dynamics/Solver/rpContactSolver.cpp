@@ -10,11 +10,10 @@
 namespace real_physics
 {
 
-	rpContactSolver::rpContactSolver()
-	{
-		// TODO Auto-generated constructor stub
-
-	}
+    rpContactSolver::rpContactSolver()
+    {
+        // TODO Auto-generated constructor stub
+    }
 
     rpContactSolver::~rpContactSolver()
     {

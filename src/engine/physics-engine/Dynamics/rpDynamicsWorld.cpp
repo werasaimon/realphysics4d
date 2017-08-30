@@ -290,11 +290,11 @@ void rpDynamicsWorld::solve( scalar timeStep )
 //    }
 
 
-//    // For each island of the world
-//    for (uint islandIndex = 0; islandIndex < mNbIslands; islandIndex++)
-//    {
-//        mIslands[islandIndex]->storeImpulses();
-//    }
+    // For each island of the world
+    for (uint islandIndex = 0; islandIndex < mNbIslands; islandIndex++)
+    {
+        mIslands[islandIndex]->storeImpulses();
+    }
 
 }
 

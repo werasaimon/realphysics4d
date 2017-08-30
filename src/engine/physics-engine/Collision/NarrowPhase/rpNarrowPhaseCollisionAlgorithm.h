@@ -14,7 +14,6 @@
 namespace real_physics
 {
     struct rpCollisionShapeInfo;
-	class  OutContactInfo;
 	class  rpOverlappingPair;
 } /* namespace real_physics */
 

@@ -113,13 +113,13 @@ namespace real_physics
 
 
          ///-----------------------------------------------------///
-//         void storeImpulses()
-//         {
-//             for( uint i = 0; i < mNbContactManifolds; i++ )
-//             {
-//                 mContactSolvers[mContactMapIndexesPair[i]]->storeImpulses();
-//             }
-//         }
+         void storeImpulses()
+         {
+             for( uint i = 0; i < mNbContactManifolds; i++ )
+             {
+                 mContactSolvers[mContactMapIndexesPair[i]]->storeImpulses();
+             }
+         }
 
          //-------------------- Friendship --------------------//
          friend class rpDynamicsWorld;

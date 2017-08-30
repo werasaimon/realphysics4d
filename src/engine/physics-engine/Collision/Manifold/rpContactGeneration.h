@@ -70,8 +70,8 @@ class rpContactGeneration
     virtual ~rpContactGeneration();
 
 
-         void computeContacteOverlappingPair(rpOverlappingPair*  OverlappingPair ,
-                                             rpCollisionManager* meneger         ,
+         void computeContacteOverlappingPair( rpOverlappingPair*  OverlappingPair ,
+                                             rpCollisionManager*  meneger         ,
                                              bool approximationCorretion = INTERPOLATION_CONTACT_POINTS );
 
 

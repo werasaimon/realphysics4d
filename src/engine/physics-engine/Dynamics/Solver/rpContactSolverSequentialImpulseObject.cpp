@@ -1025,15 +1025,12 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::solvePositionConstraint
 
 }
 
-/**
+/**/
 SIMD_INLINE void rpContactSolverSequentialImpulseObject::storeImpulses()
 {
 
-    // For each contact manifold
-    // for (uint c=0; c<mNbContactManifolds; c++)
-    // {
 
-        ContactManifoldSolver& manifold = *mContactConstraints;//[c];
+        ContactManifoldSolver& manifold = *mContactConstraints;
 
         for (uint i=0; i<manifold.nbContacts; i++)
         {
@@ -1055,7 +1052,6 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::storeImpulses()
         manifold.externalContactManifold->setRollingResistanceImpulse(manifold.AccumulatedRollingResistanceImpulse);
         manifold.externalContactManifold->setFrictionVector1(manifold.frictionVector1);
         manifold.externalContactManifold->setFrictionVector2(manifold.frictionVector2);
-    //}
 
 }
 /**/

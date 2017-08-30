@@ -44,7 +44,7 @@ class rpContactSolver //: public BlockAlloc<rpContactSolver>
 	virtual void warmStart() = 0;
 	virtual void solveVelocityConstraint() = 0;
 	virtual void solvePositionConstraint() = 0;
-    //virtual void storeImpulses() = 0;
+    virtual void storeImpulses() = 0;
 
 
 	// -------------------- Friendship -------------------- //

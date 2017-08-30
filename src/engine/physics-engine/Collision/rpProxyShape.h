@@ -280,10 +280,6 @@ namespace real_physics
           friend class rpDynamicsWorld;
           friend class rpConvexMeshShape;
 
-
-          friend class EPAAlgorithm;
-          friend class GJKAlgorithm;
-
   };
 
   // Return the pointer to the cached collision data

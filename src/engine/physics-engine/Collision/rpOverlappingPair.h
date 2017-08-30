@@ -103,23 +103,23 @@ class rpOverlappingPair : public BlockAlloc<rpOverlappingPair>
 
 
 
-        rpContactManifoldSet getContactManifoldSet2()// const
-        {
-        	return mContactManifoldSet;
-        }
-
-
-        void getAllContacts( std::vector< rpContactPoint* >& contacts )
-        {
-            for (int j = 0; j < mContactManifoldSet.getNbContactManifolds(); ++j)
-            {
-                 rpContactManifold* manifold = mContactManifoldSet.getContactManifold(j);
-                 for (int i = 0; i < manifold->getNbContactPoints(); ++i)
-                 {
-                    contacts.push_back( manifold->getContactPoint(i) );
-                 }
-            }
-        }
+//        rpContactManifoldSet getContactManifoldSet2()// const
+//        {
+//        	return mContactManifoldSet;
+//        }
+//
+//
+//        void getAllContacts( std::vector< rpContactPoint* >& contacts )
+//        {
+//            for (int j = 0; j < mContactManifoldSet.getNbContactManifolds(); ++j)
+//            {
+//                 rpContactManifold* manifold = mContactManifoldSet.getContactManifold(j);
+//                 for (int i = 0; i < manifold->getNbContactPoints(); ++i)
+//                 {
+//                    contacts.push_back( manifold->getContactPoint(i) );
+//                 }
+//            }
+//        }
 
 
 
