@@ -28,22 +28,6 @@ namespace
 
 #define EPS 0.00001f
 
-    /**
-	static Vector3 ClosestPointOnLine(Vector3 vA, Vector3 vB, Vector3 vPoint)
-	{
-		Vector3 vVector1 = vPoint - vA;
-		Vector3 vVector2 = (vB - vA).getUnit();
-
-		scalar d = (vA - vB).length();
-		scalar t = (vVector2.dot(vVector1));
-
-		if (t < 0) return vA;
-		if (t > d) return vB;
-
-		Vector3 vVector3 = vVector2 * t;
-		Vector3 vClosestPoint = vA + vVector3;
-		return vClosestPoint;
-	}
 
     /**
 	static bool intersectionLineToLine(Vector3 start1, Vector3 end1,
@@ -68,6 +52,23 @@ namespace
 		return false;
 	}
     /**/
+
+
+    static Vector3 ClosestPointOnLine( const Vector3& vA, const Vector3& vB, const Vector3& vPoint )
+    {
+        Vector3 vVector1 = vPoint - vA;
+        Vector3 vVector2 = (vB - vA).getUnit();
+
+        scalar d = (vA - vB).length();
+        scalar t = (vVector2.dot(vVector1));
+
+        if (t < 0) return vA;
+        if (t > d) return vB;
+
+        Vector3 vVector3 = vVector2 * t;
+        Vector3 vClosestPoint = vA + vVector3;
+        return vClosestPoint;
+    }
 
     static bool LineLineIntersect( Vector3  p1 , Vector3  p2,
                                    Vector3  p3 , Vector3  p4,
@@ -139,7 +140,7 @@ rpContactGeneration::~rpContactGeneration()
 SIMD_INLINE void rpContactGeneration::CollidePointPointContacts(const Vector3& A, const Vector3& B)
 {
 
-    scalar penetration = (A - B).dot(mSeparatonAxis);
+    scalar penetration = (A - B).length();
     rpContactPointInfo info(mSeparatonAxis , penetration , A , B);
 	//ContactPoint CollidPoint( info );
 	addInfoContact(info);
@@ -159,14 +160,7 @@ SIMD_INLINE void rpContactGeneration::CollidePointFaceContacts(const Vector3& A,
 SIMD_INLINE void rpContactGeneration::CollidePointEdgeContacts(const Vector3& A, const Vector3& B0, const Vector3& B1)
 {
 
-	Vector3 B0A = A - B0;
-	Vector3 BD = B1 - B0;
-
-	scalar t = (B0A.dot(BD)) / (BD.dot(BD));
-    t = Clamp(t, scalar(0.f), scalar(1.f));
-
-	Vector3 B = B0 + t * BD;
-
+    Vector3 B = ClosestPointOnLine( B0 , B1 , A );
 
     scalar penetration = (A - B).length();
 	rpContactPointInfo info(mSeparatonAxis, penetration, A, B);
