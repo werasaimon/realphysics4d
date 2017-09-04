@@ -340,6 +340,24 @@ class rpHingeJoint : public rpJoint
 
         /// Return the intensity of the current torque applied for the joint motor
         scalar getMotorTorque(scalar timeStep) const;
+
+
+
+        /**/
+
+        /// Velocity angular of body1
+        void setAbsolutliVelocityMotor1( Vector3 angular_speed )
+        {
+            static_cast<rpRigidPhysicsBody*>(mBody1)->setAngularVelocity( angular_speed );
+        }
+
+        /// Velocity angular of body2
+        void setAbsolutliVelocityMotor2( Vector3 angular_speed )
+        {
+            static_cast<rpRigidPhysicsBody*>(mBody2)->setAngularVelocity( angular_speed );
+        }
+
+        /**/
 };
 
 // Return true if the limits of the joint are enabled
