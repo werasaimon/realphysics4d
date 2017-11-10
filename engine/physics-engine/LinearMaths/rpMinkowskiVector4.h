@@ -59,12 +59,19 @@ template<class T> class  rpMinkowskiVector4
 	}
 
 
-	// Copy-constructor
-	rpMinkowskiVector4(const rpVector3D<T>& vector , T time)
-	: t(time) , x(vector.x), y(vector.y), z(vector.z)
-	{
+    // Copy-constructor
+    rpMinkowskiVector4(const rpVector3D<T>& vector , T time)
+    : t(time) , x(vector.x), y(vector.y), z(vector.z)
+    {
 
-	}
+    }
+
+    // Copy-constructor
+    rpMinkowskiVector4( T time , const rpVector3D<T>& vector )
+    : t(time) , x(vector.x), y(vector.y), z(vector.z)
+    {
+
+    }
 
 	// Destructor
 	virtual ~rpMinkowskiVector4()
@@ -223,7 +230,7 @@ template<class T> class  rpMinkowskiVector4
 				                     vector.z / number);
 	}
 
-	friend rpMinkowskiVector4<T> operator/(const rpMinkowskiVector4<T>& vector1, const rpMinkowskiVector4<T>& vector2)
+    friend rpMinkowskiVector4<T> operator/(const rpMinkowskiVector4<T>& vector1, const rpMinkowskiVector4<T>& vector2)
 	{
 		assert(vector2.x > MACHINE_EPSILON);
 		assert(vector2.y > MACHINE_EPSILON);
@@ -234,7 +241,68 @@ template<class T> class  rpMinkowskiVector4
 				                     vector1.z / vector2.z);
 	}
 
+
+
+
+    /// Overloaded operator for addition with assignment
+    rpMinkowskiVector4<T> &operator += (const rpMinkowskiVector4<T>& vector);
+
+    /// Overloaded operator for substraction with assignment
+    rpMinkowskiVector4<T> &operator -= (const rpMinkowskiVector4<T>& vector);
+
+    /// Overloaded operator for multiplication with a number with assignment
+    rpMinkowskiVector4<T> &operator *= (T number);
+
+    /// Overloaded operator for division by a number with assignment
+    rpMinkowskiVector4<T> &operator /= (T number);
+
 };
+
+
+
+template<class T>
+rpMinkowskiVector4<T> &rpMinkowskiVector4<T>::operator+=(const rpMinkowskiVector4<T> &vector)
+{
+    x += vector.x;
+    y += vector.y;
+    z += vector.z;
+    t += vector.t;
+    return *this;
+}
+
+template<class T>
+rpMinkowskiVector4<T> &rpMinkowskiVector4<T>::operator-=(const rpMinkowskiVector4<T> &vector)
+{
+    x -= vector.x;
+    y -= vector.y;
+    z -= vector.z;
+    t -= vector.t;
+    return *this;
+}
+
+template<class T>
+rpMinkowskiVector4<T> &rpMinkowskiVector4<T>::operator*=(T number)
+{
+    float f = 1.f * number;
+    x *= f;
+    y *= f;
+    z *= f;
+    t *= f;
+    return *this;
+}
+
+template<class T>
+rpMinkowskiVector4<T> &rpMinkowskiVector4<T>::operator/=(T number)
+{
+    float f = 1.f / number;
+    x *= f;
+    y *= f;
+    z *= f;
+    t *= f;
+    return *this;
+}
+
+
 
 
 
