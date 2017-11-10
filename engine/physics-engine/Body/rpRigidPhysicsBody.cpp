@@ -49,7 +49,7 @@ rpRigidPhysicsBody::rpRigidPhysicsBody(const Transform& transform, rpCollisionMa
  mAngularFourVelocity4(0,0,0,0),
  mFourForce4(0,0,0,0),
  mFourTorque4(0,0,0,0),
- mFourPosition4(transform.getPosition(),0) ,
+ //mFourPosition4(transform.getPosition(),0) ,
  mStepTime(0.0)
 {
 	/// body To type
@@ -114,10 +114,12 @@ SIMD_INLINE void rpRigidPhysicsBody::Integrate(scalar _dt)
         mFourTorque4 = MinkowskiVector4(  mExternalTorque / (LIGHT_MAX_VELOCITY_C * gammaInvert) , E);
 
 
-        mLinearVelocity  +=  mExternalForce  * _dt;
-	    mAngularVelocity +=  mExternalTorque * _dt;
+        mExternalForce  = (LIGHT_MAX_VELOCITY_C * mFourForce4.getVector3());
+        mExternalTorque = (LIGHT_MAX_VELOCITY_C * mFourTorque4.getVector3());
 
 
+        mLinearVelocity  += mExternalForce  * _dt;
+        mAngularVelocity += mExternalTorque * _dt;
 
 
 
@@ -161,29 +163,16 @@ SIMD_INLINE void rpRigidPhysicsBody::Integrate(scalar _dt)
          *         Integrate lorentz evolution
          **********************************************/
 
-        /// Time invert interval local-frame
-        mFourPosition4.t =  (sqrt(1.0 + ( mLinearVelocity.length() / LIGHT_MAX_VELOCITY_C)) / (1.0 - ( mLinearVelocity.length() / LIGHT_MAX_VELOCITY_C)) *
-                             sqrt(1.0 + (mAngularVelocity.length() / LIGHT_MAX_VELOCITY_C)) / (1.0 - (mAngularVelocity.length() / LIGHT_MAX_VELOCITY_C)));
-        mFourPosition4.t = scalar(1.0) / mFourPosition4.t;
-
-
 
 	    ///Four-velocity on relativity 4D-space
-	    mLinearFourVelocity4  =  MinkowskiVector4( mLinearVelocity  / (LIGHT_MAX_VELOCITY_C * gammaInvert)  , gamma );
+        mLinearFourVelocity4  =  MinkowskiVector4( mLinearVelocity  / (LIGHT_MAX_VELOCITY_C * gammaInvert)  , gamma );
 	    mAngularFourVelocity4 =  MinkowskiVector4( mAngularVelocity / (LIGHT_MAX_VELOCITY_C * gammaInvert)  , gamma );
 
 
 
-	    ///Dynamic velocity-relativity on project 3D-space
-	    Vector3 DLineaVelocity   = LIGHT_MAX_VELOCITY_C * (mLinearFourVelocity4.getProjVector3());
-	    Vector3 DAngularVelocity = LIGHT_MAX_VELOCITY_C * (mAngularFourVelocity4.getProjVector3());
-
-
-
 	    ///Real-velocity-dynamic on dimension of 3D-space
-	    mLinearVelocity  =  (DLineaVelocity   * gammaInvert);
-	    mAngularVelocity =  (DAngularVelocity * gammaInvert);
-
+        mLinearVelocity  =  LIGHT_MAX_VELOCITY_C * (mLinearFourVelocity4.getProjVector3());
+        mAngularVelocity =  LIGHT_MAX_VELOCITY_C * (mAngularFourVelocity4.getProjVector3());
 
 
 	    /// Lorentz boost matrix for linear velocity
@@ -191,16 +180,16 @@ SIMD_INLINE void rpRigidPhysicsBody::Integrate(scalar _dt)
 
 
         ///Translation move Objects
-        Transform resulTransform = TransformUtil::integrateTransform(mWorldTransform , mLinearVelocity      ,  mAngularVelocity      , _dt /** mFourPosition4.t*/ );
-                  resulTransform = TransformUtil::integrateTransform(resulTransform  , mSplitLinearVelocity ,  mSplitAngularVelocity , _dt /** mFourPosition4.t*/ );
+        Transform resulTransform = TransformUtil::integrateTransform(mWorldTransform , mLinearVelocity      ,  mAngularVelocity      , _dt * gammaInvert );
+                  resulTransform = TransformUtil::integrateTransform(resulTransform  , mSplitLinearVelocity ,  mSplitAngularVelocity , _dt * gammaInvert );
 
 
         ///Translation move time-local
-         Vector3 R = mWorldTransform.getPosition();
-         mFourPosition4.setVector3(mWorldTransform.getPosition());
+         /// Vector3 R = mWorldTransform.getPosition();
+         /// mFourPosition4.setVector3(mWorldTransform.getPosition());
 
         ///Update transformation
-		setWorldTransform(resulTransform);
+        setWorldTransform(resulTransform);
 		UpdateMatrices();
 
 
@@ -224,6 +213,7 @@ void rpRigidPhysicsBody::changeToFrameOfReference( rpRigidPhysicsBody *rigidBody
 {
 
 
+    /**
 	Vector3 VL = (this->mLinearVelocity  - rigidBody->mLinearVelocity);
 	Vector3 VA = (this->mAngularVelocity - rigidBody->mAngularVelocity);
     Vector3 R =  (this->mFourPosition4.getVector3() - rigidBody->mFourPosition4.getVector3());
@@ -234,7 +224,7 @@ void rpRigidPhysicsBody::changeToFrameOfReference( rpRigidPhysicsBody *rigidBody
 	MinkowskiVector4 UAngular = mAngularFourVelocity4;
 
 
-	/**/
+    /**
 	ULinear.setVector3( (ULinear.getVector3() - ((VL/LIGHT_MAX_VELOCITY_C) * ULinear.t)) / gammaInvert  );
 	ULinear.t = (ULinear.t - (VL/LIGHT_MAX_VELOCITY_C).dot(R)) / gammaInvert ;
 

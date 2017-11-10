@@ -59,7 +59,7 @@ class rpRigidPhysicsBody: public rpPhysicsBody , public BlockAlloc<rpRigidPhysic
 
 
 		/// Position in coordinate system 4D-space
-		MinkowskiVector4  mFourPosition4;
+        /// MinkowskiVector4  mFourPosition4;
 
 
 
