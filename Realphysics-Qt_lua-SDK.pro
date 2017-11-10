@@ -212,7 +212,8 @@ SOURCES += main.cpp\
     engine/physics-engine/Memory/SmartAllocator.cpp \
     engine/physics-engine/Collision/rpCollisionManager.cpp \
     engine/physics-engine/Collision/Manifold/rpContactGeneration.cpp \
-    engine/physics-engine/Dynamics/Joint/JointAngle/rpAngleAxisJoint.cpp
+    engine/physics-engine/Dynamics/Joint/JointAngle/rpAngleAxisJoint.cpp \
+    engine/physics-engine/LinearMaths/rpVector4D.cpp
 
 HEADERS  += widget.h \
     glwidget.h \
@@ -471,7 +472,8 @@ HEADERS  += widget.h \
     engine/physics-engine/Collision/rpCollisionManager.h \
     engine/physics-engine/Dynamics/Solver/rpContactSolverSequentialImpulseObject.h \
     engine/physics-engine/Collision/Manifold/rpContactGeneration.h \
-    engine/physics-engine/Dynamics/Joint/JointAngle/rpAngleAxisJoint.h
+    engine/physics-engine/Dynamics/Joint/JointAngle/rpAngleAxisJoint.h \
+    engine/physics-engine/LinearMaths/rpVector4D.h
 
 FORMS    += widget.ui \
     formrunscript.ui
