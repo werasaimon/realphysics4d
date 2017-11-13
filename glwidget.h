@@ -62,6 +62,7 @@
 #include "examples/UnitSceneDemo.h"
 #include "examples/UnitSceneGeometry.h"
 #include "examples/UnitSceneLuaInterpretationSDK.h"
+#include "examples/UnitStudyRelativityScene.h"
 
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>

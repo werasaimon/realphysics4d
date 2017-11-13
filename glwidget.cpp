@@ -114,6 +114,7 @@ void GLWidget::initializeGL()
 
     //mSceneOpenGL = new UnitSceneDemo();
     //mSceneOpenGL = new UnitSceneGeometry();
+    //mSceneOpenGL = new UnitStudyRelativityScene;
 
 
     mSceneOpenGL = new UnitSceneLuaInterpretationSDK;
