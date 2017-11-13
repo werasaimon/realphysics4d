@@ -167,6 +167,35 @@ class Vector4
 
         // Return the length of the vector
         float length() const { return sqrt(lengthSquared()); }
+
+
+        // Normalize the vector and return it
+        Vector4 normalize() const
+        {
+            float l = length();
+            if(l < std::numeric_limits<float>::epsilon() )
+            {
+              assert(false);
+            }
+            float _x = x / l;
+            float _y = y / l;
+            float _z = z / l;
+            float _w = w / l;
+
+            return Vector4(_x , _y , _z , _w);
+        }
+
+
+        Vector4 BuildPlan(const Vector4& p_point1, const Vector4& p_normal)
+        {
+           Vector4 normal, res;
+           normal = p_normal.normalize();
+           res.w = normal.dot(p_point1);
+           res.x = normal.x;
+           res.y = normal.y;
+           res.z = normal.z;
+           return res;
+     }
 };
 
 }

@@ -7,11 +7,17 @@
 #include <iostream>
 #include "Vector3.h"
 #include "Vector4.h"
-
+#include "Matrix3.h"
 
 
 namespace utility_engine
 {
+
+
+static const float ZPI = 3.14159265358979323846f;
+static const float RAD2DEG = 1.0; //(180.f / ZPI);
+static const float DEG2RAD = 1.0; //(ZPI / 180.f);
+
 
 
 
@@ -22,10 +28,10 @@ class  Matrix4;
 static Matrix4 dotMatrix( Matrix4 Matrix1 , Matrix4 Matrix2);
 // Class Matrix4
 // This class represents a 4x4 matrix
-class Matrix4 {
+class Matrix4
+{
 
-    public:
-
+   public:
 
 
      static Matrix4   Perspective2(float mFieldOfView, float aspect, float mNearPlane, float mFarPlane);
@@ -35,8 +41,19 @@ class Matrix4 {
      static Matrix4   Rotate(float angle, const Vector3& u);
         // -------------------- Attributes -------------------- //
 
-        // Elements of the matrix
-        float m[4][4];
+        // Elements of the matrix     
+         union
+         {
+             float m[4][4];
+             float m16[16];
+ ///////////////////////////////////////////////////////////////////////////////////////////////////
+             struct
+             {
+                 Vector4 right, up, dir, position;
+             } v;
+
+             Vector4 component[4];
+         };
 
         // -------------------- Methods -------------------- //
 
@@ -367,6 +384,8 @@ class Matrix4 {
             return *this;
         }
 
+        Matrix3 getMatrix3x3() const ;
+
         // Display the matrix
         void print() const
         {
@@ -439,6 +458,7 @@ class Matrix4 {
             return (m[0][0] + m[1][1] + m[2][2] + m[3][3]);
         }
 
+
         // Return a 4x4 translation matrix
         static Matrix4 translationMatrix(const Vector3& v);
         static Matrix4 translationMatrix2(const Vector3& v);
@@ -446,6 +466,98 @@ class Matrix4 {
         // Return a 4x4 rotation matrix
         static Matrix4 rotationMatrix(const Vector3& axis, float angle);
         static Matrix4 rotationMatrix2(const Vector3& axis, float angle);
+
+
+        static Matrix4 scaleMatrix(const Vector3 &scale);
+
+
+
+        /// Return a skew-symmetric matrix using a given vector that can be used
+        /// to compute cross product with another vector using matrix multiplication
+        static Matrix4 computeSkewSymmetricMatrixForCrossProduct(const Vector4& vector)
+        {
+            return Matrix4( 0        , -vector.z,  vector.y,  vector.w,
+                            vector.z , 0        , -vector.x,  vector.y,
+                           -vector.y , vector.x , 0        , -vector.x,
+                           -vector.w ,-vector.y , vector.x , 0);
+        }
+
+
+
+
+        void OrthoNormalize()
+        {
+           v.right.normalize();
+           v.up.normalize();
+           v.dir.normalize();
+        }
+
+
+        static void DecomposeMatrixToComponents(const float *matrix, float *translation, float *rotation, float *scale)
+        {
+            Matrix4 mat = *(Matrix4*)matrix;
+
+            scale[0] = mat.v.right.length();
+            scale[1] = mat.v.up.length();
+            scale[2] = mat.v.dir.length();
+
+            mat.OrthoNormalize();
+
+            rotation[0] = RAD2DEG * atan2f(mat.m[1][2], mat.m[2][2]);
+            rotation[1] = RAD2DEG * atan2f(-mat.m[0][2], sqrtf(mat.m[1][2] * mat.m[1][2] + mat.m[2][2]* mat.m[2][2]));
+            rotation[2] = RAD2DEG * atan2f(mat.m[0][1], mat.m[0][0]);
+
+            translation[0] = mat.v.position.x;
+            translation[1] = mat.v.position.y;
+            translation[2] = mat.v.position.z;
+        }
+
+        static void RecomposeMatrixFromComponents(const float *translation, const float *rotation, const float *scale, float *matrix)
+        {
+            Matrix4 mat = *(Matrix4*)matrix;
+
+            const Vector3 directionUnary[3] = { Vector3::X ,
+                                                Vector3::Y ,
+                                                Vector3::Z };
+
+            Matrix4 rot[3];
+            for (int i = 0; i < 3;i++)
+            {
+                rot[i] = Matrix4::rotationMatrix( directionUnary[i] , rotation[i] * DEG2RAD);
+            }
+
+            mat = rot[0] * rot[1] * rot[2];
+
+            float validScale[3];
+            for (int i = 0; i < 3; i++)
+            {
+                if (fabsf(scale[i]) < FLT_EPSILON)
+                {
+                    validScale[i] = 0.001f;
+                }
+                else
+                {
+                    validScale[i] = scale[i];
+                }
+            }
+            mat.v.right *= validScale[0];
+            mat.v.up *= validScale[1];
+            mat.v.dir *= validScale[2];
+            mat.v.position = Vector4(translation[0], translation[1], translation[2], 1.f);
+        }
+
+
+
+        void DecomposeMatrixToComponents( Vector3 &translation, Vector3 &rotation, Vector3 &scale )
+        {
+            DecomposeMatrixToComponents( m16 , translation.data() , rotation.data() , scale.data() );
+        }
+
+        void RecomposeMatrixFromComponents(const Vector3& translation, const Vector3& rotation, const Vector3& scale)
+        {
+            RecomposeMatrixFromComponents( translation.data() , rotation.data() , scale.data() , m16 );
+        }
+
 };
 
 // * operator
@@ -615,13 +727,41 @@ inline Matrix4 Matrix4::rotationMatrix2(const Vector3& axis, float angle)
 
     return rotationMatrix;
 }
+
 /**/
 
+inline Matrix4 Matrix4::scaleMatrix(const Vector3 &scale)
+{
+      /**
+      return Matrix4(1.f + scale.x, 0, 0, 0,
+                     0, 1.f + scale.y, 0, 0,
+                     0, 0, 1.f + scale.z, 0,
+                     0, 0, 0, 1);
+      /**/
+
+      float _x = 1.f + scale.x;
+      float _y = 1.f + scale.y;
+      float _z = 1.f + scale.z;
+
+      Matrix4 M;
+      M.v.right    = Vector4(_x , 0.f, 0.f, 0.f);
+      M.v.up       = Vector4(0.f, _y , 0.f, 0.f);
+      M.v.dir      = Vector4(0.f, 0.f, _z , 0.f);
+      M.v.position = Vector4(0.f, 0.f, 0.f, 1.f);
+
+      return M;
+}
 
 
+static  Matrix4 biasMatrix = Matrix4(0.5f, 0.0f, 0.0f, 0.0f,
+                                     0.0f, 0.5f, 0.0f, 0.0f,
+                                     0.0f, 0.0f, 0.5f, 0.0f,
+                                     0.5f, 0.5f, 0.5f, 1.0f);
 
-static  Matrix4 biasMatrix = Matrix4(0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.5f, 0.0f, 0.5f, 0.5f, 0.5f, 1.0f);
-static  Matrix4 biasMatrixInverse = Matrix4(2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 2.0f, 0.0f, -1.0f, -1.0f, -1.0f, 1.0f);
+static  Matrix4 biasMatrixInverse = Matrix4(2.0f, 0.0f, 0.0f, 0.0f,
+                                            0.0f, 2.0f, 0.0f, 0.0f,
+                                            0.0f, 0.0f, 2.0f, 0.0f,
+                                           -1.0f,-1.0f,-1.0f, 1.0f);
 
 
 //	Matrix4        Look(const Vector3 &eye, const Vector3 &center, const Vector3 &up);

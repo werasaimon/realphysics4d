@@ -185,11 +185,13 @@ class Vector3
         float &operator[](int i)
         {
             assert(i >= 0 && i <= 2);
-            switch (i) {
-            case 0: return x;
-            case 1: return y;
-            case 2: return z;
+            switch (i)
+            {
+             case 0: return x;
+             case 1: return y;
+             case 2: return z;
             }
+
             return z;
         }
 
@@ -199,19 +201,30 @@ class Vector3
             assert(i >= 0 && i <= 2);
             switch (i)
             {
-            case 0: return x;
-            case 1: return y;
-            case 2: return z;
+             case 0: return x;
+             case 1: return y;
+             case 2: return z;
             }
+
             return z;
+        }
+
+        float *data()
+        {
+            return &this->operator [](0);
+        }
+
+        const float *data() const
+        {
+            return &this->operator [](0);
         }
 
         // Cross product operator
         Vector3 cross(const Vector3 &v) const
         {
             return Vector3(y * v.z - z * v.y,
-            		       z * v.x - x * v.z,
-						   x * v.y - y * v.x);
+                           z * v.x - x * v.z,
+                           x * v.y - y * v.x);
         }
 
         // Dot product operator
@@ -255,6 +268,22 @@ class Vector3
 
         // Return the length of the vector
         float length() const { return sqrt(lengthSquared()); }
+
+
+        float AngleBetweenVectors(const Vector3& Vector2) const
+        {
+            Vector3 Vector1(*this);
+            float dotProduct = Vector1.dot(Vector2);
+            float vectorsMagnitude = (Vector1.length()) * (Vector2.length());
+            float angle = acos(dotProduct / vectorsMagnitude);
+            if( __isnan(angle)) return 0;
+            return (angle);
+        }
+
+        static float AngleSigned( const Vector3& v1, const Vector3& v2, const Vector3& normal )
+        {
+            return atan2(normal.dot(v1.cross(v2)), v1.dot(v2));
+        }
 };
 
 

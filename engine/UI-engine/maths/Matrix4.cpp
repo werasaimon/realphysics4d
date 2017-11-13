@@ -3,7 +3,7 @@
 #include "Vector3.h"
 #include "Vector4.h"
 
-#include "glmath.h"
+
 
 
 using namespace utility_engine;
@@ -15,7 +15,7 @@ Matrix4 Matrix4::Rotate(float angle, const Vector3& u)
 
         Matrix4 Rotate;
 
-        angle = angle / 180.0f * (float)_M_PI;
+       // angle = angle / 180.0f * (float)_M_PI;
 
         Vector3 v = u.normalize();
 
@@ -38,6 +38,16 @@ Matrix4 Matrix4::Rotate(float angle, const Vector3& u)
 
         Rotate.setDataValue(M);
         return Rotate;
+}
+
+Matrix3 Matrix4::getMatrix3x3() const
+{
+  return Matrix3
+  (
+     m[0][0] , m[0][1] , m[0][2] ,
+     m[1][0] , m[1][1] , m[1][2] ,
+     m[2][0] , m[2][1] , m[2][2]
+  );
 }
 
 
@@ -66,24 +76,20 @@ Matrix4 Matrix4::Perspective2(float mFieldOfView, float aspect, float mNearPlane
 
 
 
-Matrix4 Matrix4::Perspectivee(float fovy, float aspect, float n, float f)
-{
-    mat4x4 Perspective;
-
-    float coty = 1.0f / tan(fovy * (float)_M_PI / 360.0f);
-
-    Perspective.M[0] = coty / aspect;
-    Perspective.M[5] = coty;
-    Perspective.M[10] = (n + f) / (n - f);
-    Perspective.M[11] = -1.0f;
-    Perspective.M[14] = 2.0f * n * f / (n - f);
-    Perspective.M[15] = 0.0f;
-
-
-    Matrix4 matrix;
-    matrix.setDataValue(Perspective.M);
-    return matrix;
-}
+//Matrix4 Matrix4::Perspectivee(float fovy, float aspect, float n, float f)
+//{
+//    mat4x4 Perspective;
+//    float coty = 1.0f / tan(fovy * (float)_M_PI / 360.0f);
+//    Perspective.M[0] = coty / aspect;
+//    Perspective.M[5] = coty;
+//    Perspective.M[10] = (n + f) / (n - f);
+//    Perspective.M[11] = -1.0f;
+//    Perspective.M[14] = 2.0f * n * f / (n - f);
+//    Perspective.M[15] = 0.0f;
+//    Matrix4 matrix;
+//    matrix.setDataValue(Perspective.M);
+//    return matrix;
+//}
 
 
 
@@ -91,46 +97,13 @@ Matrix4 Matrix4::Perspectivee(float fovy, float aspect, float n, float f)
 Matrix4 Matrix4::Look(const Vector3& eye, const Vector3& center, const Vector3& up)
 {
 
-    /**
-    Vector3 Z = (eye - center).normalize();
-    Vector3 X = (up.cross(Z)).normalize();
-    Vector3 Y = (Z.cross(X));
-
-    //mat4x4 View;
-
-    float M[16] = {0};
-
-    M[0]  = X.x;
-    M[1]  = Y.x;
-    M[2]  = Z.x;
-    M[3]  = 0;
-    M[4]  = X.y;
-    M[5]  = Y.y;
-    M[6]  = Z.y;
-    M[7]  = 0;
-    M[8]  = X.z;
-    M[9]  = Y.z;
-    M[10] = Z.z;
-    M[11] = 0;
-    M[12] = -X.dot(eye);
-    M[13] = -Y.dot(eye);
-    M[14] = -Z.dot(eye);
-    M[15] = 1;
-
-    Matrix4 matrix;
-    matrix.setDataValue(M);
-    return matrix;
-
-    /**/
-
-
-    Vector3 Z = (eye- center).normalize();
-    Vector3 X = (up.cross(Z)).normalize();
+    Vector3 Z =  (eye- center).normalize();
+    Vector3 X =  (up.cross(Z)).normalize();
     Vector3 Y =  (Z.cross(X)).normalize();
 
-    return Matrix4(X.x, X.y, X.z, X.dot(-eye),
-                   Y.x, Y.y, Y.z, Y.dot(-eye),
-                   Z.x, Z.y, Z.z, Z.dot(-eye),
+    return Matrix4(X.x, X.y, X.z, -X.dot(eye),
+                   Y.x, Y.y, Y.z, -Y.dot(eye),
+                   Z.x, Z.y, Z.z, -Z.dot(eye),
                    0, 0, 0, 1);
 
 }
