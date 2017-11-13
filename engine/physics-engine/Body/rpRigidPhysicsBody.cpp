@@ -32,6 +32,28 @@ namespace real_physics
 {
 
 
+namespace
+{
+    /// Helper function for daping vector*s
+    ////////////////////////////////////////////////////////////////
+    static void Damping( Vector3& Velocity , const float& min_damping , const float& damping )
+    {
+        if( Velocity.length2()  < min_damping )
+        {
+            if( Velocity.length() > damping )
+            {
+                Velocity -= ( Velocity.getUnit() * damping);
+            }
+            else
+            {
+                Velocity  = Vector3::ZERO;
+            }
+        }
+    }
+    ////////////////////////////////////////////////////////////////
+
+}
+
 
 rpRigidPhysicsBody::rpRigidPhysicsBody(const Transform& transform, rpCollisionManager *CollideWorld, bodyindex id)
 :rpPhysicsBody(transform, CollideWorld, id),
@@ -49,7 +71,7 @@ rpRigidPhysicsBody::rpRigidPhysicsBody(const Transform& transform, rpCollisionMa
  mAngularFourVelocity4(0,0,0,0),
  mFourForce4(0,0,0,0),
  mFourTorque4(0,0,0,0),
- //mFourPosition4(transform.getPosition(),0) ,
+ mFourPosition4(transform.getPosition(),0) ,
  mStepTime(0.0)
 {
 	/// body To type
@@ -98,24 +120,38 @@ SIMD_INLINE void rpRigidPhysicsBody::Integrate(scalar _dt)
 
 
 
-	    scalar gamma       =       gammaFunction(mLinearVelocity) * gammaFunction(mAngularVelocity);
-	    scalar gammaInvert = gammaInvertFunction(mLinearVelocity) * gammaInvertFunction(mAngularVelocity);
+        scalar gamma       =       gammaFunction(mLinearVelocity) * gammaFunction(mAngularVelocity);
+        scalar gammaInvert = gammaInvertFunction(mLinearVelocity) * gammaInvertFunction(mAngularVelocity);
 
 
-        mTotalEnergy  = Pow(mInitMass * LIGHT_MAX_VELOCITY_C , scalar(2.0)) / gamma;
 
 
 
 	    /*********************************************
 	     *          Integration forces
 	     ********************************************/
+        /**
         scalar E = ( mTotalEnergy / _dt)  / (LIGHT_MAX_VELOCITY_C * LIGHT_MAX_VELOCITY_C) * gammaInvert;
         mFourForce4  = MinkowskiVector4(  mExternalForce  / (LIGHT_MAX_VELOCITY_C * gammaInvert) , E);
         mFourTorque4 = MinkowskiVector4(  mExternalTorque / (LIGHT_MAX_VELOCITY_C * gammaInvert) , E);
 
-
         mExternalForce  = (LIGHT_MAX_VELOCITY_C * mFourForce4.getVector3());
         mExternalTorque = (LIGHT_MAX_VELOCITY_C * mFourTorque4.getVector3());
+
+        mLinearVelocity  += mExternalForce  * _dt;
+        mAngularVelocity += mExternalTorque * _dt;
+        /**/
+
+
+        mTotalEnergy  = Pow(mInitMass * LIGHT_MAX_VELOCITY_C , scalar(2.0)) / gamma;
+
+        scalar E = ( mTotalEnergy / _dt)  / (LIGHT_MAX_VELOCITY_C * LIGHT_MAX_VELOCITY_C) * gammaInvert;
+        mFourForce4  = MinkowskiVector4(  mExternalForce  * gammaInvert , E);
+        mFourTorque4 = MinkowskiVector4(  mExternalTorque * gammaInvert , E);
+
+
+        mExternalForce  = (mFourForce4.getVector3());
+        mExternalTorque = (mFourTorque4.getVector3());
 
 
         mLinearVelocity  += mExternalForce  * _dt;
@@ -126,6 +162,7 @@ SIMD_INLINE void rpRigidPhysicsBody::Integrate(scalar _dt)
 	    /*********************************************
 	     *          Damping  velocity
          ********************************************/
+        /**
 	    if( mLinearVelocity.length2() < MINIMUM_FOR_DAPING )
 	    {
 
@@ -154,7 +191,11 @@ SIMD_INLINE void rpRigidPhysicsBody::Integrate(scalar _dt)
 	    	}
 
         }
+        /**/
 
+
+        Damping( mLinearVelocity  , MINIMUM_FOR_DAPING , mLinearDamping  );
+        Damping( mAngularVelocity , MINIMUM_FOR_DAPING , mAngularDamping );
 
 
 
@@ -164,15 +205,33 @@ SIMD_INLINE void rpRigidPhysicsBody::Integrate(scalar _dt)
          **********************************************/
 
 
+        /**
 	    ///Four-velocity on relativity 4D-space
         mLinearFourVelocity4  =  MinkowskiVector4( mLinearVelocity  / (LIGHT_MAX_VELOCITY_C * gammaInvert)  , gamma );
 	    mAngularFourVelocity4 =  MinkowskiVector4( mAngularVelocity / (LIGHT_MAX_VELOCITY_C * gammaInvert)  , gamma );
 
 
 
+        MinkowskiVector4 Vel_Test =  MinkowskiVector4( mLinearVelocity * (gamma)  ,  (LIGHT_MAX_VELOCITY_C * gammaInvert ) );
+
+        cout<< "Vel :  " << Vel_Test.length() << "  Real: " << mLinearFourVelocity4.length() <<endl;
+
+        /**/
+
+
+        gamma       =       gammaFunction(mLinearVelocity) * gammaFunction(mAngularVelocity);
+        gammaInvert = gammaInvertFunction(mLinearVelocity) * gammaInvertFunction(mAngularVelocity);
+
+
+
+        ///Four-velocity on relativity 4D-space
+        mLinearFourVelocity4  =  MinkowskiVector4( mLinearVelocity  * gammaInvert  , (LIGHT_MAX_VELOCITY_C * gammaInvert) );
+        mAngularFourVelocity4 =  MinkowskiVector4( mAngularVelocity * gammaInvert  , (LIGHT_MAX_VELOCITY_C * gammaInvert) );
+
+
 	    ///Real-velocity-dynamic on dimension of 3D-space
-        mLinearVelocity  =  LIGHT_MAX_VELOCITY_C * (mLinearFourVelocity4.getProjVector3());
-        mAngularVelocity =  LIGHT_MAX_VELOCITY_C * (mAngularFourVelocity4.getProjVector3());
+        mLinearVelocity  = (mLinearFourVelocity4.getVector3());
+        mAngularVelocity = (mAngularFourVelocity4.getVector3());
 
 
 	    /// Lorentz boost matrix for linear velocity
@@ -180,13 +239,14 @@ SIMD_INLINE void rpRigidPhysicsBody::Integrate(scalar _dt)
 
 
         ///Translation move Objects
-        Transform resulTransform = TransformUtil::integrateTransform(mWorldTransform , mLinearVelocity      ,  mAngularVelocity      , _dt * gammaInvert );
-                  resulTransform = TransformUtil::integrateTransform(resulTransform  , mSplitLinearVelocity ,  mSplitAngularVelocity , _dt * gammaInvert );
+        Transform resulTransform = TransformUtil::integrateTransform(mWorldTransform , mLinearVelocity      ,  mAngularVelocity      , _dt  );
+                  resulTransform = TransformUtil::integrateTransform(resulTransform  , mSplitLinearVelocity ,  mSplitAngularVelocity , _dt  );
 
 
-        ///Translation move time-local
-         /// Vector3 R = mWorldTransform.getPosition();
-         /// mFourPosition4.setVector3(mWorldTransform.getPosition());
+        /// Lorentz transllate position
+        mFourPosition4 += mLinearFourVelocity4 * _dt;
+        mFourPosition4 += MinkowskiVector4(mSplitLinearVelocity,0) * _dt;
+
 
         ///Update transformation
         setWorldTransform(resulTransform);
@@ -260,7 +320,7 @@ void rpRigidPhysicsBody::changeToFrameOfReference( rpRigidPhysicsBody *rigidBody
 /**
  * @param proxyShape The pointer of the proxy shape you want to remove
  */
-void rpRigidPhysicsBody::removeCollisionShape(const rpProxyShape *proxyShape)
+SIMD_INLINE void rpRigidPhysicsBody::removeCollisionShape(const rpProxyShape *proxyShape)
 {
     // Remove the collision shape
     rpCollisionBody::removeCollisionShapee(proxyShape);
@@ -442,7 +502,7 @@ SIMD_INLINE void rpRigidPhysicsBody::recomputeMassInformation()
 
 SIMD_INLINE void rpRigidPhysicsBody::UpdateMatrices()
 {
-	mInertiaTensorWorldInverse = mTransform.getBasis() * mInertiaTensorLocalInverse *
+    mInertiaTensorWorldInverse = mTransform.getBasis() * mInertiaTensorLocalInverse * mRelativityMotion.getLorentzMatrix() *
 			                     mTransform.getBasis().getTranspose();
 
 	mCenterOfMassWorld = mTransform * mCenterOfMassLocal;

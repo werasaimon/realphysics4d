@@ -38,11 +38,12 @@ class rpRigidPhysicsBody: public rpPhysicsBody , public BlockAlloc<rpRigidPhysic
 		scalar mInitMass;
 
 
+
+
+        //////////// 4D-Logics /////////////
+
         /// Total energy on the to body
         scalar mTotalEnergy;
-
-
-
 
 		/// Linear four-velocity of the body
 		MinkowskiVector4  mLinearFourVelocity4;
@@ -59,7 +60,7 @@ class rpRigidPhysicsBody: public rpPhysicsBody , public BlockAlloc<rpRigidPhysic
 
 
 		/// Position in coordinate system 4D-space
-        /// MinkowskiVector4  mFourPosition4;
+        MinkowskiVector4  mFourPosition4;
 
 
 
