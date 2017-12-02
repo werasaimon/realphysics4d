@@ -28,7 +28,7 @@ linux: {
 
 #Linux default
  !android: {
-   LIBS += -lGL -lGLU #-lGLEW
+   LIBS += -lGL -lGLU -lglut #-lGLEW
 }
 
 }
@@ -123,7 +123,6 @@ SOURCES += main.cpp\
     engine/physics-engine/Dynamics/rpTimer.cpp \
     engine/physics-engine/Geometry/QuickHull/QuickHull.cpp \
     engine/physics-engine/LinearMaths/rpGyroscopic.cpp \
-    engine/physics-engine/LinearMaths/rpLorentzContraction.cpp \
     engine/physics-engine/LinearMaths/rpMatrix2x2.cpp \
     engine/physics-engine/LinearMaths/rpMatrix3x3.cpp \
     engine/physics-engine/LinearMaths/rpMatrix4x4.cpp \
@@ -398,7 +397,6 @@ HEADERS  += widget.h \
     engine/physics-engine/LinearMaths/mathematics.h \
     engine/physics-engine/LinearMaths/rpGyroscopic.h \
     engine/physics-engine/LinearMaths/rpLinearMtah.h \
-    engine/physics-engine/LinearMaths/rpLorentzContraction.h \
     engine/physics-engine/LinearMaths/rpMatrix2x2.h \
     engine/physics-engine/LinearMaths/rpMatrix3x3.h \
     engine/physics-engine/LinearMaths/rpMatrix4x4.h \
