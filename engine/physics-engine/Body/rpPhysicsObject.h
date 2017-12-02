@@ -23,7 +23,7 @@ class rpPhysicsObject : public rpCollisionBody
 
     protected:
 
-		Transform        mWorldTransform;
+        Transform        mWorldTransform;
 		//uint             mIndexID;
 
 

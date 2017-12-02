@@ -25,7 +25,7 @@ namespace real_physics
  * @param world The physics world where the body is created
  * @param id ID of the body
  */
-rpCollisionBody::rpCollisionBody(const Transform& transform, rpCollisionManager* collideWorld , bodyindex id)
+rpCollisionBody::rpCollisionBody(const Transform &transform, rpCollisionManager* collideWorld , bodyindex id)
     : rpBody(id),
       mType(DYNAMIC),
       mTransform(transform),
@@ -64,7 +64,7 @@ rpCollisionBody::~rpCollisionBody()
  * @return A pointer to the proxy shape that has been created to link the body to
  *         the new collision shape you have added.
  */
-rpProxyShape* rpCollisionBody::addCollisionShape(rpCollisionShape* collisionShape, scalar massa , const Transform& transform)
+rpProxyShape* rpCollisionBody::addCollisionShape(rpCollisionShape* collisionShape, scalar massa , const Transform &transform)
 {
 
     // Create a new proxy collision shape to attach the collision shape to the body
@@ -227,7 +227,7 @@ void rpCollisionBody::updateProxyShapeInBroadPhase(rpProxyShape* proxyShape, con
 
 	// Recompute the world-space AABB of the collision shape
 	rpAABB aabb;
-	proxyShape->getCollisionShape()->computeAABB(aabb, mTransform , proxyShape->getLocalToBodyTransform() , mRelativityMotion.getLorentzMatrix());
+    proxyShape->getCollisionShape()->computeAABB(aabb, mTransform , proxyShape->getLocalToBodyTransform() );
 
 
 	// Update the broad-phase state for the proxy collision shape
@@ -272,7 +272,7 @@ void rpCollisionBody::setIsActive(bool isActive)
 
             // Compute the world-space AABB of the new collision shape
             rpAABB aabb;
-            shape->getCollisionShape()->computeAABB(aabb, mTransform , shape->mLocalToBodyTransform , mRelativityMotion.getLorentzMatrix());
+            shape->getCollisionShape()->computeAABB(aabb, mTransform , shape->mLocalToBodyTransform );
 
             // Add the proxy shape to the collision detection
              mCollisionDetection->addProxyCollisionShape(shape, aabb);
@@ -384,14 +384,14 @@ rpAABB rpCollisionBody::getAABB() const
 
     if (mProxyCollisionShapes == NULL) return bodyAABB;
 
-    mProxyCollisionShapes->getCollisionShape()->computeAABB(bodyAABB, mTransform , mProxyCollisionShapes->getLocalToBodyTransform() , mRelativityMotion.getLorentzMatrix());
+    mProxyCollisionShapes->getCollisionShape()->computeAABB(bodyAABB, mTransform , mProxyCollisionShapes->getLocalToBodyTransform());
 
     // For each proxy shape of the body
     for (rpProxyShape* shape = mProxyCollisionShapes->mNext; shape != NULL; shape = shape->mNext)
     {
         // Compute the world-space AABB of the collision shape
         rpAABB aabb;
-        shape->getCollisionShape()->computeAABB(aabb, mTransform , shape->getLocalToBodyTransform() , mRelativityMotion.getLorentzMatrix());
+        shape->getCollisionShape()->computeAABB(aabb, mTransform , shape->getLocalToBodyTransform());
 
         // Merge the proxy shape AABB with the current body AABB
         bodyAABB.mergeWithAABB(aabb);

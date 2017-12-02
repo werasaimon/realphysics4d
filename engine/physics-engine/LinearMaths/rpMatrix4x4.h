@@ -11,6 +11,7 @@
 
 #include "rpVector2D.h"
 #include "rpVector3D.h"
+#include "rpVector4D.h"
 #include "rpMinkowskiVector4.h"
 #include "rpRelativityFunction.h"
 
@@ -24,8 +25,24 @@ template<class T> class  rpMatrix4x4
 
 	// -------------------- Attributes -------------------- //
 
-	// Elements of the matrix
-	T m[4][4];
+
+    // Elements of the matrix
+    union
+    {
+        T m[4][4];
+        T m16[16];
+
+        /**
+        struct
+        {
+            rpVector4D<T> right, up, dir , position;
+
+        } volume;
+
+        /// Rows of the matrix;
+        rpVector4D<T> mRows[4];
+        /**/
+    };
 
 
 
@@ -207,7 +224,7 @@ template<class T> class  rpMatrix4x4
 	rpMatrix4x4<T> getLorentzBoost( const rpVector3D<T> &v ) const
 	{
 		/// lorentz factor
-		T y = gammaInvertFunction(v);
+        T y = gammaInvert(v);
 
 		T l = v.length();
 		T gamma = (y  - 1.0);

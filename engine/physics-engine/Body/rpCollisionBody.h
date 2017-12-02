@@ -61,11 +61,9 @@ class rpCollisionBody : public rpBody
         BodyType mType;
 
 
-        /// World relativity body
-        LorentzContraction      mRelativityMotion;
 
         /// Position and orientation of the body
-        Transform               mTransform;
+        Transform              mTransform;
 
         /// First element of the linked list of proxy collision shapes of this body
         rpProxyShape*           mProxyCollisionShapes;
@@ -113,11 +111,6 @@ class rpCollisionBody : public rpBody
     public:
 
 
-        /// Tensor covariant component velocity metrices
-        void updateDisplacementRelativityVelocity( const Vector3& Velocity )
-        {
-            mRelativityMotion.updateDisplacementBoost( Velocity );
-        }
 
 
         // -------------------- Methods -------------------- //
@@ -179,9 +172,6 @@ class rpCollisionBody : public rpBody
 
         /// Return the body local-space coordinates of a vector given in the world-space coordinates
         Vector3 getLocalVector(const Vector3& worldVector) const;
-
-        /// Return the relativity body world space
-		LorentzContraction getRelativityMotion() const;
 
 
         //-------------------- Friendship --------------------//
@@ -300,7 +290,7 @@ SIMD_INLINE Vector3 rpCollisionBody::getWorldPoint(const Vector3& localPoint) co
 */
 SIMD_INLINE Vector3 rpCollisionBody::getWorldVector(const Vector3& localVector) const
 {
-    return mTransform.getOrientation() * localVector;
+    return mTransform.getBasis() * localVector;
 }
 
 // Return the body local-space coordinates of a point given in the world-space coordinates
@@ -322,18 +312,10 @@ SIMD_INLINE Vector3 rpCollisionBody::getLocalPoint(const Vector3& worldPoint) co
 */
 SIMD_INLINE Vector3 rpCollisionBody::getLocalVector(const Vector3& worldVector) const
 {
-    return mTransform.getOrientation().getInverse() * worldVector;
+    return mTransform.getBasis().getInverse() * worldVector;
 }
 
 
-// Return the type of the body
-/**
- * @return the type of the loretz boost matrix
- */
-SIMD_INLINE  LorentzContraction rpCollisionBody::getRelativityMotion() const
-{
-	return mRelativityMotion;
-}
 
 
 } /* namespace real_physics */

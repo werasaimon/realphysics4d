@@ -15,6 +15,10 @@
 #include "../config.h"
 
 
+#include <iostream>
+using namespace std;
+
+
 namespace real_physics
 {
 
@@ -26,10 +30,23 @@ template<class T> class rpMatrix3x3
 
    private:
 
-     // -------------------- Attributes -------------------- //
+     //-------------------- Attributes --------------------//
 
-     /// Rows of the matrix;
-     rpVector3D<T> mRows[3];
+
+    // Elements of the matrix
+    union
+    {
+        T m[3][3];
+        T m9[9];
+
+        struct
+        {
+            rpVector3D<T> right, up, dir;
+        } volume;
+
+        /// Rows of the matrix;
+        rpVector3D<T> mRows[3];
+    };
 
 
     public:
@@ -201,6 +218,24 @@ template<class T> class rpMatrix3x3
       static rpMatrix3x3<T> MatrixTensorProduct( const rpVector3D<T>& vector1 , const rpVector3D<T>& vector2 );
 
 
+      static rpMatrix3x3<T> MatrixScale( const rpVector3D<T> _scale )
+      {
+         return  rpMatrix3x3<T>(_scale.x,0,0,
+                                0,_scale.y,0,
+                                0,0,_scale.z);
+      }
+
+
+      static rpMatrix3x3<T> LoretzBoostScale( const rpVector3D<T> dir , const T &v )
+      {
+          float c = LIGHT_MAX_VELOCITY_C;
+          float gamma  = (1.0 / sqrt(1.0 - (v*v) / (c*c) )) - 1.0;
+
+          rpMatrix3x3<T> M(  1.f +  gamma*dir.x*dir.x   ,        gamma*dir.x*dir.y  ,       gamma*dir.x*dir.z,
+                                    gamma*dir.y*dir.x   ,  1.f + gamma*dir.y*dir.y  ,       gamma*dir.y*dir.z,
+                                    gamma*dir.z*dir.x   ,        gamma*dir.z*dir.y  , 1.f + gamma*dir.z*dir.z);
+          return M;
+      }
 
       //---------------------------- Friend method -------------------------//
 

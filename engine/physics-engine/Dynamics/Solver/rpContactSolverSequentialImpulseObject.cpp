@@ -525,7 +525,20 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::warmStart()
             _accumulaterImpulsFriction2  = oldFrictionImpulse.dot(contactManifold.frictionVector2);
 
 
+            /**
 
+            /// ------ First friction constraint at the center of the contact manifold ------ ///
+            body1->applyImpulse(-contactManifold.frictionVector1 * _accumulaterImpulsFriction1 , contactManifold.frictionPointBody1 );
+            body2->applyImpulse( contactManifold.frictionVector1 * _accumulaterImpulsFriction1 , contactManifold.frictionPointBody2 );
+
+
+            /// ------ Second friction constraint at the center of the contact manifold ----- ///
+            body1->applyImpulse(-contactManifold.frictionVector2 *  _accumulaterImpulsFriction2 , contactManifold.frictionPointBody1 );
+            body2->applyImpulse( contactManifold.frictionVector2 *  _accumulaterImpulsFriction2 , contactManifold.frictionPointBody2 );
+
+
+
+            /**/
             // ------ First friction constraint at the center of the contact manifold ------ //
 
             // Compute the impulse P = J^T * lambda
@@ -552,12 +565,13 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::warmStart()
 
 
 
-
             body1->applyImpulseLinear(linearImpulseBody1);
             body1->applyImpulseAngular(angularImpulseBody1);
 
             body2->applyImpulseLinear(linearImpulseBody2);
             body2->applyImpulseAngular(angularImpulseBody2);
+
+             /**/
 
 
 
@@ -801,6 +815,15 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::solveVelocityConstraint
        _accumulaterImpulsFriction1 = Max(-frictionLimit, Min(_accumulaterImpulsFriction1 + deltaLambda, frictionLimit));
        deltaLambda = _accumulaterImpulsFriction1 - lambdaTemp;
 
+
+       /**
+
+       // Compute the impulse P=J^T * lambda
+       body1->applyImpulse(-contactManifold->frictionVector1 * deltaLambda , contactManifold->frictionPointBody1 );
+       body2->applyImpulse( contactManifold->frictionVector1 * deltaLambda , contactManifold->frictionPointBody2 );
+
+
+       /**/
        // Compute the impulse P=J^T * lambda
        Vector3 linearImpulseBody1  = -contactManifold->frictionVector1 * deltaLambda;
        Vector3 angularImpulseBody1 = -contactManifold->r1CrossT1       * deltaLambda;
@@ -814,6 +837,8 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::solveVelocityConstraint
 
        body2->applyImpulseLinear(linearImpulseBody2);
        body2->applyImpulseAngular(angularImpulseBody2);
+
+       /**/
 
 
        // ------ Second friction constraint at the center of the contact manifol ----- //
@@ -830,12 +855,21 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::solveVelocityConstraint
        _accumulaterImpulsFriction2 = Max(-frictionLimit, Min(_accumulaterImpulsFriction2 + deltaLambda, frictionLimit));
        deltaLambda = _accumulaterImpulsFriction2 - lambdaTemp;
 
+
+       /**
+
+       // Compute the impulse P=J^T * lambda
+       body1->applyImpulse(-contactManifold->frictionVector2 * deltaLambda , contactManifold->frictionPointBody1 );
+       body2->applyImpulse( contactManifold->frictionVector2 * deltaLambda , contactManifold->frictionPointBody2 );
+
+
+       /**/
+
        // Compute the impulse P=J^T * lambda
        linearImpulseBody1  = -contactManifold->frictionVector2 * deltaLambda;
        angularImpulseBody1 = -contactManifold->r1CrossT2 * deltaLambda;
        linearImpulseBody2  =  contactManifold->frictionVector2 * deltaLambda;
        angularImpulseBody2 =  contactManifold->r2CrossT2 * deltaLambda;
-
 
 
 
@@ -846,6 +880,8 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::solveVelocityConstraint
        // Apply the impulses to the body 2 of the constraint
        body2->applyImpulseLinear(linearImpulseBody2);
        body2->applyImpulseAngular(angularImpulseBody2);
+
+       /**/
 
 
        // ------ Twist friction constraint at the center of the contact manifol ------ //

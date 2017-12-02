@@ -8,6 +8,8 @@
 #include "rpCollisionShape.h"
 #include "../../LinearMaths/mathematics.h"
 
+#include <GL/freeglut.h>
+
 namespace real_physics
 {
 
@@ -36,10 +38,10 @@ namespace real_physics
    *                  computed in world-space coordinates
    * @param transform Transform used to compute the AABB of the collision shape
    */
-  void rpCollisionShape::computeAABB(rpAABB& aabb, const Transform& transform0 , const Transform& transform1 , const Matrix3x3& matrixBoost ) const
+  void rpCollisionShape::computeAABB(rpAABB& aabb, const Transform &transform0 , const Transform &transform1  ) const
   {
 
-	  Transform transform = transform0 * transform1;
+      Transform transform = transform0 * transform1;
 
 
       // Get the local bounds in x,y and z direction
@@ -54,7 +56,7 @@ namespace real_physics
 
 
       // Rotate the local bounds according to the orientation of the body
-      Matrix3x3 worldAxis = matrixBoost * transform.getOrientation().getMatrix().getAbsoluteMatrix();
+      Matrix3x3 worldAxis =  transform.getBasis().getAbsoluteMatrix();
       Vector3 worldMinBounds(worldAxis.getRow(0).dot(minBounds),
                              worldAxis.getRow(1).dot(minBounds),
                              worldAxis.getRow(2).dot(minBounds));
@@ -67,31 +69,22 @@ namespace real_physics
 //      // Compute the minimum and maximum coordinates of the rotated extents
 //       Vector3 minCoordinates = transform.getPosition() + worldMinBounds;
 //       Vector3 maxCoordinates = transform.getPosition() + worldMaxBounds;
-//
-//
-//          Vector3 position = transform.getPosition();
-//	      glPushMatrix();
-//	      Vector3 halfSize = (worldMinBounds - worldMaxBounds);
-//	      glTranslatef(position.x, position.y, position.z);
-//	      glScalef(halfSize.x, halfSize.y, halfSize.z);
-//	      glutWireCube(1.0);
-//	      glPopMatrix();
 
 
-      /// theory of reletivity to displacement boost matrix
-      Vector3 position = transform0.getPosition() + (matrixBoost * (transform0.getBasis() * transform1.getPosition()));
 
-//				      glPushMatrix();
-//				      Vector3 halfSize = (worldMinBounds - worldMaxBounds);
-//				      glTranslatef(position.x, position.y, position.z);
-//				      glScalef(halfSize.x, halfSize.y, halfSize.z);
-//				      glutWireCube(1.0);
-//				      glPopMatrix();
+      Vector3 position = transform.getPosition();
+      glPushMatrix();
+      Vector3 halfSize = (worldMinBounds - worldMaxBounds);
+      glTranslatef(position.x, position.y, position.z);
+      glScalef(halfSize.x, halfSize.y, halfSize.z);
+      glutWireCube(0.5);
+      glPopMatrix();
 
 
-      Vector3 minCoordinates = position + worldMinBounds;
-      Vector3 maxCoordinates = position + worldMaxBounds;
 
+
+      Vector3 minCoordinates = transform.getPosition() + worldMinBounds;
+      Vector3 maxCoordinates = transform.getPosition() + worldMaxBounds;
 
 
       // Update the AABB with the new minimum and maximum coordinates

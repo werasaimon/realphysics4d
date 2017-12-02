@@ -28,7 +28,9 @@ class rpRigidPhysicsBody: public rpPhysicsBody , public BlockAlloc<rpRigidPhysic
 
         scalar mStepTime;
 
-		// -------------------- Attributes -------------------- //
+
+
+        //-------------------- Attributes --------------------//
 
 		/// Material properties of the rigid body
 		rpPhysicsMaterial mMaterial;
@@ -52,15 +54,11 @@ class rpRigidPhysicsBody: public rpPhysicsBody , public BlockAlloc<rpRigidPhysic
 		MinkowskiVector4  mAngularFourVelocity4;
 
 
-		/// Current external four-force on the body
-		MinkowskiVector4  mFourForce4;
+        //		/// Current external four-force on the body
+        //		  MinkowskiVector4  mFourForce4;
 
-		/// Current external four-torque on the body
-		MinkowskiVector4  mFourTorque4;
-
-
-		/// Position in coordinate system 4D-space
-        MinkowskiVector4  mFourPosition4;
+        //		/// Current external four-torque on the body
+        //		  MinkowskiVector4  mFourTorque4;
 
 
 
@@ -166,11 +164,7 @@ class rpRigidPhysicsBody: public rpPhysicsBody , public BlockAlloc<rpRigidPhysic
 
 
         //// Integrate
-		void Integrate(scalar _dt);
-
-
-		//// Change the body of the observer
-        void changeToFrameOfReference( rpRigidPhysicsBody *rigidBody );
+        void Integrate(scalar _dt , ObserverSystem _observer);
 
 
         /// Remove a collision shape from the body
@@ -183,7 +177,7 @@ class rpRigidPhysicsBody: public rpPhysicsBody , public BlockAlloc<rpRigidPhysic
 
 
 		/// Update  matrices matrix invert inertia and position
-		void UpdateMatrices();
+        void UpdateMatrices();
 
 
 		/// Update the transform of the body after a change of the center of mass

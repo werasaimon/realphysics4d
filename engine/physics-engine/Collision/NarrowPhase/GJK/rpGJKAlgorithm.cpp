@@ -16,7 +16,7 @@ namespace
     static Vector3 Support( const rpCollisionShapeInfo& shape , const Vector3& dir )
     {
         const Transform &t = shape.getWorldTransform();
-        return t * shape.getLocalSupportPointWithMargin( t.getOrientation().getInverse() * dir );
+        return t * shape.getLocalSupportPointWithMargin( t.getBasis().getInverse() * dir );
     }
 
 
@@ -115,7 +115,7 @@ bool rpGJKAlgorithm::computeGJK(const rpCollisionShapeInfo &shape1Info, const rp
                         pB = transform2 * (pB);
 
                         // Compute the contact info
-                        Vector3 normal = /*transform1.getOrientation() **/ (-v.getUnit());
+                        Vector3 normal = /*transform1.getBasis() **/ (-v.getUnit());
                         scalar penetrationDepth = margin - dist;
 
                         // Reject the contact if the penetration depth is negative (due too numerical errors)
@@ -148,7 +148,7 @@ bool rpGJKAlgorithm::computeGJK(const rpCollisionShapeInfo &shape1Info, const rp
                         pB = transform2 * (pB);
 
                         // Compute the contact info
-                        Vector3 normal = /*transform1.getOrientation() **/ (-v.getUnit());
+                        Vector3 normal = /*transform1.getBasis() **/ (-v.getUnit());
                         scalar penetrationDepth = margin - dist;
 
                         // Reject the contact if the penetration depth is negative (due too numerical errors)
@@ -180,7 +180,7 @@ bool rpGJKAlgorithm::computeGJK(const rpCollisionShapeInfo &shape1Info, const rp
                         pB = transform2 * (pB);
 
                         // Compute the contact info
-                        Vector3 normal = /*transform1.getOrientation() **/ (-v.getUnit());
+                        Vector3 normal = /*transform1.getBasis() **/ (-v.getUnit());
                         scalar penetrationDepth = margin - dist;
 
                         // Reject the contact if the penetration depth is negative (due too numerical errors)
@@ -217,7 +217,7 @@ bool rpGJKAlgorithm::computeGJK(const rpCollisionShapeInfo &shape1Info, const rp
                         pB = transform2 * (pB);
 
                         // Compute the contact info
-                        Vector3 normal = /*transform1.getOrientation() **/ (-v.getUnit());
+                        Vector3 normal = /*transform1.getBasis() **/ (-v.getUnit());
                         scalar penetrationDepth = margin - dist;
 
                         // Reject the contact if the penetration depth is negative (due too numerical errors)
@@ -249,8 +249,8 @@ bool rpGJKAlgorithm::computeGJK(const rpCollisionShapeInfo &shape1Info, const rp
 /// assumed to intersect in the original objects (without margin). Therefore such
 /// a polytope must exist. Then, we give that polytope to the EPA algorithm to
 /// compute the correct penetration depth and contact points of the enlarged objects.
-bool rpGJKAlgorithm::computePenetrationDepthForEnlargedObjects(const rpCollisionShapeInfo& shape1Info, const Transform& transform1,
-                                                               const rpCollisionShapeInfo& shape2Info, const Transform& transform2,
+bool rpGJKAlgorithm::computePenetrationDepthForEnlargedObjects(const rpCollisionShapeInfo& shape1Info, const Transform &transform1,
+                                                               const rpCollisionShapeInfo& shape2Info, const Transform &transform2,
                                                                Vector3& v , OutContactInfo& _outInfo )
 {
 
@@ -347,7 +347,7 @@ bool rpGJKAlgorithm::testPointInside(const Vector3 &localPoint, rpProxyShape *pr
     {
 
         // Compute the support points for original objects (without margins) A and B
-        suppA = transWorld * shape->getLocalSupportPointWithoutMargin(transWorld.getOrientation().getInverse() * -v, shapeCachedCollisionData);
+        suppA = transWorld * shape->getLocalSupportPointWithoutMargin(transWorld.getBasis().getInverse() * -v, shapeCachedCollisionData);
 
         // Compute the support point for the Minkowski difference A-B
         w = suppA - suppB;
@@ -425,7 +425,7 @@ bool rpGJKAlgorithm::raycast(const Ray& ray, RaycastInfo& raycastInfo ,rpProxySh
     Vector3 n(scalar(0.0), scalar(0.0), scalar(0.0));
     scalar lambda = scalar(0.0);
     suppA = ray.point1;    // Current lower bound point on the ray (starting at ray's origin)
-    suppB =  transWorld * shape->getLocalSupportPointWithoutMargin( transWorld.getOrientation().getInverse() * rayDirection, shapeCachedCollisionData );
+    suppB =  transWorld * shape->getLocalSupportPointWithoutMargin( transWorld.getBasis().getInverse() * rayDirection, shapeCachedCollisionData );
     Vector3 v = suppA - suppB;
     scalar vDotW, vDotR;
     scalar distSquare = v.lengthSquare();
@@ -436,7 +436,7 @@ bool rpGJKAlgorithm::raycast(const Ray& ray, RaycastInfo& raycastInfo ,rpProxySh
     {
 
         // Compute the support points
-        suppB = transWorld * shape->getLocalSupportPointWithoutMargin(transWorld.getOrientation().getInverse() * v, shapeCachedCollisionData);
+        suppB = transWorld * shape->getLocalSupportPointWithoutMargin(transWorld.getBasis().getInverse() * v, shapeCachedCollisionData);
         w = suppA - suppB;
 
         vDotW = v.dot(w);

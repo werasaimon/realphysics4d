@@ -40,7 +40,7 @@ struct rpCollisionShapeInfo
     const rpCollisionShape* collisionShape;
 
     /// Transform that maps from collision shape local-space to world-space
-    const Transform shapeToWorldTransform;
+    const Transform        shapeToWorldTransform;
 
     /// Cached collision data of the proxy shape
     void** cachedCollisionData;

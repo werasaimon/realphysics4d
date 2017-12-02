@@ -26,6 +26,13 @@ enum PhysicsBodyType { RIGID_BODY ,
 
 
 
+struct ObserverSystem
+{
+    Vector3 position     = Vector3(0,0,0);
+    Vector3 ang_velocity = Vector3(0,0,0);
+    Vector3 lin_velocity = Vector3(0,0,0);
+};
+
 
 class rpPhysicsBody: public rpPhysicsObject
 {
@@ -54,7 +61,7 @@ class rpPhysicsBody: public rpPhysicsObject
 
 
     /// integrate to Euler method
-    virtual void Integrate(scalar _dt) {}
+    virtual void Integrate( scalar _dt , ObserverSystem _observer ) {}
 
     /// earth gravity force = (9.8) for force gravity momentum
     virtual void applyGravity( const Vector3& gravity ) {}
@@ -76,6 +83,8 @@ class rpPhysicsBody: public rpPhysicsObject
 
 
     //**********************************************//
+
+        //     virtual void UpdateMatrices(){}
 
    protected:
 

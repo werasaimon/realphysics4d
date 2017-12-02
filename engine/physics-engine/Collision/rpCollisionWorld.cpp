@@ -42,7 +42,7 @@ rpCollisionWorld::~rpCollisionWorld()
  * @param transform Transformation mapping the local-space of the body to world-space
  * @return A pointer to the body that has been created in the world
  */
-rpCollisionBody* rpCollisionWorld::createCollisionBody(const Transform& transform)
+rpCollisionBody* rpCollisionWorld::createCollisionBody(const Transform &transform)
 {
     // Get the next available body ID
     bodyindex bodyID = computeNextAvailableBodyID();

@@ -7,7 +7,8 @@
 namespace real_physics
 {
 
-
+template<class T> class  rpMatrix3x3;
+template<class T> class  rpMatrix4x4;
 template<class T> class  rpVector4D
 {
 public:

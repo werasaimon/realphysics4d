@@ -108,11 +108,15 @@ namespace real_physics
 
 
 
+
     /// Return the corresponding unit vector
     rpVector3D<T>  getUnit() const;
 
     /// Return one unit orthogonal vector of the current vector
     rpVector3D<T>  getOneUnitOrthogonalVector() const;
+
+    /// Return the invers vector ^ -1
+    rpVector3D<T> inverse() const;
 
     // Projection onto another vector
     rpVector3D<T>  projection(const rpVector3D<T>& o) const;
@@ -638,6 +642,24 @@ SIMD_INLINE rpVector3D<T> rpVector3D<T>::dot3(const rpVector3D<T>& v0, const rpV
      	return rpVector3D<T>(-y, x, 0.0) / SquareRoot(x*x + y*y);
      }
 
+   }
+
+
+
+   template<class T>
+   SIMD_INLINE rpVector3D<T> rpVector3D<T>::inverse() const
+   {
+       // Get the square length of the vector
+       T lengthSquare = length2();
+
+       assert (lengthSquare > MACHINE_EPSILON);
+
+       // Compute and return the inverse v^-1
+       T _x = T(1.0 / x);
+       T _y = T(1.0 / y);
+       T _z = T(1.0 / z);
+
+        return rpVector3D<T>(_x,_y,_z);
    }
 
 

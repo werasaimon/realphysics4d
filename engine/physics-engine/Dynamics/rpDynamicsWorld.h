@@ -158,7 +158,10 @@ class rpDynamicsWorld : public rpCollisionWorld
 	void integrateGravity( scalar timeStep );
 
 	/// Integrate the positions and orientations of rigid bodies.
-	void integrateBodiesVelocities( scalar timeStep );
+    void integrateBodiesVelocities(scalar timeStep  , ObserverSystem _observer );
+
+    //    //// Update metrices
+    //    void UpdateMetrices();
 
 	/// Update the postion/orientation of the bodies
 	void updateBodiesState(  scalar timeStep );
@@ -189,7 +192,7 @@ class rpDynamicsWorld : public rpCollisionWorld
 	//***************************************************//
 
 	 /// Create a rigid body into the physics world.
-	rpRigidPhysicsBody* createRigidBody(const Transform& transform);
+    rpRigidPhysicsBody* createRigidBody(const Transform& transform);
 
 
     /// Destroy a rigid body and all the joints which it belongs
@@ -211,10 +214,10 @@ class rpDynamicsWorld : public rpCollisionWorld
 
 
     ///  Update Physics simulation - Real-Time ( Semi-AntiFixed timestep )
-    void update( scalar timeStep );
+    void update(scalar timeStep , ObserverSystem _observer );
 
     ///  Update Physics simulation - Real-Time ( Fixed timestep )
-    void updateFixedTime( scalar timeStep );
+    void updateFixedTime(scalar timeStep , ObserverSystem _observer);
 
     /// Get the number of iterations for the velocity constraint solver
     uint getNbIterationsVelocitySolver() const;

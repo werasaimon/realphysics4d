@@ -12,6 +12,7 @@
 #include  "rpLinearMtah.h"
 #include  "rpVector2D.h"
 #include  "rpVector3D.h"
+#include  "rpVector4D.h"
 #include  "rpMatrix2x2.h"
 #include  "rpMatrix3x3.h"
 #include  "rpMatrix4x4.h"
@@ -22,7 +23,6 @@
 #include  "rpGyroscopic.h"
 #include  "rpRelativityFunction.h"
 #include  "rpMinkowskiVector4.h"
-#include  "rpLorentzContraction.h"
 #include  "rpProjectPlane.h"
 
 
@@ -39,6 +39,7 @@ namespace real_physics
    typedef rpRay<scalar_type>                 Ray;
    typedef rpVector2D<scalar_type>            Vector2;
    typedef rpVector3D<scalar_type>            Vector3;
+   typedef rpVector4D<scalar_type>            Vector4;
    typedef rpMatrix2x2<scalar_type>           Matrix2x2;
    typedef rpMatrix3x3<scalar_type>           Matrix3x3;
    typedef rpMatrix4x4<scalar_type>           Matrix4x4;
@@ -47,7 +48,6 @@ namespace real_physics
    typedef rpTransformUtil<scalar_type>       TransformUtil;
    typedef rpGyroscopic<scalar_type>          Gyroscopic;
    typedef rpMinkowskiVector4<scalar_type>    MinkowskiVector4;
-   typedef rpLorentzContraction<scalar_type>  LorentzContraction;
 
 
 	const scalar DECIMAL_SMALLEST = -std::numeric_limits<scalar>::max();

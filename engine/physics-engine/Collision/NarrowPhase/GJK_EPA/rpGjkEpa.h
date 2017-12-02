@@ -157,13 +157,13 @@ struct	MinkowskiDiff
 
     SIMD_INLINE Vector3		Support0( const Vector3& dir ) const
     {
-        return m_world0 * m_convexAPtr->getLocalSupportPointWithMargin( m_world0.getOrientation().getInverse() * dir );
+        return m_world0 * m_convexAPtr->getLocalSupportPointWithMargin( m_world0.getBasis().getInverse() * dir );
     }
 
     SIMD_INLINE Vector3		Support1( const Vector3& dir ) const
     {
 
-       return  m_world1 * m_convexBPtr->getLocalSupportPointWithMargin( m_world1.getOrientation().getInverse() * dir );
+       return  m_world1 * m_convexBPtr->getLocalSupportPointWithMargin( m_world1.getBasis().getInverse() * dir );
     }
 
 

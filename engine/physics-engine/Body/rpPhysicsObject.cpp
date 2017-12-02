@@ -95,7 +95,7 @@ SIMD_INLINE void rpPhysicsObject::updateBroadPhaseStatee( const Vector3& _displa
     {
         // Recompute the world-space AABB of the collision shape
         rpAABB aabb;
-        shape->getCollisionShape()->computeAABB(aabb, mTransform , shape->getLocalToBodyTransform() , mRelativityMotion.getLorentzMatrix());
+        shape->getCollisionShape()->computeAABB(aabb, mTransform , shape->getLocalToBodyTransform());
 
 
         // Update the broad-phase state for the proxy collision shape

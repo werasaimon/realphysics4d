@@ -72,42 +72,9 @@ template<class T> class rpTransformUtil
 	}
 
 
-	static rpTransform<T> integrateTransform2( const rpTransform<T>& curTrans , const rpVector3D<T>& linvel, const rpVector3D<T>& angvel, T timeStep)
-	{
-
-		//Exponential map
-		//google for "Practical Parameterization of Rotations Using the Exponential Map", F. Sebastian Grassia
-		rpVector3D<T> axis;
-        T fAngle = angvel.length();
-
-        //limit the angular motion
-        if (fAngle*timeStep > ANGULAR_MOTION_THRESHOLD)
-        {
-        	fAngle = ANGULAR_MOTION_THRESHOLD / timeStep;
-        }
-
-        if (fAngle < T(0.001))
-		{
-			// use Taylor's expansions of sync function
-			axis = angvel * (T(0.5) * timeStep -
-					        (timeStep * timeStep * timeStep) *
-                            (T(0.020833333333)) * fAngle * fAngle);
-		}
-		else
-		{
-			// sync(fAngle) = sin(c*fAngle)/t
-            axis = angvel * (Sin(T(0.5) * fAngle * timeStep) / fAngle);
-		}
 
 
-        rpQuaternion<T> dorn(axis, Cos(fAngle * timeStep * T(0.5)));
-		rpQuaternion<T> predictedOrn = dorn * curTrans.getOrientation();
-		predictedOrn.normalize();
 
-
-        return rpTransform<T>(curTrans.getPosition() , curTrans.getOrientation() );
-
-	}
 
 
 	static void integrateReletiviteLinear( rpMinkowskiVector4<T>& curPos , const rpVector3D<T>& linvel ,const T timeStep ,const T gammaInv )

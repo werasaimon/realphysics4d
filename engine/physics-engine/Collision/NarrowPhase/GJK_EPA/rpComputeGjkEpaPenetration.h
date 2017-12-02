@@ -117,8 +117,8 @@ int	  ComputeGjkEpaPenetrationSimplex(const ConvexTemplate& a,
     Vector3	normalInB(scalar(0.),scalar(0.),scalar(0.));
 
     Vector3 pointOnA,pointOnB;
-    Transform	localTransA = a.getWorldTransform();
-    Transform   localTransB = b.getWorldTransform();
+    Transform	 localTransA = a.getWorldTransform();
+    Transform    localTransB = b.getWorldTransform();
 
    // static_cast<const rpConvexShape*>(a.getCollisionShape());
 

@@ -11,6 +11,13 @@ namespace real_physics
 {
 
 
+
+
+
+
+
+
+
 //template<class T>
 //inline rpTransform<T>::rpTransform( const rpVector3D<T>& position, const rpMatrix3x3<T> orientation )
 //: mPosition(position) , mOrientation(rpQuaternion<T>(orientation))

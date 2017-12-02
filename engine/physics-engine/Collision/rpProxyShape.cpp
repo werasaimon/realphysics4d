@@ -28,7 +28,7 @@ namespace real_physics
    * @param mass Mass of the collision shape (in kilograms)
    */
   rpProxyShape::rpProxyShape( rpCollisionBody* body , rpCollisionShape* shape,
-		                      const Transform& transform, scalar mass)
+                              const Transform& transform, scalar mass)
    : mBody(body) , mCollisionShape(shape) ,
 	 mLocalToBodyTransform(transform), mMass(mass),
      mNext(NULL),

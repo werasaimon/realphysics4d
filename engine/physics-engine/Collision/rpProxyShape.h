@@ -40,7 +40,7 @@ namespace real_physics
           rpCollisionShape* mCollisionShape;
 
           /// Local-space to parent body-space transform (does not change over time)
-          Transform         mLocalToBodyTransform;
+          Transform        mLocalToBodyTransform;
 
           /// Mass (in kilogramms) of the corresponding collision shape
           scalar            mMass;
@@ -91,21 +91,15 @@ namespace real_physics
 
 
 
-          Vector3 getRelativisticTransformLorentzBoost( const Vector3& point ) const
-          {
-        	  Vector3 temp = (getLocalToBodyTransform() * point);
-        	  temp = mBody->mRelativityMotion.getLorentzMatrix() * (mBody->mTransform.getBasis() * temp);
-        	  return (temp + mBody->mTransform.getPosition());
-          }
 
-
+          /**
           Vector3 supportWorldTransformed(const Vector3 &direction ) const
           {
-        	  Matrix3x3 m = getWorldTransform().getBasis().getTranspose();
+              Matrix3x3 m = getWorldTransform().getBasis().getInverse();
 
-        	  Vector3    antiRotDirect = m * direction;
-        	  Vector3         spVertex = mCollisionShape->getLocalSupportPointWithMarginn(antiRotDirect);
-        	  return getRelativisticTransformLorentzBoost(  /*(getWorldTransform() */ spVertex );
+              Vector3    antiRotDirect = m * direction;
+              Vector3         spVertex = mCollisionShape->getLocalSupportPointWithMarginn(antiRotDirect);
+              return ( getWorldTransform() * spVertex );
           }
 
 
@@ -117,6 +111,7 @@ namespace real_physics
         	  min = s_p1.dot(xAxis);
         	  max = s_p0.dot(xAxis);
           }
+          /**/
 
 
 
@@ -131,7 +126,7 @@ namespace real_physics
 
         	  const scalar OFF_SET_COLLISION_CONTACT = scalar(0.02);
 
-        	  Matrix3x3 InverseRotate = getWorldTransform().getBasis().getTranspose();
+              Matrix3x3 InverseRotate = getWorldTransform().getBasis().getInverse();
         	  Vector3 axis = InverseRotate * xAxis;
 
         	  Vector3 n0, n1;
@@ -158,7 +153,7 @@ namespace real_physics
         		  /***************************************************************/
 
         		  Vector3 sp = mCollisionShape->getLocalSupportPointWithMarginn( auxAxis );
-        		  Vector3 spVertex =  getRelativisticTransformLorentzBoost( /* (getWorldTransform() */ sp);
+                  Vector3 spVertex =  ( getWorldTransform() * sp );
 
 
         		  /*-----------------------------------------------------*/
@@ -195,8 +190,7 @@ namespace real_physics
           // -------------------- Methods -------------------- //
 
           /// Constructor
-          rpProxyShape(rpCollisionBody* body , rpCollisionShape* shape ,
-        		       const Transform& transform, scalar mass=0 );
+          rpProxyShape(rpCollisionBody* body , rpCollisionShape* shape , const Transform& transform, scalar mass=0 );
 
           /// Destructor
           ~rpProxyShape();

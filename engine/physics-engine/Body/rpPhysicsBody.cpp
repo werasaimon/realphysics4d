@@ -12,7 +12,7 @@ namespace real_physics
 {
 
 
-rpPhysicsBody::rpPhysicsBody(const Transform& transform, rpCollisionManager *CollideWorld, bodyindex id)
+rpPhysicsBody::rpPhysicsBody(const Transform &transform, rpCollisionManager *CollideWorld, bodyindex id)
 :rpPhysicsObject(transform, CollideWorld, id) ,  mJointsList(NULL)
 {
 

@@ -101,7 +101,7 @@ void rpDynamicsWorld::destroy()
 }
 
 
-void rpDynamicsWorld::update(scalar timeStep)
+void rpDynamicsWorld::update(scalar timeStep , ObserverSystem _observer)
 {
     mTimer.setTimeStep(timeStep);
 
@@ -111,7 +111,7 @@ void rpDynamicsWorld::update(scalar timeStep)
 
      while( mTimer.isPossibleToTakeStep() )
      {
-         updateFixedTime(timeStep);
+         updateFixedTime(timeStep , _observer);
 
          // next step simulation
          mTimer.nextStep();
@@ -120,8 +120,10 @@ void rpDynamicsWorld::update(scalar timeStep)
 
 }
 
-void rpDynamicsWorld::updateFixedTime(scalar timeStep)
+void rpDynamicsWorld::updateFixedTime(scalar timeStep , ObserverSystem _observer )
 {
+    //    //Update metrices
+    //    UpdateMetrices();
 
     // Reset all the contact manifolds lists of each body
     resetContactManifoldListsOfBodies();
@@ -149,7 +151,7 @@ void rpDynamicsWorld::updateFixedTime(scalar timeStep)
     /****************************/
 
     // Integrate the position and orientation of each body
-    integrateBodiesVelocities(timeStep);
+    integrateBodiesVelocities(timeStep , _observer );
 
 
     // Sleeping for all bodies
@@ -308,16 +310,24 @@ void rpDynamicsWorld::integrateGravity(scalar timeStep)
 	}
 }
 
-void rpDynamicsWorld::integrateBodiesVelocities(scalar timeStep)
+void rpDynamicsWorld::integrateBodiesVelocities(scalar timeStep , ObserverSystem _observer )
 {
 
 	for( auto it = mPhysicsBodies.begin(); it != mPhysicsBodies.end(); ++it )
 	{
-		(*it)->Integrate(timeStep);
+        (*it)->Integrate(timeStep , _observer);
 
 	}
 
 }
+
+//void rpDynamicsWorld::UpdateMetrices()
+//{
+//    for( auto it = mPhysicsBodies.begin(); it != mPhysicsBodies.end(); ++it )
+//    {
+//        (*it)->UpdateMatrices();
+//    }
+//}
 
 
 void rpDynamicsWorld::updateBodiesState(scalar timeStep)
@@ -622,7 +632,7 @@ void rpDynamicsWorld::addChekCollisionPair( rpContactManifold* manifold )
 }
 
 
-rpRigidPhysicsBody* rpDynamicsWorld::createRigidBody(const Transform& transform)
+rpRigidPhysicsBody* rpDynamicsWorld::createRigidBody(const Transform &transform)
 {
 
 	// Compute the body ID

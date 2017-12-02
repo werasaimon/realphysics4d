@@ -127,7 +127,7 @@ template<class T> class  rpMinkowskiVector4
 	/// Return the square of the length of the vector
 	T lengthSquare() const
 	{
-		 return ((t * t) - (x*x + y*y + z*z));
+         return ((t * t) - (x*x + y*y + z*z));
 	}
 
 
@@ -181,18 +181,18 @@ template<class T> class  rpMinkowskiVector4
 
 	friend rpMinkowskiVector4<T> operator + (const rpMinkowskiVector4<T>& vector1, const rpMinkowskiVector4<T>& vector2)
 	{
-		return rpMinkowskiVector4<T>(vector1.t + vector2.t,
-				                     vector1.x + vector2.x,
-				                     vector1.y + vector2.y,
-				                     vector1.z + vector2.z);
+        return rpMinkowskiVector4<T>(vector1.t + (vector2.t * sqrt( (vector2.x * vector2.x) + (vector2.y * vector2.y) + (vector2.z * vector2.z)) ),
+                                     vector1.x + (vector2.x * vector2.t),
+                                     vector1.y + (vector2.y * vector2.t),
+                                     vector1.z + (vector2.z * vector2.t));
 	}
 
 	friend rpMinkowskiVector4<T> operator - (const rpMinkowskiVector4<T>& vector1, const rpMinkowskiVector4<T>& vector2)
 	{
-		return rpMinkowskiVector4<T>(vector1.t - vector2.t,
-				                     vector1.x - vector2.x,
-				                     vector1.y - vector2.y,
-				                     vector1.z - vector2.z);
+        return rpMinkowskiVector4<T>(vector1.t - (vector2.t * sqrt( (vector2.x * vector2.x) + (vector2.y * vector2.y) + (vector2.z * vector2.z)) ),
+                                     vector1.x - (vector2.x * vector2.t),
+                                     vector1.y - (vector2.y * vector2.t),
+                                     vector1.z - (vector2.z * vector2.t));
 	}
 
 	friend rpMinkowskiVector4<T> operator -(const rpMinkowskiVector4<T>& vector)
@@ -263,20 +263,20 @@ template<class T> class  rpMinkowskiVector4
 template<class T>
 rpMinkowskiVector4<T> &rpMinkowskiVector4<T>::operator+=(const rpMinkowskiVector4<T> &vector)
 {
-    x += vector.x;
-    y += vector.y;
-    z += vector.z;
-    t += vector.t;
+    t += (vector.t * sqrt((vector.x * vector.x)+(vector.y * vector.y)+(vector.z * vector.z)) );
+    x += (vector.x * vector.t);
+    y += (vector.y * vector.t);
+    z += (vector.z * vector.t);
     return *this;
 }
 
 template<class T>
 rpMinkowskiVector4<T> &rpMinkowskiVector4<T>::operator-=(const rpMinkowskiVector4<T> &vector)
 {
-    x -= vector.x;
-    y -= vector.y;
-    z -= vector.z;
-    t -= vector.t;
+    t -= (vector.t * sqrt( (vector.x*vector.x)+(vector.y*vector.y)+(vector.z*vector.z)) );
+    x -= (vector.x * vector.t);
+    y -= (vector.y * vector.t);
+    z -= (vector.z * vector.t);
     return *this;
 }
 

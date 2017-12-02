@@ -16,7 +16,7 @@ namespace real_physics
 SIMD_INLINE void rpMPRAlgorithm::supportTransformed(const rpCollisionShapeInfo *s, const Vector3 &dir, Vector3 &result) const
 {
     const Transform &t = s->getWorldTransform();
-    result =  t * s->getLocalSupportPointWithMargin( t.getOrientation().getInverse() * dir );
+    result =  t * s->getLocalSupportPointWithMargin( t.getBasis().getInverse() * dir );
 }
 
 
