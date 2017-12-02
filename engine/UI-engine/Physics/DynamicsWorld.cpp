@@ -65,11 +65,11 @@ namespace utility_engine
 
 
     /// Update real-time physics simulate
-    void DynamicsWorld::update( float timeStep )
+    void DynamicsWorld::update(float timeStep )
     {
         assert( mDynamicsWorld != NULL );
 
-        mDynamicsWorld->update( timeStep );
+        mDynamicsWorld->update( timeStep ,  mObserver );
 
         for(auto it = mBodies.begin(); it != mBodies.end(); ++it )
         {
@@ -79,11 +79,11 @@ namespace utility_engine
     }
 
     /// Update real-time physics simulate (Fixed TimeStep)
-    void DynamicsWorld::updateFixedStep(float timeStep)
+    void DynamicsWorld::updateFixedStep(float timeStep  )
     {
        assert( mDynamicsWorld != NULL );
 
-       mDynamicsWorld->updateFixedTime(timeStep);
+       mDynamicsWorld->updateFixedTime( timeStep , mObserver );
 
        for(auto it = mBodies.begin(); it != mBodies.end(); ++it )
        {
@@ -113,9 +113,15 @@ namespace utility_engine
 
     }
 
+
     real_physics::rpDynamicsWorld *DynamicsWorld::getDynamicsWorld() const
     {
         return mDynamicsWorld;
+    }
+
+    void DynamicsWorld::setObserver(const real_physics::ObserverSystem &observer)
+    {
+        mObserver = observer;
     }
 
 

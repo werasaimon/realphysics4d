@@ -29,6 +29,7 @@ namespace utility_engine
             std::set<UltimatePhysicsBody*>    mBodies;
             std::set<UltimateJoint*>          mJoints;
 
+            real_physics::ObserverSystem      mObserver;
 
             //---------------------- Constructor ------------------------//
             /// Private copy-constructor
@@ -51,6 +52,12 @@ namespace utility_engine
 
 
 
+            //------------------- value -------------------//
+            real_physics::rpDynamicsWorld *getDynamicsWorld() const;
+
+            void setObserver(const real_physics::ObserverSystem &observer);
+
+
             //------------------------- Method --------------------------//
 
             /// Create a rigid body into the physics world.
@@ -67,17 +74,15 @@ namespace utility_engine
             void destroyJoint(UltimateJoint *joint);
 
             /// Update real-time physics simulate
-            void update( float timeStep );
+            void update(float timeStep );
 
             /// Update real-time physics simulate (Fixed-TimeStep)
-            void updateFixedStep( float timeStep );
+            void updateFixedStep(float timeStep );
 
             /// Realase and a delete memory
             void destroy();
 
 
-            //------------------- value -------------------//
-            real_physics::rpDynamicsWorld *getDynamicsWorld() const;
     };
 
 

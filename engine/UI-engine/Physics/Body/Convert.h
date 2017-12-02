@@ -27,6 +27,8 @@ namespace utility_engine
         return matrix.getTranspose();
     }
 
+
+
     static std::vector<real_physics::Vector3> MeshConvertToVertexes( const Mesh *mesh )
     {
           std::vector<real_physics::Vector3> vecrtices;
