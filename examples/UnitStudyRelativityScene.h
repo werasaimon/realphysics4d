@@ -30,6 +30,13 @@ class UnitStudyRelativityScene : public UnitScene
      ////////////
      Mesh *mMesh;
 
+     real_physics::Transform          mTransport;
+
+     real_physics::Transform          mLocalTransform0;
+     real_physics::Transform          mLocalTransform1;
+
+     real_physics::rpCollisionShape   *mCollideShape;
+
     public:
 
         UnitStudyRelativityScene();

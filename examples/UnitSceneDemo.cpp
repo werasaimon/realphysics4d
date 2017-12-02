@@ -253,6 +253,9 @@ void UnitSceneDemo::update()
 {
 
 
+    real_physics::ObserverSystem _observer ;
+
+    mDynamicsWorld->setObserver(_observer);
     mDynamicsWorld->update( mTimeStep );
 
     for (int i = 0; i < mPhysicsBodies.size(); ++i)

@@ -167,6 +167,10 @@ void UnitSceneGeometry::update()
 
     if( world != NULL )
     {
+
+        real_physics::ObserverSystem _observer;
+
+        world->setObserver(_observer);
         world->updateFixedStep( (1.0/60.0) );
     }
 
