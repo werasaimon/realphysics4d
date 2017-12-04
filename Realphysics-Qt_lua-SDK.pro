@@ -200,10 +200,6 @@ SOURCES += main.cpp\
     engine/UI-engine/Open_GL_/GLUtilityGeometry.cpp \
     engine/physics-engine/Body/Material/rpPhysicsMaterial.cpp \
     engine/physics-engine/Body/rpBody.cpp \
-    engine/physics-engine/Body/rpCollisionBody.cpp \
-    engine/physics-engine/Body/rpPhysicsBody.cpp \
-    engine/physics-engine/Body/rpPhysicsObject.cpp \
-    engine/physics-engine/Body/rpRigidPhysicsBody.cpp \
     engine/physics-engine/Dynamics/rpIsland.cpp \
     engine/physics-engine/Memory/MemoryAllocator.cpp \
     engine/physics-engine/Dynamics/Solver/rpContactSolverSequentialImpulseObject.cpp \
@@ -213,7 +209,11 @@ SOURCES += main.cpp\
     engine/physics-engine/Collision/Manifold/rpContactGeneration.cpp \
     engine/physics-engine/Dynamics/Joint/JointAngle/rpAngleAxisJoint.cpp \
     engine/physics-engine/LinearMaths/rpVector4D.cpp \
-    examples/UnitStudyRelativityScene.cpp
+    examples/UnitStudyRelativityScene.cpp \
+    engine/physics-engine/Body/Collision/rpCollisionBody.cpp \
+    engine/physics-engine/Body/Dynamics/rpPhysicsRigidBody.cpp \
+    engine/physics-engine/Body/Dynamics/rpPhysicsObject.cpp \
+    engine/physics-engine/Body/Dynamics/rpPhysicsBody.cpp
 
 HEADERS  += widget.h \
     glwidget.h \
@@ -459,10 +459,6 @@ HEADERS  += widget.h \
     engine/engine.h \
     engine/physics-engine/Body/Material/rpPhysicsMaterial.h \
     engine/physics-engine/Body/rpBody.h \
-    engine/physics-engine/Body/rpCollisionBody.h \
-    engine/physics-engine/Body/rpPhysicsBody.h \
-    engine/physics-engine/Body/rpPhysicsObject.h \
-    engine/physics-engine/Body/rpRigidPhysicsBody.h \
     engine/physics-engine/Dynamics/rpIsland.h \
     engine/physics-engine/Memory/MemoryAllocator.h \
     engine/physics-engine/Geometry/QuickClipping/rpQuickClippingPolygons.h \
@@ -473,7 +469,11 @@ HEADERS  += widget.h \
     engine/physics-engine/Collision/Manifold/rpContactGeneration.h \
     engine/physics-engine/Dynamics/Joint/JointAngle/rpAngleAxisJoint.h \
     engine/physics-engine/LinearMaths/rpVector4D.h \
-    examples/UnitStudyRelativityScene.h
+    examples/UnitStudyRelativityScene.h \
+    engine/physics-engine/Body/Collision/rpCollisionBody.h \
+    engine/physics-engine/Body/Dynamics/rpPhysicsRigidBody.h \
+    engine/physics-engine/Body/Dynamics/rpPhysicsObject.h \
+    engine/physics-engine/Body/Dynamics/rpPhysicsBody.h
 
 FORMS    += widget.ui \
     formrunscript.ui
