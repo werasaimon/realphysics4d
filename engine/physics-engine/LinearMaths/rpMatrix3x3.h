@@ -218,6 +218,7 @@ template<class T> class rpMatrix3x3
       static rpMatrix3x3<T> MatrixTensorProduct( const rpVector3D<T>& vector1 , const rpVector3D<T>& vector2 );
 
 
+      /// Return scale matrix
       static rpMatrix3x3<T> MatrixScale( const rpVector3D<T> _scale )
       {
          return  rpMatrix3x3<T>(_scale.x,0,0,
@@ -226,6 +227,7 @@ template<class T> class rpMatrix3x3
       }
 
 
+       /// Return lorentz demission distance world
       static rpMatrix3x3<T> LoretzBoostScale( const rpVector3D<T> dir , const T &v )
       {
           float c = LIGHT_MAX_VELOCITY_C;

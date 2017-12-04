@@ -24,8 +24,8 @@ rpFixedJoint:: rpFixedJoint(const rpFixedJointInfo& jointInfo)
 	isSplitActive = true;
 	isWarmStartingActive = true;
 
-	Body1 = static_cast<rpRigidPhysicsBody*>(mBody1);
-	Body2 = static_cast<rpRigidPhysicsBody*>(mBody2);
+    Body1 = static_cast<rpPhysicsRigidBody*>(mBody1);
+    Body2 = static_cast<rpPhysicsRigidBody*>(mBody2);
 
     // Compute the local-space anchor point for each body
     const Transform& transform1 = mBody1->getTransform();

@@ -1,22 +1,22 @@
 /*
- * rpRigidPhysicsBody.cpp
+ * rpPhysicsRigidBody.cpp
  *
  *  Created on: 14 дек. 2016 г.
  *      Author: wera
  */
 
-#include "rpRigidPhysicsBody.h"
+#include "rpPhysicsRigidBody.h"
 #include "rpPhysicsObject.h"
 
 #include <stddef.h>
 #include <cassert>
 #include <iostream>
 
-#include "../Collision/rpProxyShape.h"
-#include "../Collision/Shapes/rpCollisionShape.h"
-#include "../LinearMaths/mathematics.h"
-#include "../LinearMaths/rpLinearMtah.h"
-#include "../config.h"
+#include "../../Collision/rpProxyShape.h"
+#include "../../Collision/Shapes/rpCollisionShape.h"
+#include "../../LinearMaths/mathematics.h"
+#include "../../LinearMaths/rpLinearMtah.h"
+#include "../../config.h"
 
 
 
@@ -55,7 +55,7 @@ namespace
 }
 
 
-rpRigidPhysicsBody::rpRigidPhysicsBody(const Transform &transform, rpCollisionManager *CollideWorld, bodyindex id)
+rpPhysicsRigidBody::rpPhysicsRigidBody(const Transform &transform, rpCollisionManager *CollideWorld, bodyindex id)
 :rpPhysicsBody(transform, CollideWorld, id),
  mInitMass(scalar(1.0)),
  mCenterOfMassLocal(0, 0, 0),
@@ -92,7 +92,7 @@ rpRigidPhysicsBody::rpRigidPhysicsBody(const Transform &transform, rpCollisionMa
 ///********************************************************
 /// Information is taken from the book : http://www.gptelecom.ru/Articles/tensor.pdf
 ///********************************************************/
-SIMD_INLINE void rpRigidPhysicsBody::Integrate( scalar _dt , ObserverSystem _observer )
+SIMD_INLINE void rpPhysicsRigidBody::Integrate( scalar _dt , ObserverSystem _observer )
 {
 
 
@@ -201,11 +201,11 @@ SIMD_INLINE void rpRigidPhysicsBody::Integrate( scalar _dt , ObserverSystem _obs
 
     ///Translation Object
     Transform resulTransform = TransformUtil::integrateTransform(mWorldTransform , mLinearVelocity       , mAngularVelocity      , _dt  );
-               resulTransform = TransformUtil::integrateTransform(resulTransform  , mSplitLinearVelocity ,  mSplitAngularVelocity , _dt  );
+              resulTransform = TransformUtil::integrateTransform(resulTransform  , mSplitLinearVelocity ,  mSplitAngularVelocity , _dt  );
 
 
 
-    /// Lorentz boost matrix demission world position 3x3
+    /// Lorentz boost matrix demission world position (distance demission  K => `K)
     mTransform.setPosition(mWorldTransform.getScale() * mTransform.getPosition());
 
 
@@ -234,7 +234,7 @@ SIMD_INLINE void rpRigidPhysicsBody::Integrate( scalar _dt , ObserverSystem _obs
 /**
  * @param proxyShape The pointer of the proxy shape you want to remove
  */
-SIMD_INLINE void rpRigidPhysicsBody::removeCollisionShape(const rpProxyShape *proxyShape)
+SIMD_INLINE void rpPhysicsRigidBody::removeCollisionShape(const rpProxyShape *proxyShape)
 {
     // Remove the collision shape
     rpCollisionBody::removeCollisionShapee(proxyShape);
@@ -244,7 +244,7 @@ SIMD_INLINE void rpRigidPhysicsBody::removeCollisionShape(const rpProxyShape *pr
 }
 
 
-SIMD_INLINE void real_physics::rpRigidPhysicsBody::applyGravity(const Vector3& gravity)
+SIMD_INLINE void real_physics::rpPhysicsRigidBody::applyGravity(const Vector3& gravity)
 {
 	if( mMassInverse > 0 && !mIsSleeping && getType() == BodyType::DYNAMIC)
 	{
@@ -254,7 +254,7 @@ SIMD_INLINE void real_physics::rpRigidPhysicsBody::applyGravity(const Vector3& g
 
 
 
-SIMD_INLINE void rpRigidPhysicsBody::updateBroadPhaseState() const
+SIMD_INLINE void rpPhysicsRigidBody::updateBroadPhaseState() const
 {
     rpPhysicsObject::updateBroadPhaseStatee( mStepTime * mLinearVelocity );
 }
@@ -263,7 +263,7 @@ SIMD_INLINE void rpRigidPhysicsBody::updateBroadPhaseState() const
 
 
 
-SIMD_INLINE void rpRigidPhysicsBody::setType(BodyType type)
+SIMD_INLINE void rpPhysicsRigidBody::setType(BodyType type)
 {
 
 	//if (mType == type) return;
@@ -318,7 +318,7 @@ SIMD_INLINE void rpRigidPhysicsBody::setType(BodyType type)
 
 }
 
-SIMD_INLINE void rpRigidPhysicsBody::setIsSleeping(bool isSleeping)
+SIMD_INLINE void rpPhysicsRigidBody::setIsSleeping(bool isSleeping)
 {
     if (isSleeping)
     {
@@ -336,7 +336,7 @@ SIMD_INLINE void rpRigidPhysicsBody::setIsSleeping(bool isSleeping)
 
 
 
-SIMD_INLINE void rpRigidPhysicsBody::recomputeMassInformation()
+SIMD_INLINE void rpPhysicsRigidBody::recomputeMassInformation()
 {
 	mInitMass = scalar(0.0);
 	mMassInverse = scalar(0.0);
@@ -413,7 +413,7 @@ SIMD_INLINE void rpRigidPhysicsBody::recomputeMassInformation()
 
 
 
-SIMD_INLINE void rpRigidPhysicsBody::UpdateMatrices()
+SIMD_INLINE void rpPhysicsRigidBody::UpdateMatrices()
 {
     mInertiaTensorWorldInverse = mTransform.getBasis() * mInertiaTensorLocalInverse * mTransform.getBasis().getTranspose();
 
@@ -426,7 +426,7 @@ SIMD_INLINE void rpRigidPhysicsBody::UpdateMatrices()
 
 //************************** apply Impulse ***********************//
 
-SIMD_INLINE void rpRigidPhysicsBody::applySplitImpulse(const Vector3& impuls, const Vector3& point )
+SIMD_INLINE void rpPhysicsRigidBody::applySplitImpulse(const Vector3& impuls, const Vector3& point )
 {
 	// If it is not a dynamic body, we do nothing
 	if (mType != DYNAMIC) return;
@@ -441,7 +441,7 @@ SIMD_INLINE void rpRigidPhysicsBody::applySplitImpulse(const Vector3& impuls, co
 
 
 //************************** apply Impulse ***********************//
-SIMD_INLINE void rpRigidPhysicsBody::applySplitImpulseAngular(const Vector3&  impuls )
+SIMD_INLINE void rpPhysicsRigidBody::applySplitImpulseAngular(const Vector3&  impuls )
 {
 	// If it is not a dynamic body, we do nothing
 	if (mType != DYNAMIC) return;
@@ -455,7 +455,7 @@ SIMD_INLINE void rpRigidPhysicsBody::applySplitImpulseAngular(const Vector3&  im
 
 
 //************************** apply Impulse ***********************//
-SIMD_INLINE  void rpRigidPhysicsBody::applySplitImpulseLinear(const Vector3& impuls)
+SIMD_INLINE  void rpPhysicsRigidBody::applySplitImpulseLinear(const Vector3& impuls)
 {
 	// If it is not a dynamic body, we do nothing
 	if (mType != DYNAMIC) return;
@@ -472,7 +472,7 @@ SIMD_INLINE  void rpRigidPhysicsBody::applySplitImpulseLinear(const Vector3& imp
 /**************************************************************/
 
 //************************** apply Impulse ***********************//
-SIMD_INLINE void rpRigidPhysicsBody::applyImpulse(const Vector3& impuls , const Vector3& point)
+SIMD_INLINE void rpPhysicsRigidBody::applyImpulse(const Vector3& impuls , const Vector3& point)
 {
 	// If it is not a dynamic body, we do nothing
 	if (mType != DYNAMIC) return;
@@ -487,7 +487,7 @@ SIMD_INLINE void rpRigidPhysicsBody::applyImpulse(const Vector3& impuls , const 
 
 
 //************************** apply Impulse ***********************//
-SIMD_INLINE void rpRigidPhysicsBody::applyImpulseAngular(const Vector3&  impuls )
+SIMD_INLINE void rpPhysicsRigidBody::applyImpulseAngular(const Vector3&  impuls )
 {
 	// If it is not a dynamic body, we do nothing
 	if (mType != DYNAMIC) return;
@@ -501,7 +501,7 @@ SIMD_INLINE void rpRigidPhysicsBody::applyImpulseAngular(const Vector3&  impuls 
 
 
 //************************** apply Impulse ***********************//
-SIMD_INLINE  void rpRigidPhysicsBody::applyImpulseLinear( const Vector3& impuls )
+SIMD_INLINE  void rpPhysicsRigidBody::applyImpulseLinear( const Vector3& impuls )
 {
 
 	// If it is not a dynamic body, we do nothing
@@ -515,7 +515,7 @@ SIMD_INLINE  void rpRigidPhysicsBody::applyImpulseLinear( const Vector3& impuls 
 }
 
 
-SIMD_INLINE void rpRigidPhysicsBody::applyForce(const Vector3& force, const Vector3& point)
+SIMD_INLINE void rpPhysicsRigidBody::applyForce(const Vector3& force, const Vector3& point)
 {
 	// If it is not a dynamic body, we do nothing
 	if (mType != DYNAMIC) return;
@@ -530,7 +530,7 @@ SIMD_INLINE void rpRigidPhysicsBody::applyForce(const Vector3& force, const Vect
 }
 
 
-SIMD_INLINE void rpRigidPhysicsBody::applyTorque(const Vector3& torque)
+SIMD_INLINE void rpPhysicsRigidBody::applyTorque(const Vector3& torque)
 {
 	// If it is not a dynamic body, we do nothing
 	if (mType != DYNAMIC) return;
@@ -544,7 +544,7 @@ SIMD_INLINE void rpRigidPhysicsBody::applyTorque(const Vector3& torque)
 }
 
 
-SIMD_INLINE void rpRigidPhysicsBody::applyForceToCenterOfMass(const Vector3& force)
+SIMD_INLINE void rpPhysicsRigidBody::applyForceToCenterOfMass(const Vector3& force)
 {
 	// If it is not a dynamic body, we do nothing
 	if (mType != DYNAMIC) return;
@@ -559,12 +559,12 @@ SIMD_INLINE void rpRigidPhysicsBody::applyForceToCenterOfMass(const Vector3& for
 
 }
 
-void rpRigidPhysicsBody::setLinearVelocity(const Vector3 &linearVelocity)
+void rpPhysicsRigidBody::setLinearVelocity(const Vector3 &linearVelocity)
 {
     mLinearVelocity = linearVelocity;
 }
 
-void rpRigidPhysicsBody::setAngularVelocity(const Vector3 &angularVelocity)
+void rpPhysicsRigidBody::setAngularVelocity(const Vector3 &angularVelocity)
 {
     mAngularVelocity = angularVelocity;
 }

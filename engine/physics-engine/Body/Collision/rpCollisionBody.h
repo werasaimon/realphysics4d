@@ -8,10 +8,10 @@
 #ifndef SOURCE_ENGIE_COLLISION_BODY_RPCOLLISIONBODY_H_
 #define SOURCE_ENGIE_COLLISION_BODY_RPCOLLISIONBODY_H_
 
-#include "../LinearMaths/mathematics.h"
-#include "../LinearMaths/rpQuaternion.h"
-#include "../Memory/memory.h"
-#include "rpBody.h"
+#include "../../LinearMaths/mathematics.h"
+#include "../../LinearMaths/rpQuaternion.h"
+#include "../../Memory/memory.h"
+#include "../rpBody.h"
 
 
 

@@ -8,8 +8,8 @@
 #ifndef SOURCE_ENGIE_KINEMATICPHYSICS_PHYSICS_H_
 #define SOURCE_ENGIE_KINEMATICPHYSICS_PHYSICS_H_
 
-#include "../Body/rpPhysicsBody.h"
-#include "../Body/rpRigidPhysicsBody.h"
+#include "../Body/Dynamics/rpPhysicsBody.h"
+#include "../Body/Dynamics/rpPhysicsRigidBody.h"
 #include "../Dynamics/rpDynamicsWorld.h"
 
 #include "../Body/Material/rpPhysicsMaterial.h"

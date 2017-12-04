@@ -25,9 +25,9 @@
 #include "rpRaycastInfo.h"
 
 
-#include "../Body/rpRigidPhysicsBody.h"
 #include "../Body/rpBody.h"
-#include "../Body/rpCollisionBody.h"
+#include "../Body/Dynamics/rpPhysicsRigidBody.h"
+#include "../Body/Collision/rpCollisionBody.h"
 
 
 using namespace std;

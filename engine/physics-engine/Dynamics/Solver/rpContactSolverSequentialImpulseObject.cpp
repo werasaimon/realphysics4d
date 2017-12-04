@@ -19,8 +19,8 @@ const scalar rpContactSolverSequentialImpulseObject::SLOP= scalar(0.01);
 
 
 
-rpContactSolverSequentialImpulseObject::rpContactSolverSequentialImpulseObject( rpRigidPhysicsBody* body1 ,
-                                                                                rpRigidPhysicsBody* body2)
+rpContactSolverSequentialImpulseObject::rpContactSolverSequentialImpulseObject(rpPhysicsRigidBody *body1 ,
+                                                                                rpPhysicsRigidBody *body2)
 :mBody1(body1), mBody2(body2),
  mIsWarmStartingActive(true),
  mIsSplitImpulseActive(true),
@@ -90,8 +90,8 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::initializeForIsland(sca
     //-------------------------------------------------------//
 
 
-    rpRigidPhysicsBody*  body1 = (rpRigidPhysicsBody* )(mBody1);
-    rpRigidPhysicsBody*  body2 = (rpRigidPhysicsBody* )(mBody2);
+    rpPhysicsRigidBody*  body1 = (rpPhysicsRigidBody* )(mBody1);
+    rpPhysicsRigidBody*  body2 = (rpPhysicsRigidBody* )(mBody2);
 
 
     mTimeStep = dt;
@@ -222,8 +222,8 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::initializeContactConstr
 {
 
 
-    rpRigidPhysicsBody*  body1 = (rpRigidPhysicsBody* )(mBody1);
-    rpRigidPhysicsBody*  body2 = (rpRigidPhysicsBody* )(mBody2);
+    rpPhysicsRigidBody*  body1 = (rpPhysicsRigidBody* )(mBody1);
+    rpPhysicsRigidBody*  body2 = (rpPhysicsRigidBody* )(mBody2);
 
 
     ContactManifoldSolver* manifold = mContactConstraints;
@@ -406,8 +406,8 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::warmStart()
      //-------------------------------------------------------//
 
 
-        rpRigidPhysicsBody*  body1 = (rpRigidPhysicsBody* )(mBody1);
-        rpRigidPhysicsBody*  body2 = (rpRigidPhysicsBody* )(mBody2);
+        rpPhysicsRigidBody*  body1 = (rpPhysicsRigidBody* )(mBody1);
+        rpPhysicsRigidBody*  body2 = (rpPhysicsRigidBody* )(mBody2);
 
 
        atLeastOneRestingContactPoint = false;
@@ -635,8 +635,8 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::solveVelocityConstraint
     //-------------------------------------------------------//
 
 
-    rpRigidPhysicsBody*  body1 = (rpRigidPhysicsBody* )(mBody1);
-    rpRigidPhysicsBody*  body2 = (rpRigidPhysicsBody* )(mBody2);
+    rpPhysicsRigidBody*  body1 = (rpPhysicsRigidBody* )(mBody1);
+    rpPhysicsRigidBody*  body2 = (rpPhysicsRigidBody* )(mBody2);
 
 
     ContactManifoldSolver* contactManifold = mContactConstraints;
@@ -950,8 +950,8 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::solvePositionConstraint
     //-------------------------------------------------------//
 
 
-    rpRigidPhysicsBody*  body1 = (rpRigidPhysicsBody* )(mBody1);
-    rpRigidPhysicsBody*  body2 = (rpRigidPhysicsBody* )(mBody2);
+    rpPhysicsRigidBody*  body1 = (rpPhysicsRigidBody* )(mBody1);
+    rpPhysicsRigidBody*  body2 = (rpPhysicsRigidBody* )(mBody2);
 
 
     ContactManifoldSolver* contactManifold = mContactConstraints;
@@ -1094,8 +1094,8 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::storeImpulses()
 
 
 /**********************************************************************************************/
-SIMD_INLINE scalar rpContactSolverSequentialImpulseObject::computeMixedRestitutionFactor( rpRigidPhysicsBody*  body1 ,
-                                                                                          rpRigidPhysicsBody*  body2) const
+SIMD_INLINE scalar rpContactSolverSequentialImpulseObject::computeMixedRestitutionFactor( rpPhysicsRigidBody*  body1 ,
+                                                                                          rpPhysicsRigidBody*  body2) const
 {
     scalar restitution1 = body1->getMaterial().getBounciness();
     scalar restitution2 = body2->getMaterial().getBounciness();
@@ -1104,16 +1104,16 @@ SIMD_INLINE scalar rpContactSolverSequentialImpulseObject::computeMixedRestituti
     return (restitution1 > restitution2) ? restitution1 : restitution2;
 }
 
-SIMD_INLINE scalar rpContactSolverSequentialImpulseObject::computeMixedFrictionCoefficient( rpRigidPhysicsBody*  body1 ,
-                                                                                            rpRigidPhysicsBody*  body2) const
+SIMD_INLINE scalar rpContactSolverSequentialImpulseObject::computeMixedFrictionCoefficient( rpPhysicsRigidBody*  body1 ,
+                                                                                            rpPhysicsRigidBody*  body2) const
 {
     // Use the geometric mean to compute the mixed friction coefficient
     return SquareRoot(body1->getMaterial().getFrictionCoefficient() *
                       body2->getMaterial().getFrictionCoefficient());
 }
 
-SIMD_INLINE scalar rpContactSolverSequentialImpulseObject::computeMixedRollingResistance( rpRigidPhysicsBody*  body1 ,
-                                                                                          rpRigidPhysicsBody*  body2) const
+SIMD_INLINE scalar rpContactSolverSequentialImpulseObject::computeMixedRollingResistance( rpPhysicsRigidBody*  body1 ,
+                                                                                          rpPhysicsRigidBody*  body2) const
 {
     return scalar(0.5f) * (body1->getMaterial().getRollingResistance() +
                            body2->getMaterial().getRollingResistance());

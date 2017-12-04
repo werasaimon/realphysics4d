@@ -27,8 +27,8 @@ rpBallAndSocketJoint::rpBallAndSocketJoint(const rpBallAndSocketJointInfo& joint
 
 
 	/// Pair Body to collision solver
-	Body1 = static_cast<rpRigidPhysicsBody*>(mBody1);
-	Body2 = static_cast<rpRigidPhysicsBody*>(mBody2);
+    Body1 = static_cast<rpPhysicsRigidBody*>(mBody1);
+    Body2 = static_cast<rpPhysicsRigidBody*>(mBody2);
 
 
     // Compute the local-space anchor point the constraint error

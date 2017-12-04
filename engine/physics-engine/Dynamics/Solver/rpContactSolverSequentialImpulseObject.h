@@ -12,7 +12,7 @@
 // Libraries
 #include "../../Collision/collision.h"
 #include "../../Dynamics/Solver/rpContactSolver.h"
-#include "../../Body/rpRigidPhysicsBody.h"
+#include "../../Body/Dynamics/rpPhysicsRigidBody.h"
 #include "../../config.h"
 
 
@@ -28,8 +28,8 @@ class rpContactSolverSequentialImpulseObject : public rpContactSolver //, public
     //------------------- Attributes -----------------------//
 
     /// Pair body1  and body2 for collision to solver
-    rpRigidPhysicsBody *mBody1 = nullptr;
-    rpRigidPhysicsBody *mBody2 = nullptr;
+    rpPhysicsRigidBody *mBody1 = nullptr;
+    rpPhysicsRigidBody *mBody2 = nullptr;
 
 
     // Structure ContactPointSolver
@@ -285,16 +285,16 @@ class rpContactSolverSequentialImpulseObject : public rpContactSolver //, public
 
     /*********************************************************/
     /// Compute the collision restitution factor from the restitution factor of each body
-    scalar computeMixedRestitutionFactor(rpRigidPhysicsBody*  body1,
-                                         rpRigidPhysicsBody* body2) const;
+    scalar computeMixedRestitutionFactor(rpPhysicsRigidBody*  body1,
+                                         rpPhysicsRigidBody* body2) const;
 
     /// Compute the mixed friction coefficient from the friction coefficient of each body
-    scalar computeMixedFrictionCoefficient(rpRigidPhysicsBody*  body1,
-                                           rpRigidPhysicsBody*  body2) const;
+    scalar computeMixedFrictionCoefficient(rpPhysicsRigidBody*  body1,
+                                           rpPhysicsRigidBody*  body2) const;
 
     /// Compute th mixed rolling resistance factor between two bodies
-    scalar computeMixedRollingResistance(rpRigidPhysicsBody*  body1,
-                                         rpRigidPhysicsBody* body2) const;
+    scalar computeMixedRollingResistance(rpPhysicsRigidBody*  body1,
+                                         rpPhysicsRigidBody* body2) const;
 
 
     /// Compute the two unit orthogonal vectors "t1" and "t2" that span the tangential friction
@@ -317,8 +317,8 @@ class rpContactSolverSequentialImpulseObject : public rpContactSolver //, public
 
 
 public:
-             rpContactSolverSequentialImpulseObject( rpRigidPhysicsBody* body1 ,
-                                                     rpRigidPhysicsBody* body2 );
+             rpContactSolverSequentialImpulseObject( rpPhysicsRigidBody* body1 ,
+                                                     rpPhysicsRigidBody* body2 );
     virtual ~rpContactSolverSequentialImpulseObject();
 
 

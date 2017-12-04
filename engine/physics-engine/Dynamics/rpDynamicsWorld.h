@@ -15,9 +15,9 @@
 #include "../Memory/memory.h"
 
 #include "../Dynamics/Solver/rpContactSolverSequentialImpulseObject.h"
-#include "../Body/rpPhysicsBody.h"
-#include "../Body/rpPhysicsObject.h"
-#include "../Body/rpRigidPhysicsBody.h"
+#include "../Body/Dynamics/rpPhysicsBody.h"
+#include "../Body/Dynamics/rpPhysicsObject.h"
+#include "../Body/Dynamics/rpPhysicsRigidBody.h"
 
 #include "Joint/rpJoint.h"
 #include "Joint/rpBallAndSocketJoint.h"
@@ -192,7 +192,7 @@ class rpDynamicsWorld : public rpCollisionWorld
 	//***************************************************//
 
 	 /// Create a rigid body into the physics world.
-    rpRigidPhysicsBody* createRigidBody(const Transform& transform);
+    rpPhysicsRigidBody* createRigidBody(const Transform& transform);
 
 
     /// Destroy a rigid body and all the joints which it belongs

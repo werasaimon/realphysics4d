@@ -10,7 +10,7 @@
 
 
 #include "Shapes/rpCollisionShape.h"
-#include "../Body/rpCollisionBody.h"
+#include "../Body/Collision/rpCollisionBody.h"
 
 namespace real_physics
 {
@@ -262,7 +262,7 @@ namespace real_physics
 
           // -------------------- Friendship -------------------- //
           friend class rpPhysicsObject;
-          friend class rpRigidPhysicsBody;
+          friend class rpPhysicsRigidBody;
 
 
           friend class rpOverlappingPair;

@@ -12,7 +12,7 @@ rpIsland::rpIsland(uint nbMaxBodies, uint nbMaxContactManifolds, std::map< overl
       mContactSolvers(_ContactSolvers)
 {
 
-     mBodies                = new rpRigidPhysicsBody*[nbMaxBodies];
+     mBodies                = new rpPhysicsRigidBody*[nbMaxBodies];
      mContactManifolds      = new rpContactManifold*[nbMaxContactManifolds];
      mContactMapIndexesPair = new overlappingpairid[nbMaxContactManifolds];
 

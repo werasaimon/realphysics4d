@@ -63,8 +63,8 @@ class rpBallAndSocketJoint : public rpJoint
 	    bool isSplitActive;
 	    bool isWarmStartingActive = true;
 
-	    rpRigidPhysicsBody *Body1;
-	    rpRigidPhysicsBody *Body2;
+        rpPhysicsRigidBody *Body1;
+        rpPhysicsRigidBody *Body2;
 
         // -------------------- Constants -------------------- //
 

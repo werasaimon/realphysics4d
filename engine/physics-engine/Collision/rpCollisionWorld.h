@@ -15,7 +15,7 @@
 #include <list>
 #include <algorithm>
 #include "../LinearMaths/mathematics.h"
-#include "../Body/rpCollisionBody.h"
+#include "../Body/Collision/rpCollisionBody.h"
 #include "rpRaycastInfo.h"
 #include "rpOverlappingPair.h"
 #include "rpCollisionManager.h"

@@ -143,8 +143,8 @@ class rpHingeJoint : public rpJoint
 	bool isWarmStartingActive = true;
 
         /// Pair body for to the joint
-        rpRigidPhysicsBody *Body1;
-        rpRigidPhysicsBody *Body2;
+        rpPhysicsRigidBody *Body1;
+        rpPhysicsRigidBody *Body2;
 
         // -------------------- Constants -------------------- //
 
@@ -348,13 +348,13 @@ class rpHingeJoint : public rpJoint
         /// Velocity angular of body1
         void setAbsolutliVelocityMotor1( Vector3 angular_speed )
         {
-            static_cast<rpRigidPhysicsBody*>(mBody1)->setAngularVelocity( angular_speed );
+            static_cast<rpPhysicsRigidBody*>(mBody1)->setAngularVelocity( angular_speed );
         }
 
         /// Velocity angular of body2
         void setAbsolutliVelocityMotor2( Vector3 angular_speed )
         {
-            static_cast<rpRigidPhysicsBody*>(mBody2)->setAngularVelocity( angular_speed );
+            static_cast<rpPhysicsRigidBody*>(mBody2)->setAngularVelocity( angular_speed );
         }
 
         /**/

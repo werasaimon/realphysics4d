@@ -29,8 +29,8 @@ rpSliderJoint::rpSliderJoint(const rpSliderJointInfo& jointInfo)
 
     isWarmStartingActive = true;
 
-    Body1 = static_cast<rpRigidPhysicsBody*>(mBody1);
-    Body2 = static_cast<rpRigidPhysicsBody*>(mBody2);
+    Body1 = static_cast<rpPhysicsRigidBody*>(mBody1);
+    Body2 = static_cast<rpPhysicsRigidBody*>(mBody2);
 
 
 

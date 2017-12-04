@@ -58,8 +58,8 @@ class rpFixedJoint : public rpJoint
       bool isSplitActive = true;
 	  bool isWarmStartingActive = true;
 
-	  rpRigidPhysicsBody *Body1;
-	  rpRigidPhysicsBody *Body2;
+      rpPhysicsRigidBody *Body1;
+      rpPhysicsRigidBody *Body2;
         // -------------------- Constants -------------------- //
 
         // Beta value for the bias factor of position correction

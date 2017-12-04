@@ -10,10 +10,10 @@
 #include <stddef.h>
 #include <cassert>
 
-#include "../Collision/rpCollisionManager.h"
-#include "../Collision/rpProxyShape.h"
-#include "../Collision/Shapes/rpAABB.h"
-#include "../Collision/Shapes/rpCollisionShape.h"
+#include "../../Collision/rpCollisionManager.h"
+#include "../../Collision/rpProxyShape.h"
+#include "../../Collision/Shapes/rpAABB.h"
+#include "../../Collision/Shapes/rpCollisionShape.h"
 
 namespace real_physics
 {

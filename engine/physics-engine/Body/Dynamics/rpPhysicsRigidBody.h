@@ -8,7 +8,7 @@
 #ifndef SOURCE_ENGIE_KINEMATICPHYSICS_BODY_RPRIGIDPHYSICSBODY_H_
 #define SOURCE_ENGIE_KINEMATICPHYSICS_BODY_RPRIGIDPHYSICSBODY_H_
 
-#include "Material/rpPhysicsMaterial.h"
+#include "../Material/rpPhysicsMaterial.h"
 #include "rpPhysicsBody.h"
 
 namespace real_physics
@@ -19,7 +19,7 @@ namespace real_physics
 
 //**********************************************************************************************//
 
-class rpRigidPhysicsBody: public rpPhysicsBody , public BlockAlloc<rpRigidPhysicsBody>
+class rpPhysicsRigidBody: public rpPhysicsBody , public BlockAlloc<rpPhysicsRigidBody>
 {
 
 
@@ -70,6 +70,8 @@ class rpRigidPhysicsBody: public rpPhysicsBody , public BlockAlloc<rpRigidPhysic
 
         /// Angular velocity damping factor
         scalar mAngularDamping;
+
+
 
 
 		/// Linear velocity of the body
@@ -136,7 +138,7 @@ class rpRigidPhysicsBody: public rpPhysicsBody , public BlockAlloc<rpRigidPhysic
 	public:
 
 
-        rpRigidPhysicsBody(const Transform& transform, rpCollisionManager *CollideWorld, bodyindex id );
+        rpPhysicsRigidBody(const Transform& transform, rpCollisionManager *CollideWorld, bodyindex id );
 
 
 
@@ -163,7 +165,7 @@ class rpRigidPhysicsBody: public rpPhysicsBody , public BlockAlloc<rpRigidPhysic
 		void setIsSleeping(bool isSleeping);
 
 
-        //// Integrate
+        //// Integrate to Minkowskii method
         void Integrate(scalar _dt , ObserverSystem _observer);
 
 
@@ -254,41 +256,41 @@ class rpRigidPhysicsBody: public rpPhysicsBody , public BlockAlloc<rpRigidPhysic
 
 
 
-SIMD_INLINE const rpPhysicsMaterial& rpRigidPhysicsBody::getMaterial() const
+SIMD_INLINE const rpPhysicsMaterial& rpPhysicsRigidBody::getMaterial() const
 {
 	return mMaterial;
 }
 
-SIMD_INLINE void rpRigidPhysicsBody::setMaterial(const rpPhysicsMaterial& material)
+SIMD_INLINE void rpPhysicsRigidBody::setMaterial(const rpPhysicsMaterial& material)
 {
 	mMaterial = material;
 }
 
 
-SIMD_INLINE scalar rpRigidPhysicsBody::getMass() const
+SIMD_INLINE scalar rpPhysicsRigidBody::getMass() const
 {
 	return mInitMass;
 }
 
-SIMD_INLINE scalar rpRigidPhysicsBody::getInverseMass() const
+SIMD_INLINE scalar rpPhysicsRigidBody::getInverseMass() const
 {
 	return mMassInverse;
 }
 
 
-SIMD_INLINE Vector3 rpRigidPhysicsBody::getAngularVelocity() const
+SIMD_INLINE Vector3 rpPhysicsRigidBody::getAngularVelocity() const
 {
 	return mAngularVelocity;
 }
 
-SIMD_INLINE Vector3 rpRigidPhysicsBody::getLinearVelocity() const
+SIMD_INLINE Vector3 rpPhysicsRigidBody::getLinearVelocity() const
 {
 	return mLinearVelocity;
 }
 
 
 /// Update the transform of the body after a change of the center of mass
-SIMD_INLINE void rpRigidPhysicsBody::updateTransformWithCenterOfMass()
+SIMD_INLINE void rpPhysicsRigidBody::updateTransformWithCenterOfMass()
 {
 	// Translate the body according to the translation of the center of mass position
 	mTransform.setPosition(mCenterOfMassWorld - mTransform.getOrientation() * mCenterOfMassLocal);
@@ -299,7 +301,7 @@ SIMD_INLINE void rpRigidPhysicsBody::updateTransformWithCenterOfMass()
 /**
  * @return The 3x3 inertia tensor matrix of the body (in local-space coordinates)
  */
-SIMD_INLINE  Matrix3x3 rpRigidPhysicsBody::getInertiaTensorLocal() const
+SIMD_INLINE  Matrix3x3 rpPhysicsRigidBody::getInertiaTensorLocal() const
 {
 	return mInertiaTensorLocal;
 }
@@ -314,7 +316,7 @@ SIMD_INLINE  Matrix3x3 rpRigidPhysicsBody::getInertiaTensorLocal() const
 /**
  * @return The 3x3 inertia tensor matrix of the body in world-space coordinates
  */
-SIMD_INLINE Matrix3x3 rpRigidPhysicsBody::getInertiaTensorWorld() const
+SIMD_INLINE Matrix3x3 rpPhysicsRigidBody::getInertiaTensorWorld() const
 {
 	  // Compute and return the inertia tensor in world coordinates
 	    return mTransform.getOrientation().getMatrix() * mInertiaTensorLocal *
@@ -324,7 +326,7 @@ SIMD_INLINE Matrix3x3 rpRigidPhysicsBody::getInertiaTensorWorld() const
 
 
 
-SIMD_INLINE Matrix3x3 rpRigidPhysicsBody::getInertiaTensorInverseWorld() const
+SIMD_INLINE Matrix3x3 rpPhysicsRigidBody::getInertiaTensorInverseWorld() const
 {
     // TODO : DO NOT RECOMPUTE THE MATRIX MULTIPLICATION EVERY TIME. WE NEED TO STORE THE
     //        INVERSE WORLD TENSOR IN THE CLASS AND UPLDATE IT WHEN THE ORIENTATION OF THE BODY CHANGES
@@ -335,24 +337,24 @@ SIMD_INLINE Matrix3x3 rpRigidPhysicsBody::getInertiaTensorInverseWorld() const
 }
 
 
-SIMD_INLINE scalar rpRigidPhysicsBody::getAngularDamping() const
+SIMD_INLINE scalar rpPhysicsRigidBody::getAngularDamping() const
 {
 	return mAngularDamping;
 }
 
-SIMD_INLINE scalar rpRigidPhysicsBody::getLinearDamping() const
+SIMD_INLINE scalar rpPhysicsRigidBody::getLinearDamping() const
 {
 	return mLinearDamping;
 }
 
 
-SIMD_INLINE const MinkowskiVector4& rpRigidPhysicsBody::getAngularFourVelocity4() const
+SIMD_INLINE const MinkowskiVector4& rpPhysicsRigidBody::getAngularFourVelocity4() const
 {
 	return mAngularFourVelocity4;
 }
 
 
-SIMD_INLINE const MinkowskiVector4& rpRigidPhysicsBody::getLinearFourVelocity4() const
+SIMD_INLINE const MinkowskiVector4& rpPhysicsRigidBody::getLinearFourVelocity4() const
 {
 	return mLinearFourVelocity4;
 }

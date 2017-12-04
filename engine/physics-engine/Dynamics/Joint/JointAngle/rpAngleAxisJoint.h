@@ -32,8 +32,8 @@ class rpAngleAxisJoint : public rpJoint
 
        //--------------------------//
 
-        rpRigidPhysicsBody *Body1;
-        rpRigidPhysicsBody *Body2;
+        rpPhysicsRigidBody *Body1;
+        rpPhysicsRigidBody *Body2;
 
        //--------------------------//
 
@@ -81,8 +81,8 @@ class rpAngleAxisJoint : public rpJoint
             isSplitActive = true;
 
             /// Pair Body to collision solver
-            Body1 = static_cast<rpRigidPhysicsBody*>(mBody1);
-            Body2 = static_cast<rpRigidPhysicsBody*>(mBody2);
+            Body1 = static_cast<rpPhysicsRigidBody*>(mBody1);
+            Body2 = static_cast<rpPhysicsRigidBody*>(mBody2);
 
 
             biasFactor = 0.02f;

@@ -6,14 +6,14 @@
  */
 
 #include "rpCollisionBody.h"
-#include "../LinearMaths/rpVector3D.h"
-#include "../Collision/rpProxyShape.h"
-#include "../Collision/rpRaycastInfo.h"
-#include "../Collision/Shapes/rpAABB.h"
-#include "../Collision/Shapes/rpCollisionShape.h"
-#include "../Collision/rpCollisionManager.h"
-#include "../Geometry/QuickHull/Structs/Ray.hpp"
-#include "rpBody.h"
+#include "../../LinearMaths/rpVector3D.h"
+#include "../../Collision/rpProxyShape.h"
+#include "../../Collision/rpRaycastInfo.h"
+#include "../../Collision/Shapes/rpAABB.h"
+#include "../../Collision/Shapes/rpCollisionShape.h"
+#include "../../Collision/rpCollisionManager.h"
+#include "../../Geometry/QuickHull/Structs/Ray.hpp"
+#include "../rpBody.h"
 
 namespace real_physics
 {

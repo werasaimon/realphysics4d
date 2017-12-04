@@ -6,7 +6,7 @@
  */
 
 #include "rpPhysicsBody.h"
-#include "../Dynamics/Joint/rpJoint.h"
+#include "../../Dynamics/Joint/rpJoint.h"
 
 namespace real_physics
 {

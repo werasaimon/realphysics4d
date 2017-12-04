@@ -360,7 +360,7 @@ void rpDynamicsWorld::updateSleepingBodies(scalar timeStep)
         scalar minSleepTime = DECIMAL_LARGEST;
 
         // For each body of the island
-        rpRigidPhysicsBody** bodies = mIslands[i]->getBodies();
+        rpPhysicsRigidBody** bodies = mIslands[i]->getBodies();
         for (uint b=0; b < mIslands[i]->getNbBodies(); b++)
         {
 
@@ -462,12 +462,12 @@ void rpDynamicsWorld::computeIslands()
     }
 
 
-    rpRigidPhysicsBody** stackBodiesToVisit = new rpRigidPhysicsBody*[nbBodies];
+    rpPhysicsRigidBody** stackBodiesToVisit = new rpPhysicsRigidBody*[nbBodies];
     int i=0;
     for (auto it = mPhysicsBodies.begin(); it != mPhysicsBodies.end(); ++it )
     {
         rpPhysicsBody* body = *it;
-        stackBodiesToVisit[i++] =    static_cast<rpRigidPhysicsBody*>(body);
+        stackBodiesToVisit[i++] =    static_cast<rpPhysicsRigidBody*>(body);
     }
 
 
@@ -488,7 +488,7 @@ void rpDynamicsWorld::computeIslands()
 
         // Reset the stack of bodies to visit
         uint stackIndex = 0;
-        stackBodiesToVisit[stackIndex] = static_cast<rpRigidPhysicsBody*>(body);
+        stackBodiesToVisit[stackIndex] = static_cast<rpPhysicsRigidBody*>(body);
         stackIndex++;
         body->mIsAlreadyInIsland = true;
 
@@ -505,7 +505,7 @@ void rpDynamicsWorld::computeIslands()
 
             // Get the next body to visit from the stack
             stackIndex--;
-            rpRigidPhysicsBody* bodyToVisit = stackBodiesToVisit[stackIndex];
+            rpPhysicsRigidBody* bodyToVisit = stackBodiesToVisit[stackIndex];
             assert(bodyToVisit->isActive());
 
             // Awake the body if it is slepping
@@ -536,9 +536,9 @@ void rpDynamicsWorld::computeIslands()
 
 
                 // Get the other body of the contact manifold
-                rpRigidPhysicsBody* body1 = static_cast<rpRigidPhysicsBody*>(contactManifold->getBody1());
-                rpRigidPhysicsBody* body2 = static_cast<rpRigidPhysicsBody*>(contactManifold->getBody2());
-                rpRigidPhysicsBody* otherBody = (body1->getID() == bodyToVisit->getID()) ? body2 : body1;
+                rpPhysicsRigidBody* body1 = static_cast<rpPhysicsRigidBody*>(contactManifold->getBody1());
+                rpPhysicsRigidBody* body2 = static_cast<rpPhysicsRigidBody*>(contactManifold->getBody2());
+                rpPhysicsRigidBody* otherBody = (body1->getID() == bodyToVisit->getID()) ? body2 : body1;
 
                 // Check if the other body has already been added to the island
                 if (otherBody->mIsAlreadyInIsland) continue;
@@ -565,9 +565,9 @@ void rpDynamicsWorld::computeIslands()
                 joint->mIsAlreadyInIsland = true;
 
                 // Get the other body of the contact manifold
-                rpRigidPhysicsBody* body1 = static_cast<rpRigidPhysicsBody*>(joint->getBody1());
-                rpRigidPhysicsBody* body2 = static_cast<rpRigidPhysicsBody*>(joint->getBody2());
-                rpRigidPhysicsBody* otherBody = (body1->getID() == bodyToVisit->getID()) ? body2 : body1;
+                rpPhysicsRigidBody* body1 = static_cast<rpPhysicsRigidBody*>(joint->getBody1());
+                rpPhysicsRigidBody* body2 = static_cast<rpPhysicsRigidBody*>(joint->getBody2());
+                rpPhysicsRigidBody* otherBody = (body1->getID() == bodyToVisit->getID()) ? body2 : body1;
 
                 // Check if the other body has already been added to the island
                 if (otherBody->mIsAlreadyInIsland) continue;
@@ -617,8 +617,8 @@ void rpDynamicsWorld::addChekCollisionPair( rpContactManifold* manifold )
     if(mContactSolvers.find(keyPair) == mContactSolvers.end())
 	{
 
-        rpRigidPhysicsBody *body1 = static_cast<rpRigidPhysicsBody*>(manifold->mShape2->getBody());
-        rpRigidPhysicsBody *body2 = static_cast<rpRigidPhysicsBody*>(manifold->mShape1->getBody());
+        rpPhysicsRigidBody *body1 = static_cast<rpPhysicsRigidBody*>(manifold->mShape2->getBody());
+        rpPhysicsRigidBody *body2 = static_cast<rpPhysicsRigidBody*>(manifold->mShape1->getBody());
 
 
         rpContactSolver *solverObject = new rpContactSolverSequentialImpulseObject( body1 , body2 );
@@ -632,7 +632,7 @@ void rpDynamicsWorld::addChekCollisionPair( rpContactManifold* manifold )
 }
 
 
-rpRigidPhysicsBody* rpDynamicsWorld::createRigidBody(const Transform &transform)
+rpPhysicsRigidBody *rpDynamicsWorld::createRigidBody(const Transform &transform)
 {
 
 	// Compute the body ID
@@ -642,7 +642,7 @@ rpRigidPhysicsBody* rpDynamicsWorld::createRigidBody(const Transform &transform)
 	assert(bodyID < std::numeric_limits<bodyindex>::max());
 
 	// Create the rigid body
-	rpRigidPhysicsBody* rigidBody = new rpRigidPhysicsBody(transform, &mCollisionDetection, bodyID);
+    rpPhysicsRigidBody* rigidBody = new rpPhysicsRigidBody(transform, &mCollisionDetection, bodyID);
 	assert(rigidBody != NULL);
 
 

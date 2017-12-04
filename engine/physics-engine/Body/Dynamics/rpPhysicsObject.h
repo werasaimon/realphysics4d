@@ -8,11 +8,11 @@
 #ifndef SOURCE_ENGIE_KINEMATICPHYSICS_BODY_RPPHYSICSOBJECT_H_
 #define SOURCE_ENGIE_KINEMATICPHYSICS_BODY_RPPHYSICSOBJECT_H_
 
-#include "rpBody.h"
-#include "rpCollisionBody.h"
-#include "../LinearMaths/mathematics.h"
-#include "Material/rpPhysicsMaterial.h"
-#include "../Memory/memory.h"
+#include "../rpBody.h"
+#include "../Collision/rpCollisionBody.h"
+#include "../../LinearMaths/mathematics.h"
+#include "../Material/rpPhysicsMaterial.h"
+#include "../../Memory/memory.h"
 
 namespace real_physics
 {

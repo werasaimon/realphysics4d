@@ -1,8 +1,8 @@
 #ifndef RPISLAND_H
 #define RPISLAND_H
 
-#include "../Body/rpPhysicsBody.h"
-#include "../Body/rpRigidPhysicsBody.h"
+#include "../Body/Dynamics/rpPhysicsBody.h"
+#include "../Body/Dynamics/rpPhysicsRigidBody.h"
 #include "Solver/rpContactSolverSequentialImpulseObject.h"
 #include "../Collision/Manifold/rpContactManifold.h"
 
@@ -19,7 +19,7 @@ namespace real_physics
          //-------------------- Attributes -----------------//
 
          /// Array with all the bodies of the island
-         rpRigidPhysicsBody** mBodies;
+         rpPhysicsRigidBody** mBodies;
 
          /// Array with all the contact manifolds between bodies of the island
          rpContactManifold** mContactManifolds;
@@ -59,7 +59,7 @@ namespace real_physics
 
 
          /// Add a body into the island
-         void addBody(rpRigidPhysicsBody* body);
+         void addBody(rpPhysicsRigidBody* body);
 
          /// Add a contact manifold into the island
          void addContactManifold(rpContactManifold* contactManifold);
@@ -75,7 +75,7 @@ namespace real_physics
 
 
          /// Return a pointer to the array of bodies
-         rpRigidPhysicsBody** getBodies();
+         rpPhysicsRigidBody** getBodies();
 
          /// Return a pointer to the array of contact manifolds
          rpContactManifold** getContactManifold();
@@ -128,7 +128,7 @@ namespace real_physics
 
 
     // Add a body into the island
-    SIMD_INLINE void rpIsland::addBody(rpRigidPhysicsBody* body)
+    SIMD_INLINE void rpIsland::addBody(rpPhysicsRigidBody* body)
     {
         assert(!body->isSleeping());
         mBodies[mNbBodies] = body;
@@ -161,7 +161,7 @@ namespace real_physics
 
 
     // Return a pointer to the array of bodies
-    SIMD_INLINE rpRigidPhysicsBody** rpIsland::getBodies()
+    SIMD_INLINE rpPhysicsRigidBody** rpIsland::getBodies()
     {
         return mBodies;
     }

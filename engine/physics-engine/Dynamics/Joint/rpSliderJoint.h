@@ -138,8 +138,8 @@ class rpSliderJoint : public rpJoint
 
 		bool isWarmStartingActive = true;
 
-		rpRigidPhysicsBody *Body1;
-		rpRigidPhysicsBody *Body2;
+        rpPhysicsRigidBody *Body1;
+        rpPhysicsRigidBody *Body2;
         // -------------------- Constants -------------------- //
 
         // Beta value for the position correction bias factor

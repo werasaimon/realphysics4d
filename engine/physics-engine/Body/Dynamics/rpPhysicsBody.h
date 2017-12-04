@@ -60,7 +60,7 @@ class rpPhysicsBody: public rpPhysicsObject
 	virtual ~rpPhysicsBody();
 
 
-    /// integrate to Euler method
+    /// integrate to Minkowskii method
     virtual void Integrate( scalar _dt , ObserverSystem _observer ) {}
 
     /// earth gravity force = (9.8) for force gravity momentum

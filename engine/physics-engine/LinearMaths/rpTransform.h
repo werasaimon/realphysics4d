@@ -145,7 +145,7 @@ public:
 
   //-----------------------------------------------------------------------------//
 
-
+  /// Lorentz demission distance world
   void setCreateLorentzBoost( const rpVector3D<T> &dir , const T& v )
   {
       mScale = rpMatrix3x3<T>::LoretzBoostScale( dir , v ).getInverse();
@@ -312,8 +312,8 @@ SIMD_INLINE rpTransform<T> real_physics::rpTransform<T>::getInverse() const
 {
   const rpQuaternion<T> &invQuaternion = mOrientation.getInverse();
   const rpMatrix3x3<T>  &invMatrix     = invQuaternion.getMatrix();
-  const rpMatrix3x3<T>   &invScale      = mScale.getInverse();
-  return rpTransform<T>( ((invScale) * invMatrix * (-mPosition))  , invQuaternion , invScale );
+  const rpMatrix3x3<T>  &invScale      = mScale.getInverse();
+  return rpTransform<T>( (invScale * invMatrix * (-mPosition))  , invQuaternion , invScale );
 }
 
 
@@ -322,7 +322,7 @@ template<class T>
 SIMD_INLINE void real_physics::rpTransform<T>::getOpenGLMatrix( T* openglMatrix ) const
 {
 
-  const rpMatrix3x3<T>& matrix = getBasis();// * rpMatrix3x3<T>::relativityBoost(vel/60.0);//.getTranspose();
+  const rpMatrix3x3<T>& matrix = getBasis();
   openglMatrix[0]  = matrix[0][0]; openglMatrix[1]  = matrix[1][0];
   openglMatrix[2]  = matrix[2][0]; openglMatrix[3]  = 0.0;
   openglMatrix[4]  = matrix[0][1]; openglMatrix[5]  = matrix[1][1];

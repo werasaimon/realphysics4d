@@ -10,8 +10,8 @@
 
 
 
-#include "../../Body/rpPhysicsBody.h"
-#include "../../Body/rpRigidPhysicsBody.h"
+#include "../../Body/Dynamics/rpPhysicsBody.h"
+#include "../../Body/Dynamics/rpPhysicsRigidBody.h"
 
 namespace real_physics
 {

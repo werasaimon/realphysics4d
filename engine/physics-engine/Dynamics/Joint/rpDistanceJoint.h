@@ -67,8 +67,8 @@ class rpDistanceJoint : public rpJoint
 		scalar mEffectiveMass;
 
 
-		rpRigidPhysicsBody *Body1;
-		rpRigidPhysicsBody *Body2;
+        rpPhysicsRigidBody *Body1;
+        rpPhysicsRigidBody *Body2;
 
   public:
 
@@ -88,8 +88,8 @@ class rpDistanceJoint : public rpJoint
         this->biasFactor = 0.02f;
         this->softness = 0.0001f;
 
-        Body1 = static_cast<rpRigidPhysicsBody*>(mBody1);
-        Body2 = static_cast<rpRigidPhysicsBody*>(mBody2);
+        Body1 = static_cast<rpPhysicsRigidBody*>(mBody1);
+        Body2 = static_cast<rpPhysicsRigidBody*>(mBody2);
 
 
     }
