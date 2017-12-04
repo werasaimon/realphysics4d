@@ -294,7 +294,7 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
     ///Physics on rigid-body
     importToScope( luabind::namespace_("physics")
                          [
-                            luabind::class_<real_physics::rpRigidPhysicsBody , luabind::bases<real_physics::rpPhysicsBody,real_physics::rpPhysicsObject,real_physics::rpCollisionBody>>("rigid_body")
+                            luabind::class_<real_physics::rpPhysicsRigidBody , luabind::bases<real_physics::rpPhysicsBody,real_physics::rpPhysicsObject,real_physics::rpCollisionBody>>("rigid_body")
                             // constructor
                             .def(luabind::constructor<const real_physics::Transform& , real_physics::rpCollisionManager* , real_physics::bodyindex>())
                          ]);
