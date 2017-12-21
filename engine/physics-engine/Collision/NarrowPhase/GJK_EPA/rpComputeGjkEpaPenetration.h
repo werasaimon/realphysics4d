@@ -33,8 +33,8 @@ bool GjkEpaCalcPenDepth(const ConvexTemplate &a,
                         scalar  &wDepth)
 {
 
-    Vector3	guessVector(b.getWorldTransform().getPosition() -
-                        a.getWorldTransform().getPosition());//?? why not use the GJK input?
+    Vector3	guessVector(b.getWorldTransform().getPosition4().getPos() -
+                        a.getWorldTransform().getPosition4().getPos());//?? why not use the GJK input?
 
     rpGjkEpaSolver::sResults	results;
 

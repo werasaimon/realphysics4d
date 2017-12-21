@@ -156,8 +156,8 @@ SIMD_INLINE void rpSphereShape::computeAABB(rpAABB& aabb, const Transform& trans
     Vector3 extents(mMargin, mMargin, mMargin);
 
     // Update the AABB with the new minimum and maximum coordinates
-    aabb.setMin(transform.getPosition() - extents);
-    aabb.setMax(transform.getPosition() + extents);
+    aabb.setMin(transform.getPosition4().getPos() - extents);
+    aabb.setMax(transform.getPosition4().getPos() + extents);
 }
 
 // Return true if a point is inside the collision shape

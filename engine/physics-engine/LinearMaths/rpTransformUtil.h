@@ -13,6 +13,12 @@
 #include <stdlib.h>//size_t for MSVC 6.0
 #include <float.h>
 #include "rpMinkowskiVector4.h"
+#include "rpMatrix4x4.h"
+#include "rpMatrix3x3.h"
+
+#include <iostream>
+using namespace std;
+
 
 namespace real_physics
 {
@@ -28,6 +34,19 @@ namespace real_physics
 #define ANGULAR_MOTION_THRESHOLD scalar(0.5)*SIMD_HALF_PI
 
 #define SIMD_EPSILON      FLT_EPSILON
+
+
+
+
+
+template<class T> class rpObserverSystem
+{
+    public:
+
+    rpVector3D<T> position     = rpVector3D<T>(0,0,0);
+    rpVector3D<T> ang_velocity = rpVector3D<T>(0,0,0);
+    rpVector3D<T> lin_velocity = rpVector3D<T>(0,0,0);
+};
 
 
 template<class T> class rpTransformUtil
@@ -67,31 +86,76 @@ template<class T> class rpTransformUtil
 		predictedOrn.normalize();
 
 
-        return rpTransform<T>(curTrans.getPosition() + linvel * timeStep , predictedOrn );
+       return rpTransform<T>(curTrans.getPosition4().getPos() + linvel * timeStep , predictedOrn , curTrans.getScale() , curTrans.getTime() );
 
 	}
 
 
 
+    /// Transformation Loretz system
+    /// https://en.wikipedia.org/wiki/Derivations_of_the_Lorentz_transformations
+    static rpTransform<T> RelativityIntegrateTransform(  const rpObserverSystem<T> _Observer , rpTransform<T>& curTrans , const rpVector3D<T>& linvel, const rpVector3D<T>& angvel, T timeStep)
+    {
+
+        /// Relativity components
+        const rpVector3D<T> relPos = (curTrans.getPosition4().getPos() - _Observer.position);
+        const rpVector3D<T> relVel = (linvel - _Observer.lin_velocity);
+
+
+        /// Relativity time shift in my observer system
+        T mTime = timeStep * ((T(1.0) - (_Observer.lin_velocity.dot(relPos)/(_c*_c))) * gammaInvertFunction(_Observer.lin_velocity));
+
+
+        /**
+        /// Relativity local boost Loretz Matrix (demissiion distance world)
+        curTrans.BuildLorentzBoostTesting( relVel.getUnit() , relVel.length() * mTime ,
+                                           angvel.getUnit() , angvel.length() * mTime  );
+        /**/
+        curTrans.BuildLorentzBoost( relVel.getUnit() , relVel.length() * mTime );
+        /**/
+
+
+        /// Lorentz transformation
+        rpMinkowskiVector4<T> newPos4 = rpMatrix4x4<T>::getLorentzBoost( linvel.getUnit() , linvel.length() * mTime ) * curTrans.getPosition4();
+
+
+        //Exponential map
+        //google for "Practical Parameterization of Rotations Using the Exponential Map", F. Sebastian Grassia
+        rpVector3D<T> axis;
+        T fAngle = angvel.length();
+
+        //limit the angular motion
+        if (fAngle*mTime > ANGULAR_MOTION_THRESHOLD)
+        {
+            fAngle = ANGULAR_MOTION_THRESHOLD / mTime;
+        }
+
+        if (fAngle < T(0.001))
+        {
+            // use Taylor's expansions of sync function
+            axis = angvel * (T(0.5) * mTime -
+                            (mTime * mTime * mTime) *
+                            (T(0.020833333333)) * fAngle * fAngle);
+        }
+        else
+        {
+            // sync(fAngle) = sin(c*fAngle)/t
+            axis = angvel * (Sin(T(0.5) * fAngle * mTime) / fAngle);
+        }
+
+
+        rpQuaternion<T> dorn(axis, Cos(fAngle * mTime * T(0.5)));
+        rpQuaternion<T> predictedOrn = dorn * curTrans.getOrientation();
+        predictedOrn.normalize();
+
+
+       return rpTransform<T>( newPos4.getPos() , predictedOrn , curTrans.getScale() , T(1.0) );
+
+    }
 
 
 
-
-	static void integrateReletiviteLinear( rpMinkowskiVector4<T>& curPos , const rpVector3D<T>& linvel ,const T timeStep ,const T gammaInv )
-	{
-		//T gammaSet = (gammaInv - 1.0);
-
-		T  l = (0.0001 + linvel.length2());
-		rpVector3D<T> r = curPos.getVector3();
-
-		curPos.setVector3( r + linvel * timeStep - ((gammaInv - 1.0) * ((r.dot(linvel)) * linvel) / l) * timeStep);
-		curPos.t = gammaInv * (curPos.t + r.dot(linvel) / (LIGHT_MAX_VELOCITY_C * LIGHT_MAX_VELOCITY_C));
-
-	}
-
-
-
-
+    /**/
 	//-------------------------  differential method ------------------------------------//
 
 
@@ -140,6 +204,8 @@ template<class T> class rpTransformUtil
 		angVel = axis * angle / timeStep;
 	}
 
+
+
 	static void calculateDiffAxisAngle(const rpTransform<T>& transform0,const rpTransform<T>& transform1,rpVector3D<T> & axis,T& angle)
 	{
 		rpMatrix3x3<T> dmat = transform1.getBasis() * transform0.getBasis().getInverse();
@@ -158,6 +224,8 @@ template<class T> class rpTransformUtil
 		else
 			axis /= btSqrt(len);
 	}
+
+    /**/
 };
 
 

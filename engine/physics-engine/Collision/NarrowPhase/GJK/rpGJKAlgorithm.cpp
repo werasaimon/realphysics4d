@@ -72,7 +72,7 @@ bool rpGJKAlgorithm::computeGJK(const rpCollisionShapeInfo &shape1Info, const rp
                 Simplex simplex;
 
                 // Get the previous point V (last cached separating axis)
-                Vector3 v = transform2.getPosition() - transform1.getPosition();
+                Vector3 v = transform2.getPosition4().getPos() - transform1.getPosition4().getPos();
 
 
                 // Initialize the upper bound for the square distance

@@ -69,7 +69,7 @@ const scalar PI_TIMES_2 = scalar(6.28318530);
 
 
 /// Light Velocity c = 300000.kilometers / 1.second
-const scalar LIGHT_MAX_VELOCITY_C = scalar(3000.0);
+const scalar LIGHT_MAX_VELOCITY_C = scalar(300.0);
 
 
 

@@ -59,7 +59,7 @@ rpPhysicsRigidBody::rpPhysicsRigidBody(const Transform &transform, rpCollisionMa
 :rpPhysicsBody(transform, CollideWorld, id),
  mInitMass(scalar(1.0)),
  mCenterOfMassLocal(0, 0, 0),
- mCenterOfMassWorld(transform.getPosition()),
+ mCenterOfMassWorld(transform.getPosition4().getPos()),
  mIsGravityEnabled(true),
  mLinearDamping(scalar(0.004)),
  mAngularDamping(scalar(0.004)),
@@ -67,8 +67,8 @@ rpPhysicsRigidBody::rpPhysicsRigidBody(const Transform &transform, rpCollisionMa
  mAngularVelocity(Vector3::ZERO),
  mSplitLinearVelocity(Vector3::ZERO),
  mSplitAngularVelocity(Vector3::ZERO),
- mLinearFourVelocity4(0,0,0,0),
- mAngularFourVelocity4(0,0,0,0),
+// mLinearFourVelocity4(0,0,0,0),
+// mAngularFourVelocity4(0,0,0,0),
  //mFourForce4(0,0,0,0),
  //mFourTorque4(0,0,0,0),
  mStepTime(0.0)
@@ -83,7 +83,7 @@ rpPhysicsRigidBody::rpPhysicsRigidBody(const Transform &transform, rpCollisionMa
     mMassInverse = (mInitMass > scalar(0))? scalar(1.0) / mInitMass : scalar(0);
 
     /// Compute the  energy to body
-    mTotalEnergy = pow(LIGHT_MAX_VELOCITY_C * mInitMass , 2.0);
+   // mTotalEnergy = pow(LIGHT_MAX_VELOCITY_C * mInitMass , 2.0);
 }
 
 
@@ -136,43 +136,21 @@ SIMD_INLINE void rpPhysicsRigidBody::Integrate( scalar _dt , ObserverSystem _obs
 
 
 
+
+
+
+    /*********************************************
+     *  Loretz Transformation velocity is K1 => K0
+     ********************************************/
     /*********************************************
      *          Integration forces
      ********************************************/
 
-    mLinearVelocity  += mExternalForce  * _dt;
-    mAngularVelocity += mExternalTorque * _dt;
+    scalar demission_linear  = ( 1.0 + Abs((mExternalForce  * _dt).dot(mLinearVelocity))  / (LIGHT_MAX_VELOCITY_C * LIGHT_MAX_VELOCITY_C));
+    scalar demission_angular = ( 1.0 + Abs((mExternalTorque * _dt).dot(mAngularVelocity)) / (LIGHT_MAX_VELOCITY_C * LIGHT_MAX_VELOCITY_C));
 
-
-
-    /*********************************************
-     *  Loretz Transformation velocity and demmision distence is K1 => K0
-     ********************************************/
-
-    ///relativity velocity
-    Vector3 relative_linear_velocity  = (mLinearVelocity  - _observer.lin_velocity);
-    Vector3 relative_angular_velocity = (mAngularVelocity - _observer.ang_velocity);
-
-
-
-    /// gamma loretz factor
-    scalar relative_gammaFactor = sqrt( 1.0 + relative_linear_velocity.dot(mLinearVelocity) / (LIGHT_MAX_VELOCITY_C * LIGHT_MAX_VELOCITY_C));
-    /// demmision velocity K => `K;
-    mLinearVelocity  = mLinearVelocity  / relative_gammaFactor;
-    mAngularVelocity = mAngularVelocity / relative_gammaFactor;
-
-
-
-    /// gamma loretz factor local
-    scalar relative_gammaFactor_angular  =  sqrt( 1.0 + relative_angular_velocity.dot(mAngularVelocity) / (LIGHT_MAX_VELOCITY_C * LIGHT_MAX_VELOCITY_C));
-    /// local demmision velocity
-    mAngularVelocity = mAngularVelocity / relative_gammaFactor_angular;
-
-
-
-    /// Distance demission  K => `K;
-    mWorldTransform.setCreateLorentzBoost( relative_linear_velocity.getUnit() , relative_linear_velocity.length() );
-
+    mLinearVelocity  = (mLinearVelocity  + mExternalForce  * _dt) / demission_linear;
+    mAngularVelocity = (mAngularVelocity + mExternalTorque * _dt) / demission_angular;
 
 
 
@@ -181,33 +159,17 @@ SIMD_INLINE void rpPhysicsRigidBody::Integrate( scalar _dt , ObserverSystem _obs
      *         Integrate lorentz evolution
      **********************************************/
 
-    /// Loretz factor gamma
-    scalar gammaL = gammaFunction(mLinearVelocity);
-    scalar gammaA = gammaFunction(mAngularVelocity);
+     /// Translation Object
+     Transform resulTransform = mWorldTransform;
 
+     /// Loretz integration
+     resulTransform = TransformUtil::RelativityIntegrateTransform( _observer ,  resulTransform , mLinearVelocity  , mAngularVelocity   , _dt  );
 
-    /// Old Energy of the body
-    mTotalEnergy  = Pow(mInitMass * LIGHT_MAX_VELOCITY_C , scalar(2.0)) *  gammaL * gammaA;
-
-
-    ///Four-velocity inveriant on relativity in 4D-space
-    mLinearFourVelocity4  =  MinkowskiVector4( (mLinearVelocity  / LIGHT_MAX_VELOCITY_C ) * gammaL , gammaL );
-    mAngularFourVelocity4 =  MinkowskiVector4( (mAngularVelocity / LIGHT_MAX_VELOCITY_C ) * gammaA , gammaA );
-
-
-    /// remmisia in real dynamic velocity
-    mLinearVelocity  = mLinearFourVelocity4.getProjVector3()  * LIGHT_MAX_VELOCITY_C;
-    mAngularVelocity = mAngularFourVelocity4.getProjVector3() * LIGHT_MAX_VELOCITY_C;
-
-    ///Translation Object
-    Transform resulTransform = TransformUtil::integrateTransform(mWorldTransform , mLinearVelocity       , mAngularVelocity      , _dt  );
-              resulTransform = TransformUtil::integrateTransform(resulTransform  , mSplitLinearVelocity ,  mSplitAngularVelocity , _dt  );
-
-
+     /// Euler  integration
+     resulTransform = TransformUtil::integrateTransform( resulTransform , mSplitLinearVelocity ,  mSplitAngularVelocity , _dt  );
 
     /// Lorentz boost matrix demission world position (distance demission  K => `K)
-    mTransform.setPosition(mWorldTransform.getScale() * mTransform.getPosition());
-
+  //  mTransform.setPosition(mWorldTransform.getScale() * mTransform.getPosition());
 
 
     ///Update transformation
@@ -347,7 +309,7 @@ SIMD_INLINE void rpPhysicsRigidBody::recomputeMassInformation()
 	// If it is STATIC or KINEMATIC body
 	if (mType == STATIC || mType == KINEMATIC)
 	{
-		mCenterOfMassWorld = mTransform.getPosition();
+        mCenterOfMassWorld = mTransform.getPosition4().getPos();
 		return;
 	}
 
@@ -357,7 +319,7 @@ SIMD_INLINE void rpPhysicsRigidBody::recomputeMassInformation()
 	for (rpProxyShape* shape = mProxyCollisionShapes; shape != NULL; shape = shape->mNext)
 	{
 		mInitMass += shape->getMass();
-		mCenterOfMassLocal += shape->getLocalToBodyTransform().getPosition() * shape->getMass();
+        mCenterOfMassLocal += shape->getLocalToBodyTransform().getPosition4().getPos() * shape->getMass();
 	}
 
 	if (mInitMass > scalar(0.0))
@@ -389,7 +351,7 @@ SIMD_INLINE void rpPhysicsRigidBody::recomputeMassInformation()
 
 		// Use the parallel axis theorem to convert the inertia tensor w.r.t the collision shape
 		// center into a inertia tensor w.r.t to the body origin.
-		Vector3 offset = shapeTransform.getPosition() - mCenterOfMassLocal;
+        Vector3 offset = shapeTransform.getPosition4().getPos() - mCenterOfMassLocal;
 		scalar offsetSquare = offset.lengthSquare();
 		Matrix3x3 offsetMatrix;
 		offsetMatrix[0].setAllValues(offsetSquare, scalar(0.0), scalar(0.0));
@@ -449,7 +411,7 @@ SIMD_INLINE void rpPhysicsRigidBody::applySplitImpulseAngular(const Vector3&  im
 	// Awake the body if it was sleeping
     if (!mIsSleeping)
 	{
-        mSplitAngularVelocity += getInertiaTensorInverseWorld() * (impuls);// * mGamma;
+        mSplitAngularVelocity += getInertiaTensorInverseWorld() * (impuls);
 	}
 }
 
@@ -463,7 +425,7 @@ SIMD_INLINE  void rpPhysicsRigidBody::applySplitImpulseLinear(const Vector3& imp
 	// Awake the body if it was sleeping
     if (!mIsSleeping)
 	{
-        mSplitLinearVelocity += getInverseMass() * (impuls);// * mGamma;
+        mSplitLinearVelocity += getInverseMass() * (impuls);
 	}
 }
 
@@ -480,8 +442,11 @@ SIMD_INLINE void rpPhysicsRigidBody::applyImpulse(const Vector3& impuls , const 
 	// Awake the body if it was sleeping
     if (!mIsSleeping)
 	{
-        applyImpulseLinear(impuls);
-        applyImpulseAngular((point - mCenterOfMassWorld).cross(impuls));
+        ///Loretz factor
+        scalar gamma = gammaInvertFunction( mLinearVelocity + mAngularVelocity.cross(point - mCenterOfMassWorld) );
+
+        applyImpulseLinear( impuls * gamma);
+        applyImpulseAngular((point - mCenterOfMassWorld).cross(impuls) * gamma);
 	}
 }
 
@@ -495,7 +460,8 @@ SIMD_INLINE void rpPhysicsRigidBody::applyImpulseAngular(const Vector3&  impuls 
 	// Awake the body if it was sleeping
     if (!mIsSleeping)
 	{
-         mAngularVelocity += getInertiaTensorInverseWorld() * (impuls);// * gammaInvertFunction(mAngularVelocity);
+         Vector3 inv_impuls = getInertiaTensorInverseWorld() * impuls;
+         mAngularVelocity = (mAngularVelocity + inv_impuls) / (1.0 + ((inv_impuls).dot(mAngularVelocity)) / (LIGHT_MAX_VELOCITY_C*LIGHT_MAX_VELOCITY_C));
 	}
 }
 
@@ -510,7 +476,8 @@ SIMD_INLINE  void rpPhysicsRigidBody::applyImpulseLinear( const Vector3& impuls 
 	// Awake the body if it was sleeping
     if (!mIsSleeping)
 	{
-         mLinearVelocity += getInverseMass() * (impuls);// * gammaInvertFunction(mLinearVelocity);
+        Vector3 inv_impuls = getInverseMass() * impuls;
+        mLinearVelocity = (mLinearVelocity + inv_impuls) / (1.0 + ((inv_impuls).dot(mLinearVelocity)) / (LIGHT_MAX_VELOCITY_C*LIGHT_MAX_VELOCITY_C));
 	}
 }
 
@@ -523,9 +490,13 @@ SIMD_INLINE void rpPhysicsRigidBody::applyForce(const Vector3& force, const Vect
 	// Awake the body if it was sleeping
     if (!mIsSleeping)
 	{
+
+        ///Loretz factor
+        scalar gamma = gammaInvertFunction( mLinearVelocity + mAngularVelocity.cross(point - mCenterOfMassWorld) );
+
         // Add the force and torque
-        applyForceToCenterOfMass(force);
-        applyTorque((point - mCenterOfMassWorld).cross(force));
+        applyForceToCenterOfMass(force * gamma);
+        applyTorque((point - mCenterOfMassWorld).cross(force) * gamma);
 	}
 }
 

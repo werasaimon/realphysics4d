@@ -432,8 +432,8 @@ void rpSliderJoint::solvePositionConstraint()
 
     // Get the bodies positions and orientations
     // Get the bodies positions and orientations
-    Vector3    x1 = Body1->mTransform.getPosition();//constraintSolverData.positions[mIndexBody1];
-    Vector3    x2 = Body2->mTransform.getPosition();//constraintSolverData.positions[mIndexBody2];
+    Vector3    x1 = Body1->mTransform.getPosition4().getPos();//constraintSolverData.positions[mIndexBody1];
+    Vector3    x2 = Body2->mTransform.getPosition4().getPos();//constraintSolverData.positions[mIndexBody2];
     Quaternion q1 = Body1->mTransform.getOrientation();//constraintSolverData.orientations[mIndexBody1];
     Quaternion q2 = Body2->mTransform.getOrientation();//constraintSolverData.orientations[mIndexBody2];
 
@@ -700,8 +700,8 @@ scalar rpSliderJoint::getTranslation() const
     // TODO : Check if we need to compare rigid body position or center of mass here
 
     // Get the bodies positions and orientations
-    const Vector3& x1 = mBody1->getTransform().getPosition();
-    const Vector3& x2 = mBody2->getTransform().getPosition();
+    const Vector3& x1 = mBody1->getTransform().getPosition4().getPos();
+    const Vector3& x2 = mBody2->getTransform().getPosition4().getPos();
     const Quaternion& q1 = mBody1->getTransform().getOrientation();
     const Quaternion& q2 = mBody2->getTransform().getOrientation();
 

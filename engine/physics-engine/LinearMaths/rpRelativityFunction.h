@@ -24,17 +24,22 @@ namespace real_physics
 
 	template <typename T> T gammaFunction( const rpVector3D<T>& v )
 	{
-      return T(1.0) / Sqrt(T(1.0) - (v.dot(v) / (LIGHT_MAX_VELOCITY_C * LIGHT_MAX_VELOCITY_C)));
+       T gamma =  Sqrt(T(1.0) - (v.dot(v) / (LIGHT_MAX_VELOCITY_C * LIGHT_MAX_VELOCITY_C)));
+         gamma = (gamma > MACHINE_EPSILON) ? gamma : MACHINE_EPSILON;
+         return T(1.0) / gamma;
 	}
 
 	template <typename T> T gammaInvertFunction( const rpVector3D<T>& v )
 	{
-       return sqrt( float(T(1.0) - (v.dot(v) / (LIGHT_MAX_VELOCITY_C * LIGHT_MAX_VELOCITY_C))) );
+       T gamma = Sqrt(T(1.0) - (v.dot(v) / (LIGHT_MAX_VELOCITY_C * LIGHT_MAX_VELOCITY_C)));
+         gamma = (gamma > MACHINE_EPSILON) ? gamma : MACHINE_EPSILON;
+         return   gamma;
 	}
 
 
 	//---------------------- 2D function ---------------------//
 
+/**
 	template <typename T> T betaFunction( const rpVector2D<T>& v )
 	{
 	  return T( v / LIGHT_MAX_VELOCITY_C);
@@ -48,7 +53,8 @@ namespace real_physics
 	template <typename T> T gammaInvertFunction( const rpVector2D<T>& v )
 	{
 	   return sqrt(T(1.0) - (v.dot(v) / (LIGHT_MAX_VELOCITY_C * LIGHT_MAX_VELOCITY_C)));
-	}
+    }
+/**/
 
 
 }

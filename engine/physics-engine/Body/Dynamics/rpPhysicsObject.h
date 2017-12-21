@@ -64,11 +64,11 @@ class rpPhysicsObject : public rpCollisionBody
         void setWorldTransform(const Transform& worldTransform)
         {
 
-            Vector3      pos  = (mStopedZeroPosition)? Vector3::ZERO : worldTransform.getPosition();
-            Quaternion   quat = worldTransform.getOrientation();
-            Transform    transform(pos , quat);
+            //            Vector3      pos  = (mStopedZeroPosition)? Vector3::ZERO : worldTransform.getPosition();
+            //            Quaternion   quat = worldTransform.getOrientation();
+            //            Transform    transform(pos , quat);
 
-            setTransform(mWorldTransform = transform);
+            setTransform(mWorldTransform = worldTransform);
         }
 
 

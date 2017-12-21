@@ -42,28 +42,6 @@ class rpPhysicsRigidBody: public rpPhysicsBody , public BlockAlloc<rpPhysicsRigi
 
 
 
-        //////////// 4D-Logics /////////////
-
-        /// Total energy on the to body
-        scalar mTotalEnergy;
-
-		/// Linear four-velocity of the body
-		MinkowskiVector4  mLinearFourVelocity4;
-
-		/// Angular four-velocity of the body
-		MinkowskiVector4  mAngularFourVelocity4;
-
-
-        //		/// Current external four-force on the body
-        //		  MinkowskiVector4  mFourForce4;
-
-        //		/// Current external four-torque on the body
-        //		  MinkowskiVector4  mFourTorque4;
-
-
-
-
-
 
         /// Linear velocity damping factor
         scalar mLinearDamping;
@@ -81,11 +59,15 @@ class rpPhysicsRigidBody: public rpPhysicsBody , public BlockAlloc<rpPhysicsRigi
 		Vector3 mAngularVelocity;
 
 
-		/// Current external force on the body
-		Vector3 mExternalForce;
 
-		/// Current external torque on the body
-		Vector3 mExternalTorque;
+
+        /// Current external force on the body
+        Vector3 mExternalForce;
+
+        /// Current external torque on the body
+        Vector3 mExternalTorque;
+
+
 
 
 		/// Linear Split velocity  of the body
@@ -111,10 +93,10 @@ class rpPhysicsRigidBody: public rpPhysicsBody , public BlockAlloc<rpPhysicsRigi
 		/// center of mass of the body
 		Matrix3x3 mInertiaTensorLocal;
 
-		/// Inverse of the inertia tensor of the body
+        /// Inverse of the inertia tensor of the body
 		Matrix3x3 mInertiaTensorLocalInverse;
 
-
+        /// Inertia tensor of the body
 		Matrix3x3 mInertiaTensorWorldInverse;
 
 		/// Inverse of the mass of the body
@@ -224,11 +206,6 @@ class rpPhysicsRigidBody: public rpPhysicsBody , public BlockAlloc<rpPhysicsRigi
 	    /// Damping for to velocity
 	    scalar getAngularDamping() const;
 	    scalar getLinearDamping()  const;
-
-
-	    /// Four velocity4 to body
-	    const MinkowskiVector4& getAngularFourVelocity4() const;
-	    const MinkowskiVector4& getLinearFourVelocity4()  const;
 
 
         //---------------------  Set --------------------------- //
@@ -348,16 +325,7 @@ SIMD_INLINE scalar rpPhysicsRigidBody::getLinearDamping() const
 }
 
 
-SIMD_INLINE const MinkowskiVector4& rpPhysicsRigidBody::getAngularFourVelocity4() const
-{
-	return mAngularFourVelocity4;
-}
 
-
-SIMD_INLINE const MinkowskiVector4& rpPhysicsRigidBody::getLinearFourVelocity4() const
-{
-	return mLinearFourVelocity4;
-}
 
 } /* namespace real_physics */
 

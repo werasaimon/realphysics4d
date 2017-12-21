@@ -56,8 +56,8 @@ void rpBallAndSocketJoint::initBeforeSolve( scalar timeStep  )
 	// Get the bodies center of mass and orientations
 	//const Vector3& x1 = Body1->mCenterOfMassWorld;
 	//const Vector3& x2 = Body2->mCenterOfMassWorld;
-	const Vector3& x1 = Body1->mTransform.getPosition();
-	const Vector3& x2 = Body2->mTransform.getPosition();
+    const Vector3& x1 = Body1->mTransform.getPosition4().getPos();
+    const Vector3& x2 = Body2->mTransform.getPosition4().getPos();
 	const Quaternion& orientationBody1 = Body1->mTransform.getOrientation();
 	const Quaternion& orientationBody2 = Body2->mTransform.getOrientation();
 
@@ -202,8 +202,8 @@ void rpBallAndSocketJoint::solvePositionConstraint()
     if (mPositionCorrectionTechnique != NON_LINEAR_GAUSS_SEIDEL) return;
 
     // Get the bodies center of mass and orientations
-    Vector3    x1 = Body1->mTransform.getPosition();
-    Vector3    x2 = Body2->mTransform.getPosition();
+    Vector3    x1 = Body1->mTransform.getPosition4().getPos();
+    Vector3    x2 = Body2->mTransform.getPosition4().getPos();
     Quaternion q1 = Body1->mTransform.getOrientation();
     Quaternion q2 = Body2->mTransform.getOrientation();
 

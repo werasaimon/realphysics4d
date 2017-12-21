@@ -37,10 +37,10 @@ bool rpMPRAlgorithm::ComputeMprColliderPenetration( const rpCollisionShapeInfo *
     scalar  &penetration = out.m_penetrationDepth;
 
     // Get the center of shape1 in world coordinates
-    v01 = s1->getWorldTransform().getPosition();
+    v01 = s1->getWorldTransform().getPosition4().getPos();
 
     // Get the center of shape2 in world coordinates
-    v02 = s2->getWorldTransform().getPosition();
+    v02 = s2->getWorldTransform().getPosition4().getPos();
 
     // v0 is the center of the Minkowski difference
     v0 = v02 - v01;

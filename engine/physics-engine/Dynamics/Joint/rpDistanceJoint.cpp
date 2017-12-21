@@ -19,8 +19,8 @@ void rpDistanceJoint::initBeforeSolve( scalar timeStep )
 	mR1World = Vector3::ZERO;
 	mR2World = Vector3::ZERO;
 
-	Vector3 dp = Body2->getTransform().getPosition() -
-			     Body1->getTransform().getPosition();
+    Vector3 dp = Body2->getTransform().getPosition4().getPos() -
+                 Body1->getTransform().getPosition4().getPos();
 
 
 	scalar deltaLength = dp.length() - mDistance;

@@ -20,9 +20,9 @@ using namespace std;
 namespace real_physics
 {
 
+const float _c = LIGHT_MAX_VELOCITY_C;
 
 template<class T> class  rpMatrix4x4;
-
 template<class T> class  rpMinkowskiVector4
 {
 
@@ -39,21 +39,21 @@ template<class T> class  rpMinkowskiVector4
 
 	// Constructor of the class Vector3D
     rpMinkowskiVector4()
-	: t(1.0), x(0.0), y(0.0), z(0.0)
+    : x(0.0), y(0.0), z(0.0), t(1.0)
 	{
 
 	}
 
 	// Constructor with arguments
-	rpMinkowskiVector4(T newT , T newX, T newY, T newZ)
-	: t(newT) , x(newX), y(newY), z(newZ)
+    rpMinkowskiVector4( T newX, T newY, T newZ , T newT )
+    : x(newX), y(newY), z(newZ) , t(newT)
 	{
 
 	}
 
 	// Copy-constructor
 	rpMinkowskiVector4(const rpMinkowskiVector4<T>& vector)
-	: t(vector.t) , x(vector.x), y(vector.y), z(vector.z)
+    : x(vector.x), y(vector.y), z(vector.z) , t(vector.t)
 	{
 
 	}
@@ -61,14 +61,14 @@ template<class T> class  rpMinkowskiVector4
 
     // Copy-constructor
     rpMinkowskiVector4(const rpVector3D<T>& vector , T time)
-    : t(time) , x(vector.x), y(vector.y), z(vector.z)
+    : x(vector.x), y(vector.y), z(vector.z) , t(time)
     {
 
     }
 
     // Copy-constructor
     rpMinkowskiVector4( T time , const rpVector3D<T>& vector )
-    : t(time) , x(vector.x), y(vector.y), z(vector.z)
+    : x(vector.x), y(vector.y), z(vector.z) , t(time)
     {
 
     }
@@ -82,31 +82,31 @@ template<class T> class  rpMinkowskiVector4
 
 
 	/// Set all the values of the vector
-	void setAllValues(T newT , T newX , T newY , T newZ)
-	{
-		t=newT;
+    void setAllValues(T newX , T newY , T newZ, T newT)
+	{	
 		x=newY;
 		y=newX;
-		z=newZ;
-	}
+        z=newZ;
+        t=newT;
+    }
 
 	/// Set the vector to zero
 	void setToZero()
 	{
-		t=0;
 		x=0;
 		y=0;
-		z=0;
+        z=0;
+        t=0;
 	}
 
-	rpVector3D<T> getVector3() const
+    rpVector3D<T> getPos() const
 	{
 		return rpVector3D<T>(x,y,z);
 	}
 
 
 	///  Project on space-3D
-	rpVector3D<T> getProjVector3() const
+    rpVector3D<T> getPosProject() const
 	{
 		return rpVector3D<T>(x,y,z) / t;
 	}
@@ -121,18 +121,19 @@ template<class T> class  rpMinkowskiVector4
 	/// Return the length of the vector
 	T length() const
 	{
-		 return SquareRoot(Abs(lengthSquare()));
+         return SquareRoot(lengthSquare());
 	}
 
 	/// Return the square of the length of the vector
+    /// Metrices Minkowski Space
 	T lengthSquare() const
 	{
-         return ((t * t) - (x*x + y*y + z*z));
+         return Abs( ((_c*_c)*(t * t)) - (x*x + y*y + z*z) );
 	}
 
 
 
-
+    /// Unit-vector normalized
 	rpMinkowskiVector4<T> getUnit() const
 	{
 		T lengthVector = length();
@@ -142,21 +143,26 @@ template<class T> class  rpMinkowskiVector4
 		}
 		// Compute and return the unit vector
 		T lengthInv = T(1.0) / lengthVector;
-		return rpMinkowskiVector4<T>( t * lengthInv ,
-				                      x * lengthInv ,
+        return rpMinkowskiVector4<T>( x * lengthInv ,
 								      y * lengthInv ,
-								      z * lengthInv);
+                                      z * lengthInv ,
+                                      t * lengthInv );
 	}
 
+    rpMinkowskiVector4<T> getInvers() const
+    {
+        return rpMinkowskiVector4<T>( T(1.0/x) , T(1.0/y) , T(1.0/z) , T(1.0/t));
+    }
 
-	/// dot Product
+
+    /// Dot Product
 	T dot(const rpMinkowskiVector4<T>& vector) const
 	{
-		return (x*vector.x + y*vector.y + z*vector.z) - (t*vector.t);
+        return ((t*vector.t)/(_c*_c)) - (x*vector.x + y*vector.y + z*vector.z);
 	}
 
 
-
+    /// Cross Product
     rpMinkowskiVector4<T> cross(const rpMinkowskiVector4<T>& b , const rpMinkowskiVector4<T>& c)
     {
 
@@ -181,31 +187,33 @@ template<class T> class  rpMinkowskiVector4
 
 	friend rpMinkowskiVector4<T> operator + (const rpMinkowskiVector4<T>& vector1, const rpMinkowskiVector4<T>& vector2)
 	{
-        return rpMinkowskiVector4<T>(vector1.t + (vector2.t * sqrt( (vector2.x * vector2.x) + (vector2.y * vector2.y) + (vector2.z * vector2.z)) ),
-                                     vector1.x + (vector2.x * vector2.t),
-                                     vector1.y + (vector2.y * vector2.t),
-                                     vector1.z + (vector2.z * vector2.t));
+        T gamma = Sqrt( T(1.0) - (vector2.x*vector2.x + vector2.y*vector2.y + vector2.z*vector2.z) / (_c * _c) );
+        return rpMinkowskiVector4<T>( vector1.x + (vector2.x * vector1.t),
+                                      vector1.y + (vector2.y * vector1.t),
+                                      vector1.z + (vector2.z * vector1.t),
+                                      vector1.t + Abs(( (vector1.x * vector2.x) + (vector1.y * vector2.y) + (vector1.z * vector2.z)))  / (_c * _c)) * gamma;
 	}
 
 	friend rpMinkowskiVector4<T> operator - (const rpMinkowskiVector4<T>& vector1, const rpMinkowskiVector4<T>& vector2)
 	{
-        return rpMinkowskiVector4<T>(vector1.t - (vector2.t * sqrt( (vector2.x * vector2.x) + (vector2.y * vector2.y) + (vector2.z * vector2.z)) ),
-                                     vector1.x - (vector2.x * vector2.t),
-                                     vector1.y - (vector2.y * vector2.t),
-                                     vector1.z - (vector2.z * vector2.t));
+        T gamma = Sqrt( T(1.0) - (vector2.x*vector2.x + vector2.y*vector2.y + vector2.z*vector2.z) / (_c * _c) );
+        return rpMinkowskiVector4<T>(vector1.x - (vector2.x * vector1.t),
+                                     vector1.y - (vector2.y * vector1.t),
+                                     vector1.z - (vector2.z * vector1.t),
+                                     vector1.t - Abs(( (vector1.x * vector2.x) + (vector1.y * vector2.y) + (vector1.z * vector2.z)))  / (_c * _c)) * gamma;
 	}
 
 	friend rpMinkowskiVector4<T> operator -(const rpMinkowskiVector4<T>& vector)
 	{
-		return rpMinkowskiVector4<T>(vector.t , -vector.x, -vector.y, -vector.z);
+        return rpMinkowskiVector4<T>( -vector.x, -vector.y, -vector.z , -vector.t );
 	}
 
 	friend rpMinkowskiVector4<T> operator*(const rpMinkowskiVector4<T>& vector, T number)
 	{
-		return rpMinkowskiVector4<T>(number * vector.t,
-				                     number * vector.x,
+        return rpMinkowskiVector4<T>(number * vector.x,
 				                     number * vector.y,
-				                     number * vector.z);
+                                     number * vector.z,
+                                     number * vector.t);
 	}
 
 	friend rpMinkowskiVector4<T> operator*(T number, const rpMinkowskiVector4<T>& vector)
@@ -215,19 +223,19 @@ template<class T> class  rpMinkowskiVector4
 
 	friend rpMinkowskiVector4<T> operator*(const rpMinkowskiVector4<T>& vector1, const rpMinkowskiVector4<T>& vector2)
 	{
-		return rpMinkowskiVector4<T>(vector1.t * vector2.t,
-				                     vector1.x * vector2.x,
+        return rpMinkowskiVector4<T>(vector1.x * vector2.x,
 				                     vector1.y * vector2.y,
-				                     vector1.z * vector2.z);
+                                     vector1.z * vector2.z,
+                                     vector1.t * vector2.t);
 	}
 
 	friend rpMinkowskiVector4<T> operator/(const rpMinkowskiVector4<T>& vector, T number)
 	{
 		assert(number > MACHINE_EPSILON);
-		return rpMinkowskiVector4<T>(vector.t / number,
-				                     vector.x / number,
+        return rpMinkowskiVector4<T>(vector.x / number,
 				                     vector.y / number,
-				                     vector.z / number);
+                                     vector.z / number,
+                                     vector.t / number);
 	}
 
     friend rpMinkowskiVector4<T> operator/(const rpMinkowskiVector4<T>& vector1, const rpMinkowskiVector4<T>& vector2)
@@ -235,10 +243,10 @@ template<class T> class  rpMinkowskiVector4
 		assert(vector2.x > MACHINE_EPSILON);
 		assert(vector2.y > MACHINE_EPSILON);
 		assert(vector2.z > MACHINE_EPSILON);
-		return rpMinkowskiVector4<T>(vector1.t / vector2.t,
-				                     vector1.x / vector2.x,
+        return rpMinkowskiVector4<T>(vector1.x / vector2.x,
 				                     vector1.y / vector2.y,
-				                     vector1.z / vector2.z);
+                                     vector1.z / vector2.z,
+                                     vector1.t / vector2.t);
 	}
 
 
@@ -256,6 +264,8 @@ template<class T> class  rpMinkowskiVector4
     /// Overloaded operator for division by a number with assignment
     rpMinkowskiVector4<T> &operator /= (T number);
 
+
+
 };
 
 
@@ -263,20 +273,36 @@ template<class T> class  rpMinkowskiVector4
 template<class T>
 rpMinkowskiVector4<T> &rpMinkowskiVector4<T>::operator+=(const rpMinkowskiVector4<T> &vector)
 {
-    t += (vector.t * sqrt((vector.x * vector.x)+(vector.y * vector.y)+(vector.z * vector.z)) );
-    x += (vector.x * vector.t);
-    y += (vector.y * vector.t);
-    z += (vector.z * vector.t);
+    T gamma = Sqrt( T(1.0) - (vector.x*vector.x + vector.y*vector.y + vector.z*vector.z) / (_c * _c) );
+
+    x += (vector.x * t);
+    y += (vector.y * t);
+    z += (vector.z * t);
+    t +=  Abs((x*vector.x) + (y*vector.y) + (z*vector.z))  / (_c * _c);
+
+    x = x * gamma;
+    y = y * gamma;
+    z = z * gamma;
+    t = t * gamma;
+
     return *this;
 }
 
 template<class T>
 rpMinkowskiVector4<T> &rpMinkowskiVector4<T>::operator-=(const rpMinkowskiVector4<T> &vector)
 {
-    t -= (vector.t * sqrt( (vector.x*vector.x)+(vector.y*vector.y)+(vector.z*vector.z)) );
-    x -= (vector.x * vector.t);
-    y -= (vector.y * vector.t);
-    z -= (vector.z * vector.t);
+    T gamma = Sqrt( T(1.0) - (vector.x*vector.x + vector.y*vector.y + vector.z*vector.z) / (_c * _c) );
+
+    x -= (vector.x * t);
+    y -= (vector.y * t);
+    z -= (vector.z * t);
+    t -=  Abs((x*vector.x) + (y*vector.y) + (z*vector.z))  / (_c * _c);
+
+    x = x * gamma;
+    y = y * gamma;
+    z = z * gamma;
+    t = t * gamma;
+
     return *this;
 }
 

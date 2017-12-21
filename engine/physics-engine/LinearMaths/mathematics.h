@@ -35,6 +35,7 @@ namespace real_physics
    typedef scalar scalar_type;
 
 
+   typedef rpObserverSystem<scalar_type>      ObserverSystem;
    typedef rpProjectPlane<scalar_type>        PojectPlane;
    typedef rpRay<scalar_type>                 Ray;
    typedef rpVector2D<scalar_type>            Vector2;

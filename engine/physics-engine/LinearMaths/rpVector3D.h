@@ -11,6 +11,7 @@
 
 #include "rpLinearMtah.h"
 
+
 namespace real_physics
 {
 
@@ -238,10 +239,6 @@ namespace real_physics
       //assert(vector2.z > MACHINE_EPSILON);
       return rpVector3D<T>(vector1.x / vector2.x, vector1.y / vector2.y, vector1.z / vector2.z);
     }
-
-
-
-
 
     //------------------------------- static method-------------------------//
 

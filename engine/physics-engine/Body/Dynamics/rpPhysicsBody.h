@@ -26,13 +26,6 @@ enum PhysicsBodyType { RIGID_BODY ,
 
 
 
-struct ObserverSystem
-{
-    Vector3 position     = Vector3(0,0,0);
-    Vector3 ang_velocity = Vector3(0,0,0);
-    Vector3 lin_velocity = Vector3(0,0,0);
-};
-
 
 class rpPhysicsBody: public rpPhysicsObject
 {

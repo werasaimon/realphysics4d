@@ -115,10 +115,10 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::initializeForIsland(sca
 
     // Initialize the internal contact manifold structure using the external
     // contact manifold
-    internalManifold->inverseInertiaTensorBody1 = body1->mInertiaTensorWorldInverse;
-    internalManifold->inverseInertiaTensorBody2 = body2->mInertiaTensorWorldInverse;
-    internalManifold->massInverseBody1 = body1->mMassInverse;
-    internalManifold->massInverseBody2 = body2->mMassInverse;
+    internalManifold->inverseInertiaTensorBody1 = body1->mInertiaTensorWorldInverse; // * gammaInvertFunction(body1->getAngularVelocity()) * gammaInvertFunction(body2->getLinearVelocity());
+    internalManifold->inverseInertiaTensorBody2 = body2->mInertiaTensorWorldInverse; // * gammaInvertFunction(body2->getAngularVelocity()) * gammaInvertFunction(body2->getLinearVelocity());
+    internalManifold->massInverseBody1 = body1->mMassInverse * gammaInvertFunction(body1->getLinearVelocity()) ;
+    internalManifold->massInverseBody2 = body2->mMassInverse * gammaInvertFunction(body2->getLinearVelocity()) ;
     internalManifold->nbContacts = externalManifold->getNbContactPoints();
     internalManifold->restitutionFactor = computeMixedRestitutionFactor(body1, body2);
     internalManifold->frictionCoefficient = computeMixedFrictionCoefficient(body1, body2);
@@ -1149,7 +1149,7 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::computeFrictionVectors(
     // friction vector and the contact normal
     contactPoint.frictionVector2 =contactPoint.normal.cross(contactPoint.frictionVector1).getUnit();
 
-    /**/
+    /**
 
 
     /// the Normalize  to Vector
@@ -1157,6 +1157,7 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::computeFrictionVectors(
     contactPoint.frictionVector2.normalize();
 
 
+    /**/
 
 }
 
@@ -1189,7 +1190,7 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::computeFrictionVectors(
     // friction vector and the contact normal
     contact->frictionVector2 = contact->normal.cross(contact->frictionVector1).getUnit();
 
-    /**/
+    /**
 
 
     /// the Normalize  to Vector
@@ -1197,6 +1198,7 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::computeFrictionVectors(
     contact->frictionVector2.normalize();
 
 
+    /**/
 
 }
 

@@ -31,11 +31,13 @@ private:
 
   // -------------------- Attributes -------------------- //
 
-  rpMatrix3x3<T>   mScale;
-  rpVector3D<T>    mPosition;
-  rpQuaternion<T>  mOrientation;
+ // T                mTime
+ // rpVector3D<T>    mPosition;
 
 
+  rpMinkowskiVector4<T> mPosition4;
+  rpQuaternion<T>       mOrientation;
+  rpMatrix3x3<T>        mScale;
 
 public:
 
@@ -44,30 +46,44 @@ public:
 
   // Constructor
   rpTransform()
-   : mPosition(rpVector3D<T>(0.0, 0.0, 0.0)), mOrientation(rpQuaternion<T>::identity()) , mScale(rpMatrix3x3<T>::identity())
+   : mPosition4(0.0,0.0,0.0,1.0) , mOrientation(rpQuaternion<T>::identity()) , mScale(rpMatrix3x3<T>::identity())
   {
 
   }
 
 
   // Constructor
-  rpTransform(const rpVector3D<T>& position, const rpMatrix3x3<T> orientation = rpMatrix3x3<T>::identity() , const rpMatrix3x3<T>& _scale = rpMatrix3x3<T>::identity())
-  : mPosition(position) , mOrientation(rpQuaternion<T>(orientation)) , mScale(_scale)
+  rpTransform(const rpMinkowskiVector4<T>& position, const rpMatrix3x3<T> orientation = rpMatrix3x3<T>::identity() , const rpMatrix3x3<T>& _scale = rpMatrix3x3<T>::identity())
+  :  mPosition4(position) ,  mOrientation(rpQuaternion<T>(orientation)) , mScale(_scale)
+  {
+
+  }
+
+  // Constructor
+  rpTransform(const rpMinkowskiVector4<T>& position, const rpQuaternion<T>& orientation = rpQuaternion<T>::identity() , const rpMatrix3x3<T>& _scale = rpMatrix3x3<T>::identity())
+  : mPosition4(position) , mOrientation(orientation) , mScale(_scale)
+  {
+
+  }
+
+  // Constructor
+  rpTransform(const rpVector3D<T>& position, const rpMatrix3x3<T> orientation = rpMatrix3x3<T>::identity() , const rpMatrix3x3<T>& _scale = rpMatrix3x3<T>::identity() ,T  _time = 1.0)
+  : mPosition4(position,_time) , mOrientation(rpQuaternion<T>(orientation)) , mScale(_scale)
   {
 
   }
 
 
   // Constructor
-  rpTransform(const rpVector3D<T>& position, const rpQuaternion<T>& orientation = rpQuaternion<T>::identity() , const rpMatrix3x3<T>& _scale = rpMatrix3x3<T>::identity())
-  : mPosition(position), mOrientation(orientation) , mScale(_scale)
+  rpTransform(const rpVector3D<T>& position, const rpQuaternion<T>& orientation = rpQuaternion<T>::identity() , const rpMatrix3x3<T>& _scale = rpMatrix3x3<T>::identity() , T _time = 1.0)
+  : mPosition4(position,_time) , mOrientation(orientation) , mScale(_scale)
   {
 
   }
 
   // Copy-constructor
   rpTransform(const rpTransform<T>& transform)
-  : mPosition(transform.mPosition), mOrientation(transform.mOrientation) , mScale(transform.mScale)
+  : mPosition4(transform.mPosition4) , mOrientation(transform.mOrientation) , mScale(transform.mScale)
   {
 
   }
@@ -79,13 +95,18 @@ public:
   }
 
 
+  const rpMinkowskiVector4<T> getPosition4() const;
+
+  void setPosition4(const rpMinkowskiVector4<T> &position4);
 
 
-  /// Return the origin of the transform
-  const rpVector3D<T>& getPosition() const;
+
+//  /// Return the origin of the transform
+//  const rpVector3D<T>& getPosition() const;
 
   /// Set the origin of the transform
   void setPosition(const rpVector3D<T>& position);
+
 
 
 
@@ -97,11 +118,22 @@ public:
 
 
 
+
   /// Return the scale of the transform
   rpMatrix3x3<T> getScale() const;
 
   /// Return the scale of the transform
   void setScale(const rpMatrix3x3<T> &scale);
+
+
+
+
+  /// Return time step
+  T getTime() const;
+
+ /// Set the time step
+  void setTime(const T &time);
+
 
 
 
@@ -131,12 +163,8 @@ public:
   rpMatrix3x3<T> getBasis() const;
 
 
-  /**
-  /// Return an interpolated transform
-  static rpTransform<T> interpolateTransforms(const rpTransform<T>& oldTransform,
-                                              const rpTransform<T>& newTransform,
-                                              T interpolationFactor);
-  /**/
+
+
 
   /// Return the identity transform
   static rpTransform<T> identity();
@@ -145,10 +173,46 @@ public:
 
   //-----------------------------------------------------------------------------//
 
-  /// Lorentz demission distance world
-  void setCreateLorentzBoost( const rpVector3D<T> &dir , const T& v )
+  /// Lorentz demission distance in the world
+  void BuildLorentzBoost( const rpVector3D<T> &dir , const T& v , T *_gamma = NULL )
   {
-      mScale = rpMatrix3x3<T>::LoretzBoostScale( dir , v ).getInverse();
+      mScale = rpMatrix3x3<T>::getLorentzBoost( dir , v , _gamma);
+  }
+
+
+  /// Lorentz demission distance world
+  void BuildLorentzBoostTesting(  const rpVector3D<T> &dir    , const T& v  ,
+                                  const rpVector3D<T> &w_axis , const T& wv  )
+  {
+
+      /// Loretz factor gamma ^ -1
+      T gamma_w = sqrt( 1.0 - (wv*wv) / (_c*_c));
+      T gamma_v = sqrt( 1.0 -   (v*v) / (_c*_c));
+
+
+      /// Scaling direction
+      rpMatrix3x3<T> M_dir  = rpMatrix3x3<T>::getLorentzBoost( dir , v , &gamma_v);
+
+      if( w_axis.length2() > 0.001)
+      {
+          /// Ortogonal axis of the angular velocity axis
+          rpVector3D<T>  Up;
+          rpVector3D<T>  Left;
+          rpVector3D<T>::btPlaneSpace1( w_axis , Up , Left );
+
+          /// Scaling Loretz group operators
+          rpMatrix3x3<T> M_up   = rpMatrix3x3<T>::getLorentzBoost( Up.getUnit()   , wv , &gamma_w);
+          rpMatrix3x3<T> M_left = rpMatrix3x3<T>::getLorentzBoost( Left.getUnit() , wv , &gamma_w);
+
+          /// group Li SO(0,3)
+          mScale = M_dir * M_up * M_left;
+      }
+      else
+      {
+          /// group Li SU(0,1)
+          mScale = M_dir;
+      }
+
   }
 
   //-----------------------------------------------------------------------------//
@@ -172,26 +236,48 @@ public:
 
 };
 
+
 template<class T>
-SIMD_INLINE const rpVector3D<T>& real_physics::rpTransform<T>::getPosition() const
+SIMD_INLINE const rpMinkowskiVector4<T> rpTransform<T>::getPosition4() const
 {
-  return mPosition;
+    return mPosition4;
 }
 
 template<class T>
-SIMD_INLINE void real_physics::rpTransform<T>::setPosition(const rpVector3D<T>& position)
+SIMD_INLINE void rpTransform<T>::setPosition4(const rpMinkowskiVector4<T> &position4)
 {
-  mPosition = position;
+    mPosition4 = position4;
 }
 
+
+
+
+
+
+//template<class T>
+//SIMD_INLINE const rpVector3D<T>& rpTransform<T>::getPosition() const
+//{
+//  return mPosition;
+//}
+
 template<class T>
-SIMD_INLINE const rpQuaternion<T>& real_physics::rpTransform<T>::getOrientation() const
+SIMD_INLINE void rpTransform<T>::setPosition(const rpVector3D<T>& position)
+{
+  mPosition4 = rpMinkowskiVector4<T>( position , mPosition4.t );
+}
+
+
+
+
+
+template<class T>
+SIMD_INLINE const rpQuaternion<T>& rpTransform<T>::getOrientation() const
 {
   return mOrientation;
 }
 
 template<class T>
-SIMD_INLINE void real_physics::rpTransform<T>::setOrientation(const rpQuaternion<T>& orientation)
+SIMD_INLINE void rpTransform<T>::setOrientation(const rpQuaternion<T>& orientation)
 {
   mOrientation = orientation;
 }
@@ -209,51 +295,49 @@ SIMD_INLINE void rpTransform<T>::setScale(const rpMatrix3x3<T> &scale)
   mScale = scale;
 }
 
+
 template<class T>
-SIMD_INLINE void real_physics::rpTransform<T>::setToIdentity()
+SIMD_INLINE T rpTransform<T>::getTime() const
 {
-  mScale       = rpMatrix3x3<T>::identity();
-  mPosition    = rpVector3D<T>::ZERO;
-  mOrientation = rpQuaternion<T>::identity();
+    return mPosition4.t;
 }
 
 template<class T>
-SIMD_INLINE void real_physics::rpTransform<T>::setFromOpenGL(T* openglMatrix)
+SIMD_INLINE void rpTransform<T>::setTime(const T &time)
+{
+   mPosition4.t = time;
+}
+
+
+template<class T>
+SIMD_INLINE void rpTransform<T>::setToIdentity()
+{
+  mScale       = rpMatrix3x3<T>::identity();
+  mOrientation = rpQuaternion<T>::identity();
+  mPosition4   = rpMinkowskiVector4<T>( rpVector3D<T>::ZERO , T(1.0) );
+}
+
+template<class T>
+SIMD_INLINE void rpTransform<T>::setFromOpenGL(T* openglMatrix)
 {
   rpMatrix3x3<T> matrix(openglMatrix[0], openglMatrix[4], openglMatrix[8],
                         openglMatrix[1], openglMatrix[5], openglMatrix[9],
                         openglMatrix[2], openglMatrix[6], openglMatrix[10]);
   mOrientation = rpQuaternion<T>(matrix);
-  mPosition.setAllValues(openglMatrix[12],
-                         openglMatrix[13],
-                         openglMatrix[14]);
+
+ rpVector3D<T> pos( openglMatrix[12],
+                    openglMatrix[13],
+                    openglMatrix[14]);
+
+  mPosition4 = rpMinkowskiVector4<T>( pos , mPosition4.t );
 }
 
 
 
 
 
-/**
 template<class T>
-SIMD_INLINE rpTransform<T> real_physics::rpTransform<T>::interpolateTransforms( const rpTransform<T>& oldTransform ,
-                                                                              const rpTransform<T>& newTransform ,
-                                                                              T interpolationFactor)
-{
-
-  rpVector3D<T> interPosition =  oldTransform.mPosition * (T(1.0) - interpolationFactor) +
-          newTransform.mPosition * interpolationFactor;
-
-  rpQuaternion<T> interOrientation = rpQuaternion<T>::slerp(oldTransform.mOrientation,
-                                                            newTransform.mOrientation,
-                                                            interpolationFactor);
-
-  return rpTransform<T>(interPosition, interOrientation);
-}
-/**/
-
-
-template<class T>
-SIMD_INLINE rpTransform<T> real_physics::rpTransform<T>::identity()
+SIMD_INLINE rpTransform<T> rpTransform<T>::identity()
 {
   return rpTransform<T>(rpVector3D<T>(0, 0, 0), rpQuaternion<T>::identity());
 }
@@ -261,25 +345,27 @@ SIMD_INLINE rpTransform<T> real_physics::rpTransform<T>::identity()
 
 
 template<class T>
-SIMD_INLINE rpVector3D<T> real_physics::rpTransform<T>::operator *(const rpVector3D<T>& vector) const
+SIMD_INLINE rpVector3D<T> rpTransform<T>::operator * (const rpVector3D<T>& vector) const
 {
-  return  (getBasis() * vector) + mPosition;
+  return  (getBasis() * vector) + mPosition4.getPos();
 }
 
 template<class T>
-SIMD_INLINE rpTransform<T> real_physics::rpTransform<T>::operator *(const rpTransform<T>& transform2) const
+SIMD_INLINE rpTransform<T> rpTransform<T>::operator * (const rpTransform<T>& transform2) const
 {
-  return rpTransform<T>(mPosition + (getBasis() * transform2.mPosition) , mOrientation * transform2.mOrientation , mScale * transform2.mScale);
+  return rpTransform<T>(mPosition4.getPos() + (getBasis() * transform2.mPosition4.getPos()) , mOrientation * transform2.mOrientation , mScale * transform2.mScale , mPosition4.t * transform2.mPosition4.t);
 }
 
 template<class T>
-SIMD_INLINE bool real_physics::rpTransform<T>::operator ==(const rpTransform<T>& transform2) const
+SIMD_INLINE bool rpTransform<T>::operator ==(const rpTransform<T>& transform2) const
 {
-  return (mPosition == transform2.mPosition) && (mOrientation == transform2.mOrientation) && (mScale == transform2.mScale);
+  return  (mOrientation == transform2.mOrientation) &&
+          (mScale       == transform2.mScale)       &&
+          (mPosition4   == transform2.mPosition4);
 }
 
 template<class T>
-SIMD_INLINE bool real_physics::rpTransform<T>::operator !=(const rpTransform<T>& transform2) const
+SIMD_INLINE bool rpTransform<T>::operator !=(const rpTransform<T>& transform2) const
 {
   return !(*this == transform2);
 }
@@ -294,11 +380,11 @@ SIMD_INLINE  rpMatrix3x3<T> rpTransform<T>::getBasis() const
 
 
 template<class T>
-SIMD_INLINE rpTransform<T>& real_physics::rpTransform<T>::operator =(const rpTransform<T>& transform)
+SIMD_INLINE rpTransform<T>& rpTransform<T>::operator =(const rpTransform<T>& transform)
 {
   if (&transform != this)
   {
-      mPosition    = transform.mPosition;
+      mPosition4   = transform.mPosition4;
       mOrientation = transform.mOrientation;
       mScale       = transform.mScale;
   }
@@ -308,18 +394,18 @@ SIMD_INLINE rpTransform<T>& real_physics::rpTransform<T>::operator =(const rpTra
 
 
 template<class T>
-SIMD_INLINE rpTransform<T> real_physics::rpTransform<T>::getInverse() const
+SIMD_INLINE rpTransform<T> rpTransform<T>::getInverse() const
 {
   const rpQuaternion<T> &invQuaternion = mOrientation.getInverse();
   const rpMatrix3x3<T>  &invMatrix     = invQuaternion.getMatrix();
   const rpMatrix3x3<T>  &invScale      = mScale.getInverse();
-  return rpTransform<T>( (invScale * invMatrix * (-mPosition))  , invQuaternion , invScale );
+  return rpTransform<T>( (invScale * invMatrix * (-mPosition4.getPos()))  , invQuaternion , invScale , T(1.0) / mPosition4.t);
 }
 
 
 
 template<class T>
-SIMD_INLINE void real_physics::rpTransform<T>::getOpenGLMatrix( T* openglMatrix ) const
+SIMD_INLINE void rpTransform<T>::getOpenGLMatrix( T* openglMatrix ) const
 {
 
   const rpMatrix3x3<T>& matrix = getBasis();
@@ -329,8 +415,11 @@ SIMD_INLINE void real_physics::rpTransform<T>::getOpenGLMatrix( T* openglMatrix 
   openglMatrix[6]  = matrix[2][1]; openglMatrix[7]  = 0.0;
   openglMatrix[8]  = matrix[0][2]; openglMatrix[9]  = matrix[1][2];
   openglMatrix[10] = matrix[2][2]; openglMatrix[11] = 0.0;
-  openglMatrix[12] = mPosition.x;  openglMatrix[13] = mPosition.y;
-  openglMatrix[14] = mPosition.z;  openglMatrix[15] = 1.0;
+
+  openglMatrix[12] = mPosition4.x;
+  openglMatrix[13] = mPosition4.y;
+  openglMatrix[14] = mPosition4.z;
+  openglMatrix[15] = 1.0;
 
 }
 

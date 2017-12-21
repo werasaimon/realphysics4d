@@ -72,7 +72,7 @@ namespace real_physics
 
 
 
-      Vector3 position = transform.getPosition();
+      Vector3 position = transform.getPosition4().getPos();
       glPushMatrix();
       Vector3 halfSize = (worldMinBounds - worldMaxBounds);
       glTranslatef(position.x, position.y, position.z);
@@ -83,8 +83,8 @@ namespace real_physics
 
 
 
-      Vector3 minCoordinates = transform.getPosition() + worldMinBounds;
-      Vector3 maxCoordinates = transform.getPosition() + worldMaxBounds;
+      Vector3 minCoordinates = transform.getPosition4().getPos() + worldMinBounds;
+      Vector3 maxCoordinates = transform.getPosition4().getPos() + worldMaxBounds;
 
 
       // Update the AABB with the new minimum and maximum coordinates

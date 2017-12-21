@@ -30,8 +30,7 @@ template<class T> class rpMatrix3x3
 
    private:
 
-     //-------------------- Attributes --------------------//
-
+   //-------------------- Attributes --------------------//
 
     // Elements of the matrix
     union
@@ -166,11 +165,12 @@ template<class T> class rpMatrix3x3
 
       rpMatrix3x3<T> transposeTimes(const rpMatrix3x3<T>& m) const;
 
-
+/**
       /// The rotation matrix from the
       /// building system to the inertial system has the form:
       rpMatrix3x3<T> rotateToInertialSystemR(const rpVector3D<T>& euler) const;
       rpMatrix3x3<T> TransitionMatrixR(const rpVector3D<T>& euler) const;
+/**/
 
 
 
@@ -213,6 +213,11 @@ template<class T> class rpMatrix3x3
       static rpMatrix3x3<T> computeSkewSymmetricMatrixForCrossProduct(const rpVector3D<T>& vector);
 
 
+      /// Return a symmetric matrix using a given vector that can be used
+      /// to compute dot product with another vector using matrix multiplication
+       static rpMatrix3x3<T> computeSymmetricMatrix(const rpVector3D<T>& vector);
+
+
       /// Return a  matrix using a given vector that can be used
       /// to compute dot product with another vector using matrix multiplication
       static rpMatrix3x3<T> MatrixTensorProduct( const rpVector3D<T>& vector1 , const rpVector3D<T>& vector2 );
@@ -227,16 +232,40 @@ template<class T> class rpMatrix3x3
       }
 
 
-       /// Return lorentz demission distance world
-      static rpMatrix3x3<T> LoretzBoostScale( const rpVector3D<T> dir , const T &v )
-      {
-          float c = LIGHT_MAX_VELOCITY_C;
-          float gamma  = (1.0 / sqrt(1.0 - (v*v) / (c*c) )) - 1.0;
 
+      /*****************************************************
+       *  Help info to web site:  https://arxiv.org/pdf/1103.0156.pdf
+       *****************************************************/
+       /// Return lorentz demission distance world
+      static rpMatrix3x3<T> getLorentzBoost( const rpVector3D<T> dir , const T &v , T *_gamma = NULL)
+      {
+          /// Ligth velocity
+          float c = LIGHT_MAX_VELOCITY_C;
+
+          /// Loretz gamma factor ^ -1
+          float gamma  = 1.0 * (sqrt(1.0 - (v*v) / (c*c) ));
+
+          if(_gamma != NULL) gamma = *_gamma;
+
+          /// twist gamma fctor
+          gamma = (gamma - 1.0);
+
+          /// covariant loretz_boost_matrix_local
           rpMatrix3x3<T> M(  1.f +  gamma*dir.x*dir.x   ,        gamma*dir.x*dir.y  ,       gamma*dir.x*dir.z,
                                     gamma*dir.y*dir.x   ,  1.f + gamma*dir.y*dir.y  ,       gamma*dir.y*dir.z,
                                     gamma*dir.z*dir.x   ,        gamma*dir.z*dir.y  , 1.f + gamma*dir.z*dir.z);
           return M;
+      }
+
+
+      static rpMatrix3x3<T> LambdaRotate( const T& angle , const rpVector3D<T>& R )
+      {
+          T S = 1.f - Cos(angle);
+
+           static rpMatrix3x3<T> M(R.x*R.x + (1.f - R.x*R.x) * Cos(angle) , R.x*R.y*S - R.z*Sin(angle)           , R.x*R.z*S + R.y*Sin(angle)           ,
+                                   R.x*R.y*S + R.z*Sin(angle)             , R.y*R.y + (1.f - R.y*R.y)*Cos(angle) , R.y*R.z*S - R.x*Sin(angle)           ,
+                                   R.x*R.z*S - R.y*Sin(angle)             , R.y*R.z*S + R.x*Sin(angle)           , R.z*R.z + (1.f - R.z*R.z)*Cos(angle) );
+           return M;
       }
 
       //---------------------------- Friend method -------------------------//
@@ -325,9 +354,6 @@ template<class T> class rpMatrix3x3
 
 
 
-
-
-
       /// Overloaded operator for multiplication with a vector
       friend rpVector3D<T> operator*(const rpMatrix3x3<T>& matrix, const rpVector3D<T>& vector)
       {
@@ -374,6 +400,43 @@ template<class T> class rpMatrix3x3
 
       /// Overloaded operator to read/write element of the matrix.
       rpVector3D<T>& operator[](int row);
+
+
+
+/**/
+
+      rpMatrix3x3<T>& operator =(const rpQuaternion<T>& Quat)
+      {
+
+          T D1, D2, D3, D4, D5, D6, D7, D8, D9; //Dummy variables to hold precalcs
+
+          D1 = (Quat.x * Quat.x) * 2.0f;
+          D2 = (Quat.y * Quat.y) * 2.0f;
+          D3 = (Quat.z * Quat.z) * 2.0f;
+
+          T RTimesTwo = Quat.w * 2.0f;
+          D4 = Quat.x * RTimesTwo;
+          D5 = Quat.y * RTimesTwo;
+          D6 = Quat.z * RTimesTwo;
+
+          D7 = (Quat.x * Quat.y) * 2.0f;
+          D8 = (Quat.x * Quat.z) * 2.0f;
+          D9 = (Quat.y * Quat.z) * 2.0f;
+
+          m[0][0] = 1.0f - D2 - D3;
+          m[0][1] = D7 - D6;
+          m[0][2] = D8 + D5;
+          m[1][0] = D7 + D6;
+          m[1][1] = 1.0f - D1 - D3;
+          m[1][2] = D9 - D4;
+          m[2][0] = D8 - D5;
+          m[2][1] = D9 + D4;
+          m[2][2] = 1.0f - D1 - D2;
+
+
+          return *this;
+      }
+/**/
 
 };
 
@@ -480,10 +543,22 @@ SIMD_INLINE rpMatrix3x3<T> real_physics::rpMatrix3x3<T>::zero()
 template<class T>
 SIMD_INLINE rpMatrix3x3<T> real_physics::rpMatrix3x3<T>::computeSkewSymmetricMatrixForCrossProduct(const rpVector3D<T>& vector)
 {
-  return rpMatrix3x3<T>(0, -vector.z, vector.y,
-			            vector.z, 0, -vector.x,
-			           -vector.y, vector.x, 0);
+    return rpMatrix3x3<T>(0, -vector.z, vector.y,
+                          vector.z, 0, -vector.x,
+                         -vector.y, vector.x, 0);
 }
+
+
+
+template<class T>
+SIMD_INLINE rpMatrix3x3<T> rpMatrix3x3<T>::computeSymmetricMatrix(const rpVector3D<T> &vector)
+{
+    return rpMatrix3x3<T>(0, vector.z, vector.y,
+                          vector.z, 0, vector.x,
+                          vector.y, vector.x, 0);
+
+}
+
 
 template<class T>
 SIMD_INLINE bool real_physics::rpMatrix3x3<T>::operator ==(const rpMatrix3x3<T>& matrix) const
@@ -617,7 +692,7 @@ rpMatrix3x3<T> rpMatrix3x3<T>::MatrixTensorProduct( const rpVector3D<T>&  v1, co
 						  v1.x * v2.z , v1.y * v2.z , v1.z * v2.z);
 }
 
-
+/**
 template<class T>
 rpMatrix3x3<T> rpMatrix3x3<T>::rotateToInertialSystemR(const rpVector3D<T> &euler) const
 {
@@ -677,7 +752,7 @@ rpMatrix3x3<T> rpMatrix3x3<T>::TransitionMatrixR(const rpVector3D<T> &euler) con
                            m[2] , m[5] , m[8] );
 
 }
-
+/**/
 
 
 template<class T>

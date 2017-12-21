@@ -18,6 +18,9 @@
 namespace real_physics
 {
 
+
+template<class T> class rpQuaternion;
+
 // Matrix Riemann curvature tensor
 template<class T> class  rpMatrix4x4
 {
@@ -96,16 +99,13 @@ template<class T> class  rpMatrix4x4
 
 
 
-
-
-
 	// Return the inversed matrix
 	rpMatrix4x4<T> getInverse() const
 	{
 		int indxc[4], indxr[4];
 		int ipiv[4] = { 0, 0, 0, 0 };
-		float minv[4][4];
-		float temp;
+        T minv[4][4];
+        T temp;
 
 		for (int s=0; s<4; s++)
 		{
@@ -118,7 +118,7 @@ template<class T> class  rpMatrix4x4
 		for (int i = 0; i < 4; i++)
 		{
 			int irow = -1, icol = -1;
-			float big = 0.;
+            T big = 0.;
 			// Choose pivot
 			for (int j = 0; j < 4; j++)
 			{
@@ -129,7 +129,7 @@ template<class T> class  rpMatrix4x4
 						{
 							if (fabs(minv[j][k]) >= big)
 							{
-								big = float(fabs(minv[j][k]));
+                                big = T(fabs(minv[j][k]));
 								irow = j;
 								icol = k;
 							}
@@ -159,7 +159,7 @@ template<class T> class  rpMatrix4x4
 				std::cout << "Singular matrix in MatrixInvert\n";
 			}
 			// Set $m[icol][icol]$ to one by scaling row _icol_ appropriately
-			float pivinv = 1.f / minv[icol][icol];
+            T pivinv = 1.f / minv[icol][icol];
 			minv[icol][icol] = 1.f;
 			for (int j = 0; j < 4; j++)
 			{
@@ -171,7 +171,7 @@ template<class T> class  rpMatrix4x4
 			{
 				if (j != icol)
 				{
-					float save = minv[j][icol];
+                    T save = minv[j][icol];
 					minv[j][icol] = 0;
 					for (int k = 0; k < 4; k++)
 					{
@@ -193,54 +193,203 @@ template<class T> class  rpMatrix4x4
 				}
 			}
 		}
-		return rpMatrix4x4<T>(minv);
+        return rpMatrix4x4<T>(minv);
 	}
 
 
 
 
+    // * operator
+    rpMatrix4x4<T> operator*(T f) const
+    {
+        return rpMatrix4x4<T>(m[0][0]*f, m[0][1]*f, m[0][2]*f,  m[0][3]*f,
+                              m[1][0]*f, m[1][1]*f, m[1][2]*f,  m[1][3]*f,
+                              m[2][0]*f, m[2][1]*f, m[2][2]*f,  m[2][3]*f,
+                              m[3][0]*f, m[3][1]*f, m[3][2]*f,  m[3][3]*f);
+    }
+
+    // * operator
+    rpMatrix4x4<T> &operator*=(T f)
+    {
+        m[0][0]*=f; m[0][1]*=f; m[0][2]*=f;  m[0][3]*=f;
+        m[1][0]*=f; m[1][1]*=f; m[1][2]*=f;  m[1][3]*=f;
+        m[2][0]*=f; m[2][1]*=f; m[2][2]*=f;  m[2][3]*=f;
+        m[3][0]*=f; m[3][1]*=f; m[3][2]*=f;  m[3][3]*=f;
+        return *this;
+    }
+
+    // / operator
+    rpMatrix4x4<T> operator/(T f) const
+    {
+        assert(f!=0);
+        return rpMatrix4x4<T>(m[0][0]/f, m[0][1]/f, m[0][2]/f,  m[0][3]/f,
+                              m[1][0]/f, m[1][1]/f, m[1][2]/f,  m[1][3]/f,
+                              m[2][0]/f, m[2][1]/f, m[2][2]/f,  m[2][3]/f,
+                              m[3][0]/f, m[3][1]/f, m[3][2]/f,  m[3][3]/f);
+    }
+
+    // /= operator
+    rpMatrix4x4<T> &operator/=(T f)
+    {
+        assert(f!=0);
+        m[0][0]/=f; m[0][1]/=f; m[0][2]/=f;  m[0][3]/=f;
+        m[1][0]/=f; m[1][1]/=f; m[1][2]/=f;  m[1][3]/=f;
+        m[2][0]/=f; m[2][1]/=f; m[2][2]/=f;  m[2][3]/=f;
+        m[3][0]/=f; m[3][1]/=f; m[3][2]/=f;  m[3][3]/=f;
+        return *this;
+    }
+
+    // - operator
+    rpMatrix4x4<T> operator-() const
+    {
+        return rpMatrix4x4<T>(-m[0][0], -m[0][1], -m[0][2],  -m[0][3],
+                              -m[1][0], -m[1][1], -m[1][2],  -m[1][3],
+                              -m[2][0], -m[2][1], -m[2][2],  -m[2][3],
+                              -m[3][0], -m[3][1], -m[3][2],  -m[3][3]);
+    }
 
 
 
+
+     // * operator vector4
 	rpMinkowskiVector4<T> operator*( const rpMinkowskiVector4<T> &v ) const
 	{
-		rpMinkowskiVector4<T> u = rpMinkowskiVector4<T>(m[0][0]*v.t + m[0][1]*v.x + m[0][2]*v.y + v.z*m[0][3],
-				                                        m[1][0]*v.t + m[1][1]*v.x + m[1][2]*v.y + v.z*m[1][3],
-				                                        m[2][0]*v.t + m[2][1]*v.x + m[2][2]*v.y + v.z*m[2][3],
-				                                        m[3][0]*v.t + m[3][1]*v.x + m[3][2]*v.y + v.z*m[3][3]);
-		if(u.t > MACHINE_EPSILON)
-			return u/u.t;
-		else
-			return u;
+
+        rpMinkowskiVector4<T> u =rpMinkowskiVector4<T>(m[0][0]*v.x + m[0][1]*v.y + m[0][2]*v.z + v.t*m[0][3],
+                                                       m[1][0]*v.x + m[1][1]*v.y + m[1][2]*v.z + v.t*m[1][3],
+                                                       m[2][0]*v.x + m[2][1]*v.y + m[2][2]*v.z + v.t*m[2][3],
+                                                       m[3][0]*v.x + m[3][1]*v.y + m[3][2]*v.z + v.t*m[3][3]);
+        /**
+        if(u.t > MACHINE_EPSILON)
+            return u/u.t;
+        else
+        /**/
+            return u;
 	}
 
 
 
+    // * operator vector3
+    rpVector3D<T> operator*(const rpVector3D<T> &v) const
+    {
+        rpVector3D<T> u =rpVector3D<T>(m[0][0]*v.x + m[0][1]*v.y + m[0][2]*v.z + m[0][3],
+                                       m[1][0]*v.x + m[1][1]*v.y + m[1][2]*v.z + m[1][3],
+                                       m[2][0]*v.x + m[2][1]*v.y + m[2][2]*v.z + m[2][3]);
+
+        T w = m[3][0]*v.x +
+              m[3][1]*v.y +
+              m[3][2]*v.z +
+              m[3][3];
+
+        return u/w;
+    }
 
 
-	/*****************************************************
-	 *  Help info to web site:  https://arxiv.org/pdf/1103.0156.pdf
-	 *****************************************************/
-	rpMatrix4x4<T> getLorentzBoost( const rpVector3D<T> &v ) const
-	{
-		/// lorentz factor
-        T y = gammaInvert(v);
+    /**/
+    rpMatrix4x4<T>& operator =(const rpQuaternion<T>& Quat)
+    {
 
-		T l = v.length();
-		T gamma = (y  - 1.0);
+        T D1, D2, D3, D4, D5, D6, D7, D8, D9; //Dummy variables to hold precalcs
 
-		l = (l > MACHINE_EPSILON)? l : MACHINE_EPSILON;
-		rpVector3D<T> n = v / l;
+        D1 = (Quat.x * Quat.x) * 2.0f;
+        D2 = (Quat.y * Quat.y) * 2.0f;
+        D3 = (Quat.z * Quat.z) * 2.0f;
 
-		m[0][0]= y;     m[0][1]= -y * v.x;                  m[0][2]= -y * v.y;                  m[0][3]= -y * v.z;
-		m[1][0]=-y*v.x; m[1][1]= 1.0+(gamma*((n.x * n.x))); m[1][2]=     (gamma*((n.x * n.y))); m[1][3]=     (gamma*((n.x * n.z)));
-		m[2][0]=-y*v.y; m[2][1]=     (gamma*((n.y * n.x))); m[2][2]= 1.0+(gamma*((n.y * n.y))); m[2][3]=     (gamma*((n.y * n.z)));
-		m[3][0]=-y*v.z; m[3][1]=     (gamma*((n.z * n.x))); m[3][2]=     (gamma*((n.z * n.y))); m[3][3]= 1.0+(gamma*((n.z * n.z)));
+        T RTimesTwo = Quat.w * 2.0f;
+        D4 = Quat.x * RTimesTwo;
+        D5 = Quat.y * RTimesTwo;
+        D6 = Quat.z * RTimesTwo;
+
+        D7 = (Quat.x * Quat.y) * 2.0f;
+        D8 = (Quat.x * Quat.z) * 2.0f;
+        D9 = (Quat.y * Quat.z) * 2.0f;
+
+        m[0][0] = 1.0f - D2 - D3;
+        m[0][1] = D7 - D6;
+        m[0][2] = D8 + D5;
+        m[0][3] = 0.0f;
+
+        m[1][0] = D7 + D6;
+        m[1][1] = 1.0f - D1 - D3;
+        m[1][2] = D9 - D4;
+        m[1][3] = 0.0f;
+
+
+        m[2][0] = D8 - D5;
+        m[2][1] = D9 + D4;
+        m[2][2] = 1.0f - D1 - D2;
+        m[2][3] = 0.0f;
+
+        m[3][0] = 0.f;
+        m[3][1] = 0.f;
+        m[3][2] = 0.f;
+        m[3][3] = 1.f;
+
 
         return *this;
+    }
+    /**/
+
+
+    /*****************************************************
+     *  Help info to web site:  https://arxiv.org/pdf/1103.0156.pdf
+     *****************************************************/
+    /// Matrix Loretz Boost
+    static rpMatrix4x4<T> getLorentzBoost(  const rpVector3D<T> &n , const T& v , T *_gamma = NULL )
+	{
+
+            rpMatrix4x4<T> M;
+
+            const T c = LIGHT_MAX_VELOCITY_C;
+
+            /// lorentz  gamma factor ^ -1
+            T gamma = 1.0 * sqrt( 1.0 - (v*v) / (c*c) );
+
+            if( _gamma != NULL ) gamma = *_gamma;
+
+
+            M.m[0][0]= 1.0+((gamma - 1.0)*((n.x * n.x)));
+            M.m[1][0]=     ((gamma - 1.0)*((n.y * n.x)));
+            M.m[2][0]=     ((gamma - 1.0)*((n.z * n.x)));
+            M.m[3][0]= (v*n.x*gamma)/(c*c);
+
+            M.m[0][1]=     ((gamma - 1.0)*((n.x * n.y)));
+            M.m[1][1]= 1.0+((gamma - 1.0)*((n.y * n.y)));
+            M.m[2][1]=     ((gamma - 1.0)*((n.z * n.y)));
+            M.m[3][1]= (v*n.y*gamma)/(c*c);
+
+            M.m[0][2]=      ((gamma - 1.0)*((n.x * n.z)));
+            M.m[1][2]=      ((gamma - 1.0)*((n.y * n.z)));
+            M.m[2][2]=  1.0+((gamma - 1.0)*((n.z * n.z)));
+            M.m[3][2]= (v*n.z*gamma)/(c*c);
+
+            M.m[0][3]=v*n.x*gamma;
+            M.m[1][3]=v*n.y*gamma;
+            M.m[2][3]=v*n.z*gamma;
+            M.m[3][3]= gamma;
+
+            return M;
 	}
 
 
+
+    /*****************************************************
+     *  Help info to web site:  https://arxiv.org/pdf/1103.0156.pdf
+     *****************************************************/
+    /// Rotate axis at the angle
+    static rpMatrix4x4<T> LambdaRotate( const T& angle , const rpVector3D<T>& R )
+    {
+        T S = 1.f - Cos(angle);
+
+         static rpMatrix4x4<T> M(R.x*R.x + (1.f - R.x*R.x) * Cos(angle) , R.x*R.y*S - R.z*Sin(angle)           , R.x*R.z*S + R.y*Sin(angle)           , 0 ,
+                                 R.x*R.y*S + R.z*Sin(angle)             , R.y*R.y + (1.f - R.y*R.y)*Cos(angle) , R.y*R.z*S - R.x*Sin(angle)           , 0 ,
+                                 R.x*R.z*S - R.y*Sin(angle)             , R.y*R.z*S + R.x*Sin(angle)           , R.z*R.z + (1.f - R.z*R.z)*Cos(angle) , 0 ,
+                                                                                                                                            0 , 0 , 0 , 1 );
+         return M;
+    }
+
+
+    /// Unit tensor of Minkowski space
     static rpMatrix4x4<T> getMetricesTensor4DSpaceMinkowski( bool contject = true )
 	{
 		T n = (contject)? 1.0 : -1.0;
@@ -254,7 +403,7 @@ template<class T> class  rpMatrix4x4
 
    /// Return a skew-symmetric matrix using a given vector that can be used
    /// to compute cross product with another vector using matrix multiplication
-   static rpMatrix3x3<T> computeSkewSymmetricMatrixForCrossProduct(const rpMinkowskiVector4<T>& vector)
+   static rpMatrix4x4<T> computeSkewSymmetricMatrixForCrossProduct(const rpMinkowskiVector4<T>& vector)
    {
 	   return rpMatrix4x4<T>(0       , -vector.z,  vector.y,  vector.t,
 	  			            vector.z , 0        , -vector.x,  vector.y,
@@ -265,7 +414,7 @@ template<class T> class  rpMatrix4x4
 
    /// Return a  matrix using a given vector that can be used
    /// to compute dot product with another vector using matrix multiplication
-   static rpMatrix4x4<T> MatrixTensorProduct( const  rpMinkowskiVector4<T> v1 , const  rpMinkowskiVector4<T> v2 )
+   static rpMatrix4x4<T> MinnorProduct( const  rpMinkowskiVector4<T> v1 , const  rpMinkowskiVector4<T> v2 )
    {
     	return rpMatrix4x4<T>(v1.t * v2.t , v1.t * v2.x , v1.t * v2.y , v1.t * v2.z,
     			              v1.x * v2.t , v1.x * v2.x , v1.x * v2.y , v1.x * v2.z,
