@@ -116,7 +116,7 @@ template<class T> class rpTransformUtil
 
 
         /// Lorentz transformation
-        rpMinkowskiVector4<T> newPos4 = rpMatrix4x4<T>::getLorentzBoost( linvel.getUnit() , linvel.length() * mTime ) * curTrans.getPosition4();
+        rpMinkowskiVector4<T> newPosition = rpMatrix4x4<T>::getLorentzBoost( linvel.getUnit() , linvel.length() * mTime ) * curTrans.getPosition4();
 
 
         //Exponential map
@@ -149,7 +149,7 @@ template<class T> class rpTransformUtil
         predictedOrn.normalize();
 
 
-       return rpTransform<T>( newPos4.getPos() , predictedOrn , curTrans.getScale() , T(1.0) );
+       return rpTransform<T>( newPosition.getPos() , predictedOrn , curTrans.getScale() , T(1.0) );
 
     }
 
