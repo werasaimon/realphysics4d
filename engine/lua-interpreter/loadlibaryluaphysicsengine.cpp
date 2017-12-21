@@ -146,9 +146,9 @@ void LoadLibaryLuaPhysicsEngine::LoadLibary()
                           luabind::class_<real_physics::Transform>("transform")
                           // constructor
                           .def(luabind::constructor<const real_physics::Vector3& ,const real_physics::Quaternion&>())
-                          .def( "position"   ,  &real_physics::Transform::getPosition    )
-                          .def( "quaternion" ,  &real_physics::Transform::getOrientation )
-                          .def( "basis"      ,  &real_physics::Transform::getBasis       )
+                          .def( "position4"   ,  &real_physics::Transform::getPosition4    )
+                          .def( "quaternion"  ,  &real_physics::Transform::getOrientation )
+                          .def( "basis"       ,  &real_physics::Transform::getBasis       )
 
                        ]);
 
