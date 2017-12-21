@@ -105,8 +105,8 @@ void UnitSceneGeometry::initGeometry()
 
     for( int i = 1; i < NbSize; ++i )
     {
-        const real_physics::Vector3 v1 = bodies[i-1]->getPhysicsBody()->getTransform().getPosition();
-        const real_physics::Vector3 v2 = bodies[i-0]->getPhysicsBody()->getTransform().getPosition();
+        const real_physics::Vector3 v1 = bodies[i-1]->getPhysicsBody()->getTransform().getPosition4().getPos();
+        const real_physics::Vector3 v2 = bodies[i-0]->getPhysicsBody()->getTransform().getPosition4().getPos();
         const real_physics::Vector3 anchor = (v1 + v2) * 0.5;
         real_physics::rpBallAndSocketJointInfo infoJoint( bodies[i-1]->getPhysicsBody() , bodies[i-0]->getPhysicsBody() , anchor );
         UltimateJoint *joint = world->createJoint(infoJoint);

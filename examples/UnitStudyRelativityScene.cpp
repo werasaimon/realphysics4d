@@ -296,11 +296,26 @@ void UnitStudyRelativityScene::keyboard(int key)
             {
                 cout<< " T T T " <<endl;
 
-                real_physics::Vector3 angular_velocity(0.0,0.0,0.1);
+                real_physics::Vector3 angular_velocity(0.0,0.1,0.0);
                 mTransport.setOrientation( mTransport.getOrientation() + real_physics::Quaternion(angular_velocity , 0) * mTransport.getOrientation() * 0.5f );
 
 
+                real_physics::Vector3 W = mTransport.getOrientation().getMatrix() * angular_velocity;
 
+                float gamma = 0.5;
+                // mTransport.BuildLorentzBoost( W.getUnit() , W.length() , &gamma );
+
+                real_physics::Vector3  Up;
+                real_physics::Vector3  Left;
+                real_physics::Vector3::btPlaneSpace1( W , Up , Left );
+
+                Up   =   Up.getUnit() * W.length();
+                Left = Left.getUnit() * W.length();
+
+                real_physics::Matrix3x3 M_up   = real_physics::Matrix3x3::getLorentzBoost( Up.getUnit()   , Up.length()   , &gamma);
+                real_physics::Matrix3x3 M_left = real_physics::Matrix3x3::getLorentzBoost( Left.getUnit() , Left.length() , &gamma);
+
+                mTransport.setScale( M_up * M_left );
             }
 
 
@@ -310,10 +325,11 @@ void UnitStudyRelativityScene::keyboard(int key)
             {
                 cout<< "Y_Y_Y" <<endl;
 
-                real_physics::Vector3 vel(1.4,1.4,0);
+                real_physics::Vector3 vel(0,9.9,0);
 
 
-                mTransport.setCreateLorentzBoost( vel.getUnit() , vel.length()  );
+
+                mTransport.BuildLorentzBoost( vel.getUnit() , vel.length()  );
 
             }
 
