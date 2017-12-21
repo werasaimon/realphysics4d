@@ -67,10 +67,6 @@ rpPhysicsRigidBody::rpPhysicsRigidBody(const Transform &transform, rpCollisionMa
  mAngularVelocity(Vector3::ZERO),
  mSplitLinearVelocity(Vector3::ZERO),
  mSplitAngularVelocity(Vector3::ZERO),
-// mLinearFourVelocity4(0,0,0,0),
-// mAngularFourVelocity4(0,0,0,0),
- //mFourForce4(0,0,0,0),
- //mFourTorque4(0,0,0,0),
  mStepTime(0.0)
 {
 	/// body To type
@@ -443,7 +439,7 @@ SIMD_INLINE void rpPhysicsRigidBody::applyImpulse(const Vector3& impuls , const 
     if (!mIsSleeping)
 	{
         ///Loretz factor
-        scalar gamma = gammaInvertFunction( mLinearVelocity + mAngularVelocity.cross(point - mCenterOfMassWorld) );
+        scalar gamma = gammaInvertFunction( (mLinearVelocity + mAngularVelocity.cross(point - mCenterOfMassWorld)) );
 
         applyImpulseLinear( impuls * gamma);
         applyImpulseAngular((point - mCenterOfMassWorld).cross(impuls) * gamma);
@@ -490,9 +486,8 @@ SIMD_INLINE void rpPhysicsRigidBody::applyForce(const Vector3& force, const Vect
 	// Awake the body if it was sleeping
     if (!mIsSleeping)
 	{
-
         ///Loretz factor
-        scalar gamma = gammaInvertFunction( mLinearVelocity + mAngularVelocity.cross(point - mCenterOfMassWorld) );
+        scalar gamma = gammaInvertFunction( (mLinearVelocity + mAngularVelocity.cross(point - mCenterOfMassWorld)) );
 
         // Add the force and torque
         applyForceToCenterOfMass(force * gamma);
