@@ -252,16 +252,16 @@ namespace real_physics
 
 
     /// Overloaded operator for the addition
-    rpQuaternion<T> operator  +(const rpQuaternion<T>& quaternion) const;
+    rpQuaternion<T> operator  +  (const rpQuaternion<T>& quaternion) const;
 
     /// Overloaded operator for the substraction
-    rpQuaternion<T> operator  -(const rpQuaternion<T>& quaternion) const;
+    rpQuaternion<T> operator  -  (const rpQuaternion<T>& quaternion) const;
 
     /// Overloaded operator for addition with assignment
-    rpQuaternion<T>& operator+=(const rpQuaternion<T>& quaternion);
+    rpQuaternion<T>& operator += (const rpQuaternion<T>& quaternion);
 
     /// Overloaded operator for substraction with assignment
-    rpQuaternion<T>& operator-=(const rpQuaternion<T>& quaternion);
+    rpQuaternion<T>& operator -= (const rpQuaternion<T>& quaternion);
 
 
 
@@ -593,9 +593,9 @@ namespace real_physics
   template<class T>
   SIMD_INLINE rpQuaternion<T> real_physics::rpQuaternion<T>::operator *(const rpQuaternion<T>& quaternion) const
   {
-	  return rpQuaternion<T> (w * quaternion.w - getVectorV().dot(quaternion.getVectorV()),
-			  w * quaternion.getVectorV() + quaternion.w * getVectorV() +
-			                 getVectorV().cross(quaternion.getVectorV()));
+      return rpQuaternion<T> (w * quaternion.w - getVectorV().dot(quaternion.getVectorV()),
+                              w * quaternion.getVectorV() + quaternion.w * getVectorV() +
+                              getVectorV().cross(quaternion.getVectorV()));
   }
 
   template<class T>
@@ -747,15 +747,15 @@ namespace real_physics
     T nQ = x*x + y*y + z*z + w*w;
     T s = 0.0;
 
-    if (nQ > 0.0)
-      {
+    if(nQ > 0.0)
+    {
      	s = T(2.0) / nQ;
-      }
+    }
 
     // Computations used for optimization (less multiplications)
-    T xs = x*s;
-    T ys = y*s;
-    T zs = z*s;
+    T xs  = x*s;
+    T ys  = y*s;
+    T zs  = z*s;
     T wxs = w*xs;
     T wys = w*ys;
     T wzs = w*zs;

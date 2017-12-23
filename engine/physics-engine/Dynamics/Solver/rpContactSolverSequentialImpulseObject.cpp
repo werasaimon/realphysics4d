@@ -115,10 +115,10 @@ SIMD_INLINE void rpContactSolverSequentialImpulseObject::initializeForIsland(sca
 
     // Initialize the internal contact manifold structure using the external
     // contact manifold
-    internalManifold->inverseInertiaTensorBody1 = body1->mInertiaTensorWorldInverse; // * gammaInvertFunction(body1->getAngularVelocity()) * gammaInvertFunction(body2->getLinearVelocity());
-    internalManifold->inverseInertiaTensorBody2 = body2->mInertiaTensorWorldInverse; // * gammaInvertFunction(body2->getAngularVelocity()) * gammaInvertFunction(body2->getLinearVelocity());
-    internalManifold->massInverseBody1 = body1->mMassInverse * gammaInvertFunction(body1->getLinearVelocity()) ;
-    internalManifold->massInverseBody2 = body2->mMassInverse * gammaInvertFunction(body2->getLinearVelocity()) ;
+    internalManifold->inverseInertiaTensorBody1 = body1->getInertiaTensorInverseWorld();// * gammaInvertFunction(body1->getAngularVelocity()) * gammaInvertFunction(body1->getLinearVelocity());
+    internalManifold->inverseInertiaTensorBody2 = body2->getInertiaTensorInverseWorld();// * gammaInvertFunction(body2->getAngularVelocity()) * gammaInvertFunction(body2->getLinearVelocity());
+    internalManifold->massInverseBody1 = body1->getInverseMass();// * gammaInvertFunction(body1->getLinearVelocity()) ;
+    internalManifold->massInverseBody2 = body2->getInverseMass();// * gammaInvertFunction(body2->getLinearVelocity()) ;
     internalManifold->nbContacts = externalManifold->getNbContactPoints();
     internalManifold->restitutionFactor = computeMixedRestitutionFactor(body1, body2);
     internalManifold->frictionCoefficient = computeMixedFrictionCoefficient(body1, body2);

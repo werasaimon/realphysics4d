@@ -193,9 +193,12 @@ class rpPhysicsRigidBody: public rpPhysicsBody , public BlockAlloc<rpPhysicsRigi
 
 
 	    /// Inertia tensor to Body
-	    Matrix3x3  getInertiaTensorLocal() const;
+        Matrix3x3  getInertiaTensorLocal() const;
+        Matrix3x3  getInertiaTensorInverseLocal() const;
+
+
 	    Matrix3x3  getInertiaTensorWorld() const;
-	    Matrix3x3  getInertiaTensorInverseWorld() const;
+        Matrix3x3  getInertiaTensorInverseWorld() const;
 
 
 	    /// Velocity to body
@@ -244,15 +247,6 @@ SIMD_INLINE void rpPhysicsRigidBody::setMaterial(const rpPhysicsMaterial& materi
 }
 
 
-SIMD_INLINE scalar rpPhysicsRigidBody::getMass() const
-{
-	return mInitMass;
-}
-
-SIMD_INLINE scalar rpPhysicsRigidBody::getInverseMass() const
-{
-	return mMassInverse;
-}
 
 
 SIMD_INLINE Vector3 rpPhysicsRigidBody::getAngularVelocity() const
@@ -273,6 +267,19 @@ SIMD_INLINE void rpPhysicsRigidBody::updateTransformWithCenterOfMass()
 	mTransform.setPosition(mCenterOfMassWorld - mTransform.getOrientation() * mCenterOfMassLocal);
 }
 
+/// Massa of the body
+SIMD_INLINE scalar rpPhysicsRigidBody::getMass() const
+{
+    return mInitMass * gammaFunction(mLinearVelocity) * gammaFunction(mAngularVelocity);
+}
+
+/// Inverse massa of the body
+SIMD_INLINE scalar rpPhysicsRigidBody::getInverseMass() const
+{
+    return mMassInverse * gammaInvertFunction(mLinearVelocity) * gammaInvertFunction(mAngularVelocity);
+}
+
+
 
 // Return the local inertia tensor of the body (in local-space coordinates)
 /**
@@ -280,8 +287,19 @@ SIMD_INLINE void rpPhysicsRigidBody::updateTransformWithCenterOfMass()
  */
 SIMD_INLINE  Matrix3x3 rpPhysicsRigidBody::getInertiaTensorLocal() const
 {
-	return mInertiaTensorLocal;
+    return mInertiaTensorLocal * gammaFunction(mLinearVelocity) * gammaFunction(mAngularVelocity);
 }
+
+
+// Return the local inertia tensor of the body (in local-space coordinates)
+/**
+ * @return The 3x3 inverse inertia tensor matrix of the body (in local-space coordinates)
+ */
+SIMD_INLINE  Matrix3x3 rpPhysicsRigidBody::getInertiaTensorInverseLocal() const
+{
+    return mInertiaTensorLocalInverse * gammaInvertFunction(mLinearVelocity) * gammaInvertFunction(mAngularVelocity);
+}
+
 
 
 // Return the inertia tensor in world coordinates.
@@ -296,7 +314,7 @@ SIMD_INLINE  Matrix3x3 rpPhysicsRigidBody::getInertiaTensorLocal() const
 SIMD_INLINE Matrix3x3 rpPhysicsRigidBody::getInertiaTensorWorld() const
 {
 	  // Compute and return the inertia tensor in world coordinates
-	    return mTransform.getOrientation().getMatrix() * mInertiaTensorLocal *
+        return mTransform.getOrientation().getMatrix() * getInertiaTensorLocal() *
 	           mTransform.getOrientation().getMatrix().getTranspose();
 }
 
@@ -309,7 +327,7 @@ SIMD_INLINE Matrix3x3 rpPhysicsRigidBody::getInertiaTensorInverseWorld() const
     //        INVERSE WORLD TENSOR IN THE CLASS AND UPLDATE IT WHEN THE ORIENTATION OF THE BODY CHANGES
 
     // Compute and return the inertia tensor in world coordinates
-    return (mTransform.getOrientation().getMatrix() * mInertiaTensorLocalInverse *
+    return (mTransform.getOrientation().getMatrix() * getInertiaTensorInverseLocal() *
     	    mTransform.getOrientation().getMatrix().getTranspose());
 }
 

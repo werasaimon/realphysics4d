@@ -29,12 +29,12 @@ namespace real_physics
          return T(1.0) / gamma;
 	}
 
-	template <typename T> T gammaInvertFunction( const rpVector3D<T>& v )
-	{
-       T gamma = Sqrt(T(1.0) - (v.dot(v) / (LIGHT_MAX_VELOCITY_C * LIGHT_MAX_VELOCITY_C)));
-         gamma = (gamma > MACHINE_EPSILON) ? gamma : MACHINE_EPSILON;
-         return   gamma;
-	}
+    template <typename T> T gammaInvertFunction( const rpVector3D<T>& v )
+    {
+        T gamma = Sqrt(T(1.0) - (v.dot(v) / (LIGHT_MAX_VELOCITY_C * LIGHT_MAX_VELOCITY_C)));
+        gamma = (gamma > MACHINE_EPSILON) ? gamma : MACHINE_EPSILON;
+        return   gamma;
+    }
 
 
 	//---------------------- 2D function ---------------------//

@@ -102,7 +102,7 @@ template<class T> class rpTransformUtil
         const rpVector3D<T> relVel = (linvel - _Observer.lin_velocity);
 
 
-        /// Relativity time shift in my observer system
+        /// Relativity time shift in observer system
         T mTime = timeStep * ((T(1.0) - (_Observer.lin_velocity.dot(relPos)/(_c*_c))) * gammaInvertFunction(_Observer.lin_velocity));
 
 
