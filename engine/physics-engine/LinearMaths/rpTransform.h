@@ -171,7 +171,7 @@ public:
 
 
 
-  //-----------------------------------------------------------------------------//
+  //--------------------------- Loretz Boost Deform --------------------------//
 
   /// Lorentz demission distance in the world
   void BuildLorentzBoost( const rpVector3D<T> &dir , const T& v , T *_gamma = NULL )
@@ -323,6 +323,7 @@ SIMD_INLINE void rpTransform<T>::setFromOpenGL(T* openglMatrix)
   rpMatrix3x3<T> matrix(openglMatrix[0], openglMatrix[4], openglMatrix[8],
                         openglMatrix[1], openglMatrix[5], openglMatrix[9],
                         openglMatrix[2], openglMatrix[6], openglMatrix[10]);
+
   mOrientation = rpQuaternion<T>(matrix);
 
  rpVector3D<T> pos( openglMatrix[12],
@@ -330,6 +331,11 @@ SIMD_INLINE void rpTransform<T>::setFromOpenGL(T* openglMatrix)
                     openglMatrix[14]);
 
   mPosition4 = rpMinkowskiVector4<T>( pos , mPosition4.t );
+
+//  mScale = rpMatrix3x3<T>::MatrixScale( rpVector3D<T>(openglMatrix[0]  ,
+//                                                      openglMatrix[5]  ,
+//                                                      openglMatrix[10] ) );
+
 }
 
 

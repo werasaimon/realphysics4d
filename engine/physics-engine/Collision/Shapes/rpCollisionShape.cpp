@@ -55,6 +55,11 @@ namespace real_physics
       maxBounds *= 1.04;
 
 
+      minBounds = minBounds * mScaling;
+      maxBounds = maxBounds * mScaling;
+
+
+
       // Rotate the local bounds according to the orientation of the body
       Matrix3x3 worldAxis =  transform.getBasis().getAbsoluteMatrix();
       Vector3 worldMinBounds(worldAxis.getRow(0).dot(minBounds),
@@ -65,20 +70,19 @@ namespace real_physics
                              worldAxis.getRow(2).dot(maxBounds));
 
 
-
 //      // Compute the minimum and maximum coordinates of the rotated extents
 //       Vector3 minCoordinates = transform.getPosition() + worldMinBounds;
 //       Vector3 maxCoordinates = transform.getPosition() + worldMaxBounds;
 
 
 
-      Vector3 position = transform.getPosition4().getPos();
-      glPushMatrix();
-      Vector3 halfSize = (worldMinBounds - worldMaxBounds);
-      glTranslatef(position.x, position.y, position.z);
-      glScalef(halfSize.x, halfSize.y, halfSize.z);
-      glutWireCube(0.5);
-      glPopMatrix();
+//      Vector3 position = transform.getPosition4().getPos();
+//      glPushMatrix();
+//      Vector3 halfSize = (worldMinBounds - worldMaxBounds);
+//      glTranslatef(position.x, position.y, position.z);
+//      glScalef(halfSize.x, halfSize.y, halfSize.z);
+//      glutWireCube(1.01);
+//      glPopMatrix();
 
 
 

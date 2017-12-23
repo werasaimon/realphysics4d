@@ -101,7 +101,7 @@ namespace real_physics
           /// Return a local support point in a given direction with the object margin
           const Vector3 getLocalSupportPointWithMarginn(const Vector3& direction ) const
           {
-        	  return getLocalSupportPointWithMargin( direction , NULL);
+              return getLocalSupportPointWithMargin( direction , NULL) * mScaling;
           }
 
 
@@ -206,7 +206,6 @@ namespace real_physics
           virtual void computeLocalInertiaTensor(Matrix3x3& tensor, scalar mass) const {}
 
           /// Compute the world-space AABB of the collision shape given a transform
-          //virtual void computeAABB(rpAABB& aabb, const Transform& transform0 , const Transform& transform1 , const Matrix3x3& matrixBoost = Matrix3x3::identity()) const;
           virtual void computeAABB(rpAABB& aabb, const Transform& transform0 , const Transform& transform1 ) const;
 
           /// Return true if the collision shape type is a convex shape
