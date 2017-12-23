@@ -270,13 +270,13 @@ SIMD_INLINE void rpPhysicsRigidBody::updateTransformWithCenterOfMass()
 /// Massa of the body
 SIMD_INLINE scalar rpPhysicsRigidBody::getMass() const
 {
-    return mInitMass * gammaFunction(mLinearVelocity) * gammaFunction(mAngularVelocity);
+    return mInitMass;// * gammaFunction(mLinearVelocity) * gammaFunction(mAngularVelocity);
 }
 
 /// Inverse massa of the body
 SIMD_INLINE scalar rpPhysicsRigidBody::getInverseMass() const
 {
-    return mMassInverse * gammaInvertFunction(mLinearVelocity) * gammaInvertFunction(mAngularVelocity);
+    return mMassInverse;// * gammaInvertFunction(mLinearVelocity) * gammaInvertFunction(mAngularVelocity);
 }
 
 
@@ -287,7 +287,7 @@ SIMD_INLINE scalar rpPhysicsRigidBody::getInverseMass() const
  */
 SIMD_INLINE  Matrix3x3 rpPhysicsRigidBody::getInertiaTensorLocal() const
 {
-    return mInertiaTensorLocal * gammaFunction(mLinearVelocity) * gammaFunction(mAngularVelocity);
+    return mInertiaTensorLocal;// * gammaFunction(mLinearVelocity) * gammaFunction(mAngularVelocity);
 }
 
 
@@ -297,7 +297,7 @@ SIMD_INLINE  Matrix3x3 rpPhysicsRigidBody::getInertiaTensorLocal() const
  */
 SIMD_INLINE  Matrix3x3 rpPhysicsRigidBody::getInertiaTensorInverseLocal() const
 {
-    return mInertiaTensorLocalInverse * gammaInvertFunction(mLinearVelocity) * gammaInvertFunction(mAngularVelocity);
+    return mInertiaTensorLocalInverse;// * gammaInvertFunction(mLinearVelocity) * gammaInvertFunction(mAngularVelocity);
 }
 
 

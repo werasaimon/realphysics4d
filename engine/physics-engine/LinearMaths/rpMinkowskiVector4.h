@@ -149,7 +149,7 @@ template<class T> class  rpMinkowskiVector4
                                       t * lengthInv );
 	}
 
-    rpMinkowskiVector4<T> getInvers() const
+    rpMinkowskiVector4<T> getInverse() const
     {
         return rpMinkowskiVector4<T>( T(1.0/x) , T(1.0/y) , T(1.0/z) , T(1.0/t));
     }
@@ -158,7 +158,7 @@ template<class T> class  rpMinkowskiVector4
     /// Dot Product
 	T dot(const rpMinkowskiVector4<T>& vector) const
 	{
-        return ((t*vector.t)/(_c*_c)) - (x*vector.x + y*vector.y + z*vector.z);
+        return ((t*vector.t)*(_c*_c)) - (x*vector.x + y*vector.y + z*vector.z);
 	}
 
 
